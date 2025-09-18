@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>거문고 알기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/import.css"
+    />
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="dimmed bg info-1"></div>
+
+        <div class="dimmed select-03-popup">
+          <div class="select-03-popup-content">
+            <div class="select-03-popup-confirm" role="button"></div>
+            <div class="select-03-popup-cancel" role="button"></div>
+          </div>
+        </div>
+
+        <div class="select-main">
+          <div class="container select-03-bg pointer-none">
+            <div class="tutorial-3">
+              <div class="geomungo-container">
+                <img
+                  src="img/select_03/geomungo.png"
+                  alt="거문고"
+                  class="geomungo-image"
+                />
+
+                <!-- 인터랙티브 포인트들 -->
+                <img
+                  src="img/select_03/suldae-zoom.png"
+                  alt="술대(확대)"
+                  class="interactive-point-img"
+                  style="left: 10%; top: -15%; scale: 1.1"
+                />
+                <div
+                  class="interactive-point zoom"
+                  data-info="point1"
+                  style="left: -29%; top: 5%"
+                >
+                  <div
+                    class="point-line"
+                    style="
+                      left: -13.3vh;
+                      top: -7.5vh;
+                      transform: translateY(-50%) rotate(57deg);
+                      width: 18vh;
+                    "
+                  ></div>
+                  <div
+                    class="info-box"
+                    style="left: -21vh; top: -24vh; width: 25vh; height: 10vh"
+                  >
+                    <img
+                      src="img/select_03/tutorial-suldae.png"
+                      alt="술대"
+                      onclick="ch1_13Narration.play()"
+                      role="button"
+                    />
+                  </div>
+                </div>
+
+                <img
+                  src="img/select_03/gue-zoom.png"
+                  alt="괘(확대)"
+                  class="interactive-point-img"
+                  style="left: 35%; top: -17%; scale: 1.1"
+                />
+                <div
+                  class="interactive-point zoom"
+                  data-info="point1"
+                  style="left: -11%; top: -25%"
+                >
+                  <div
+                    class="point-line"
+                    style="
+                      left: -2.5vh;
+                      top: -8vh;
+                      transform: translateY(-50%) rotate(131deg);
+                      width: 22vh;
+                    "
+                  ></div>
+                  <div
+                    class="info-box"
+                    style="left: 3vh; top: -26vh; width: 25vh; height: 10vh"
+                  >
+                    <img
+                      src="img/select_03/tutorial-gue.png"
+                      alt="괘"
+                      onclick="ch1_11Narration.play()"
+                      role="button"
+                    />
+                  </div>
+                </div>
+
+                <img
+                  src="img/select_03/jul-zoom.png"
+                  alt="줄(확대)"
+                  class="interactive-point-img"
+                  style="left: 64%; top: -18%; scale: 1.1"
+                />
+                <div
+                  class="interactive-point zoom"
+                  data-info="point1"
+                  style="left: 15%; top: -25%"
+                >
+                  <div
+                    class="point-line"
+                    style="
+                      left: 0vh;
+                      top: -8vh;
+                      transform: translateY(-50%) rotate(156deg);
+                      width: 32vh;
+                    "
+                  ></div>
+                  <div
+                    class="info-box"
+                    style="left: 18vh; top: -23vh; width: 25vh; height: 10vh"
+                  >
+                    <img
+                      src="img/select_03/tutorial-jul.png"
+                      alt="줄"
+                      onclick="ch1_12Narration.play()"
+                      role="button"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="select-start-btn" role="button"></div>
+
+            <a
+              onclick="window.history.back()"
+              class="btn-top btn-back btn-effect"
+              role="button"
+            >
+              <span class="sr-only">뒤로가기</span>
+            </a>
+
+            <div class="select-title-3"></div>
+            <div class="btn-top select-hint hint-3" role="button"></div>
+
+            <a
+              href="main.html"
+              class="btn-top btn-home btn-effect"
+              role="button"
+            >
+              <span class="sr-only">홈으로</span>
+            </a>
+
+            <!-- Play -->
+            <div class="select-03">
+              <div class="select-03-main-geomungo-wrapper">
+                <div class="geomungo-container">
+                  <img
+                    src="img/select_03/geomungo.png"
+                    alt="거문고"
+                    class="geomungo-image"
+                  />
+
+                  <!-- 인터랙티브 포인트들 -->
+                  <!-- 1 -->
+                  <div
+                    class="interactive-point"
+                    data-info="point1"
+                    style="left: -31%; top: -15%"
+                  >
+                    <div
+                      class="point-line"
+                      style="
+                        left: -13.3vh;
+                        top: -7.5vh;
+                        transform: translateY(-50%) rotate(57deg);
+                        width: 18vh;
+                      "
+                    ></div>
+                    <div
+                      class="info-box droppable"
+                      style="left: -17vh; top: -21vh; width: 18vh; height: 8vh"
+                    >
+                      <img src="img/select_03/suldae-active.png" alt="술대" />
+                    </div>
+                  </div>
+
+                  <!-- 2 -->
+                  <div
+                    class="interactive-point"
+                    data-info="point2"
+                    style="left: -12.5%; top: -25%"
+                  >
+                    <div
+                      class="point-line"
+                      style="
+                        left: -2.2vh;
+                        top: -6.7vh;
+                        transform: translateY(-50%) rotate(131deg);
+                        width: 18vh;
+                      "
+                    ></div>
+                    <div
+                      class="info-box droppable"
+                      style="left: 4vh; top: -21vh; width: 18vh; height: 8vh"
+                    >
+                      <img src="img/select_03/gue-active.png" alt="괘" />
+                    </div>
+                  </div>
+
+                  <!-- 3 -->
+                  <div
+                    class="interactive-point"
+                    data-info="point3"
+                    style="left: 25%; top: -21%"
+                  >
+                    <div
+                      class="point-line"
+                      style="
+                        left: -0.3vh;
+                        top: -6vh;
+                        transform: translateY(-50%) rotate(150deg);
+                        width: 25vh;
+                      "
+                    ></div>
+                    <div
+                      class="info-box droppable"
+                      style="left: 13vh; top: -19vh; width: 18vh; height: 8vh"
+                    >
+                      <img src="img/select_03/jul-active.png" alt="줄" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="select-03-answer-tray">
+                <img
+                  src="img/select_03/answer-tray.png"
+                  class="answer-tray-img"
+                  alt="답안 트레이"
+                />
+
+                <div class="select-03-answer-tray-grid-wrapper">
+                  <img src="img/select_03/gue.png" class="draggable" alt="괘" />
+                  <img src="img/select_03/jul.png" class="draggable" alt="괘" />
+                  <img
+                    src="img/select_03/suldae.png"
+                    class="draggable"
+                    alt="괘"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dimmed select-03-popup-success">
+          <div class="select-03-popup-content">
+            <a
+              class="select-03-popup-confirm"
+              role="button"
+              href="select_04.html"
+            ></a>
+            <div class="select-03-popup-cancel" role="button"></div>
+          </div>
+        </div>
+
+        <div class="ktm-wrapper dimmed">
+          <div class="container">
+            <img src="img/common/ktm_card.png" class="ktm-card" role="button" />
+            <img
+              src="img/common/ktm_card_off.png"
+              class="ktm-card-off"
+              role="button"
+            />
+
+            <a class="btn-replay" role="button" href="select_03.html"></a>
+            <a class="btn-home" role="button" href="main.html"></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="select-03-success dimmed">
+        <div class="sign-board"></div>
+      </div>
+    </main>
+
+    <!-- Scripts loaded after DOM is ready -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/select_03.js"></script>
+  </body>
+</html>

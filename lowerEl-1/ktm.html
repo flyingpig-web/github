@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>거문고 알기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/import.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container ktm-bg">
+          <a
+            href="#"
+            onclick="sessionStorage.setItem('fromKtmBack', 'true'); window.history.back()"
+            class="btn-top btn-back btn-effect"
+            role="button"
+          >
+            <span class="sr-only">뒤로가기</span>
+          </a>
+
+          <div class="ktm-title"></div>
+          <div class="btn-top ktm-info" role="button"></div>
+
+          <!-- 카드 슬라이더 영역 -->
+          <div class="ktm-cards-container">
+            <div class="ktm-cards-wrapper">
+              <div
+                class="ktm-card-item"
+                data-index="0"
+                data-narration="sound/ch_01/ch1_06.mp3"
+                data-original-src="img/ktm/ktm-1.png"
+              >
+                <img src="img/common/ktm_card_off.png" alt="국악카드 1" />
+              </div>
+              <div
+                class="ktm-card-item"
+                data-index="1"
+                data-narration="sound/ch_01/ch1_07.mp3"
+                data-original-src="img/ktm/ktm-2.png"
+              >
+                <img src="img/common/ktm_card_off.png" alt="국악카드 2" />
+              </div>
+              <div
+                class="ktm-card-item"
+                data-index="2"
+                data-narration="sound/ch_01/ch1_08.mp3"
+                data-original-src="img/ktm/ktm-3.png"
+              >
+                <img src="img/common/ktm_card_off.png" alt="국악카드 3" />
+              </div>
+              <div
+                class="ktm-card-item"
+                data-index="3"
+                data-narration="sound/ch_01/ch1_16.mp3"
+                data-original-src="img/ktm/ktm-4.png"
+              >
+                <img src="img/common/ktm_card_off.png" alt="국악카드 4" />
+              </div>
+              <div
+                class="ktm-card-item"
+                data-index="4"
+                data-narration="sound/ch_01/ch1_17.mp3"
+                data-original-src="img/ktm/ktm-5.png"
+              >
+                <img src="img/common/ktm_card_off.png" alt="국악카드 5" />
+              </div>
+              <div
+                class="ktm-card-item"
+                data-index="5"
+                data-narration="sound/ch_01/ch1_18.mp3"
+                data-original-src="img/ktm/ktm-6.png"
+              >
+                <img src="img/common/ktm_card_off.png" alt="국악카드 6" />
+              </div>
+            </div>
+          </div>
+
+          <!-- 하단 슬라이더 컨트롤 -->
+          <div class="ktm-slider-control">
+            <div class="slider-track">
+              <div class="slider-thumb"></div>
+            </div>
+          </div>
+
+          <!-- 팝업 오버레이 -->
+          <div class="ktm-popup-overlay">
+            <div class="ktm-popup-card">
+              <img src="" alt="선택된 카드" />
+            </div>
+          </div>
+
+          <!-- 모음집 설명창 -->
+          <div class="ktm-info-popup">
+            <div class="ktm-info-content">
+              <img src="img/ktm/ktm-info.png" alt="모음집 설명" />
+              <!-- <button class="ktm-info-close">×</button> -->
+              <div class="ktm-info-close" role="button"></div>
+            </div>
+          </div>
+
+          <a href="main.html" class="btn-top btn-home btn-effect" role="button">
+            <span class="sr-only">홈으로</span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <script src="js/common.js"></script>
+    <script src="js/ktm.js"></script>
+  </body>
+</html>

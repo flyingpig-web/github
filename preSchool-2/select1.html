@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>무대위의 풍물놀이</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/import.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <a href="main.html" class="btn-top btn-home" role="button">
+            <span class="sr-only">홈으로</span>
+          </a>
+
+          <a
+            class="btn-top btn-back"
+            role="button"
+            onclick="window.history.back()"
+          >
+            <span class="sr-only">뒤로가기</span>
+          </a>
+
+          <div class="dimmed bg info-1"></div>
+          <div class="dimmed bg tutorial-bg display-none">
+            <div class="close" role="button"></div>
+          </div>
+
+          <div class="select-main">
+            <div class="droppable jg-empty">
+              <img src="img/select/jg-empty.png" alt="장구" />
+              <div class="notes display-none">
+                <img
+                  src="img/select/note-1.png"
+                  alt="음표1"
+                  style="top: 110%; left: -34%; scale: 0.8"
+                />
+                <img
+                  src="img/select/note-2.png"
+                  alt="음표2"
+                  style="top: 220%; left: -130%"
+                />
+                <img
+                  src="img/select/note-3.png"
+                  alt="음표3"
+                  style="top: 250%; left: -20%"
+                />
+              </div>
+            </div>
+
+            <div class="droppable j-empty">
+              <img src="img/select/j-empty.png" alt="징" />
+              <div class="notes display-none" style="top: 15%">
+                <img
+                  src="img/select/note-1.png"
+                  alt="음표1"
+                  style="top: 110%; left: -34%; scale: 0.8"
+                />
+                <img
+                  src="img/select/note-2.png"
+                  alt="음표2"
+                  style="top: 220%; left: -130%"
+                />
+                <img
+                  src="img/select/note-3.png"
+                  alt="음표3"
+                  style="top: 250%; left: -20%"
+                />
+              </div>
+            </div>
+
+            <div class="droppable sg-empty">
+              <img src="img/select/sg-empty.png" alt="소고" />
+              <div class="notes display-none" style="top: -8%">
+                <img
+                  src="img/select/note-1.png"
+                  alt="음표1"
+                  style="top: 110%; left: -34%; scale: 0.8"
+                />
+                <img
+                  src="img/select/note-2.png"
+                  alt="음표2"
+                  style="top: 220%; left: -130%"
+                />
+                <img
+                  src="img/select/note-3.png"
+                  alt="음표3"
+                  style="top: 250%; left: -20%"
+                />
+              </div>
+            </div>
+
+            <div class="droppable ggr-empty">
+              <img src="img/select/ggr-empty.png" alt="꽹가리" />
+              <div class="notes display-none" style="top: -6%; left: 100%">
+                <img
+                  src="img/select/note-1.png"
+                  alt="음표1"
+                  style="top: 110%; left: -34%; scale: 0.8"
+                />
+                <img
+                  src="img/select/note-2.png"
+                  alt="음표2"
+                  style="top: 220%; left: -130%"
+                />
+                <img
+                  src="img/select/note-3.png"
+                  alt="음표3"
+                  style="top: 250%; left: -20%"
+                />
+              </div>
+            </div>
+
+            <div class="droppable b-empty">
+              <img src="img/select/b-empty.png" alt="북" />
+              <div class="notes display-none" style="left: 104%; top: -8%">
+                <img
+                  src="img/select/note-1.png"
+                  alt="음표1"
+                  style="top: 110%; left: -34%; scale: 0.8"
+                />
+                <img
+                  src="img/select/note-2.png"
+                  alt="음표2"
+                  style="top: 220%; left: -130%"
+                />
+                <img
+                  src="img/select/note-3.png"
+                  alt="음표3"
+                  style="top: 250%; left: -20%"
+                />
+              </div>
+            </div>
+
+            <div class="droppable tps-empty">
+              <img src="img/select/tps-empty.png" alt="태평소" />
+              <div class="notes display-none" style="left: 95%; top: -9%">
+                <img
+                  src="img/select/note-1.png"
+                  alt="음표1"
+                  style="top: 110%; left: -34%; scale: 0.8"
+                />
+                <img
+                  src="img/select/note-2.png"
+                  alt="음표2"
+                  style="top: 220%; left: -130%"
+                />
+                <img
+                  src="img/select/note-3.png"
+                  alt="음표3"
+                  style="top: 250%; left: -20%"
+                />
+              </div>
+            </div>
+
+            <div class="tray">
+              <img src="img/select/tray.png" alt="트레이" />
+
+              <div class="piece tps">
+                <img src="img/select/tps.png" alt="태평소" role="button" />
+              </div>
+              <div class="piece sg">
+                <img src="img/select/sg.png" alt="소고" role="button" />
+              </div>
+              <div class="piece b">
+                <img src="img/select/b.png" alt="북" role="button" />
+              </div>
+              <div class="piece jg">
+                <img src="img/select/jg.png" alt="장구" role="button" />
+              </div>
+              <div class="piece j">
+                <img src="img/select/j.png" alt="징" role="button" />
+              </div>
+              <div class="piece ggr">
+                <img src="img/select/ggr.png" alt="꽹가리" role="button" />
+              </div>
+            </div>
+          </div>
+
+          <div class="select-completed dimmed display-none">
+            <div class="finish-animation" style="left: 22.5%"></div>
+            <div class="finish-animation" style="left: 68%"></div>
+            <img
+              src="img/select/success-ment.png"
+              alt="성공"
+              class="success-ment display-none"
+            />
+          </div>
+
+          <div class="songpyun-before dimmed display-none">
+            <img
+              src="img/select/select-1-songpyun.png"
+              alt="송편"
+              class="select-1-songpyun"
+              role="button"
+            />
+            <img
+              src="img/select/select-1-songpyun-half.png"
+              alt="송편"
+              class="select-1-songpyun-half"
+              role="button"
+            />
+            <img
+              src="img/common/message.png"
+              alt="쪽지"
+              class="message"
+              role="button"
+            />
+
+            <img
+              src="img/common/replay.png"
+              alt="다시하기"
+              role="button"
+              onclick="location.reload()"
+              style="width: 15vw; height: 10vh; top: 80%; left: 40%"
+            />
+
+            <img
+              src="img/common/exit.png"
+              alt="나가기"
+              role="button"
+              onclick="window.location.href='main.html'"
+              style="width: 15vw; height: 10vh; top: 80%; left: 60%"
+            />
+          </div>
+
+          <div class="message-content dimmed display-none">
+            <img
+              class="message-content-close"
+              role="button"
+              src="img/common/close.png"
+              style="
+                width: 10vw;
+                height: 10vh;
+                position: absolute;
+                top: 13%;
+                right: 25%;
+              "
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <audio id="bgm-tutorial" src="sound/dubs/yu2_05.mp3"></audio>
+    <audio id="bgm-main" src="sound/dubs/yu2_06.mp3"></audio>
+    <audio id="effect" src="sound/effect/active_effect.mp3"></audio>
+    <audio id="success-sound" src="sound/sfx/puzzle_success_01.wav"></audio>
+    <audio id="fail-sound" src="sound/sfx/puzzle_wrong_01.wav"></audio>
+    <audio id="success-tps-jg" src="sound/dubs/yu2_07.mp3"></audio>
+    <audio id="success-j-sg" src="sound/dubs/yu2_07a.wav"></audio>
+    <audio id="success-ggr-b" src="sound/dubs/yu2_07b.wav"></audio>
+
+    <!-- 드래그앤 드롭 성공시 계속재생 -->
+    <audio id="success-infinite-b" src="sound/dubs/yu2_b.wav"></audio>
+    <audio id="success-infinite-ggr" src="sound/dubs/yu2_ggr.wav"></audio>
+    <audio id="success-infinite-tps" src="sound/dubs/yu2_tps.wav"></audio>
+    <audio id="success-infinite-jg" src="sound/dubs/yu2_jg.wav"></audio>
+    <audio id="success-infinite-j" src="sound/dubs/yu2_j.wav"></audio>
+    <audio id="success-infinite-sg" src="sound/dubs/yu2_sg.wav"></audio>
+
+    <audio id="success-song" src="sound/external/success-1.mp3"></audio>
+    <audio id="success-ment" src="sound/dubs/yu2_09.mp3"></audio>
+    <audio id="success-ment-2" src="sound/dubs/yu2_10.mp3"></audio>
+    <audio id="message-sound" src="sound/dubs/yu2_11.mp3"></audio>
+
+    <script src="js/common.js"></script>
+    <script src="js/select-1.js"></script>
+  </body>
+</html>
