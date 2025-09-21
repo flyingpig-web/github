@@ -50,9 +50,15 @@ $(function () {
     // 기존 힌트 효과 먼저 제거
     clearAllHints();
 
-    // 현재 트레이에 있는 조각들 중 랜덤 선택
-    const $trayPieces = $(".piece.in-tray");
-    if ($trayPieces.length === 0) return; // 트레이에 조각이 없으면 종료
+    // 현재 트레이에 있는 조각들 중에서 아직 배치되지 않은 조각들만 선택
+    const $trayPieces = $(".piece.in-tray").filter(function () {
+      return (
+        $(this).css("opacity") !== "0" &&
+        $(this).css("pointer-events") !== "none"
+      );
+    });
+
+    if ($trayPieces.length === 0) return; // 배치 가능한 조각이 없으면 종료
 
     const randomIndex = Math.floor(Math.random() * $trayPieces.length);
     const $randomPiece = $trayPieces.eq(randomIndex);
