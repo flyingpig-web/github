@@ -969,7 +969,7 @@
 /* 돋보기 렌즈 스타일 (CSS 기반) */
 .magnifier {
   position: fixed;
-  width: 200px; /* 고정 크기로 변경 */
+  width: 300px; /* 고정 크기로 변경 */
   aspect-ratio: 1/1;
   border: 0.3vw solid #4caf50;
   border-radius: 50%;

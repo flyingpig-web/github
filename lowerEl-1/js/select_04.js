@@ -182,8 +182,8 @@ $(function () {
     const rect = $geomungoImage[0].getBoundingClientRect();
     const wrapperRect = $geomungoImage.parent()[0].getBoundingClientRect();
 
-    // 돋보기 크기 (CSS에서 고정 크기 200px 사용)
-    const magnifierSize = 200;
+    // 돋보기 크기 (CSS에서 고정 크기 300px 사용)
+    const magnifierSize = 300;
     const magnifierRadius = magnifierSize / 2;
     const zoomFactor = 1.5; // 확대 배율
 
