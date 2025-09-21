@@ -148,10 +148,13 @@ $(function () {
     // 모든 아이템이 완료되었는지 확인
     if (completedItems === totalItems) {
       const resultSuccess = new Audio("sound/sfx/result_shimmer_01.wav");
-      resultSuccess.play();
+      setTimeout(() => {
+        resultSuccess.play();
+      }, 1000);
+
       setTimeout(() => {
         showCompletionMessage();
-      }, 2000);
+      }, 4000);
     }
   }
 
