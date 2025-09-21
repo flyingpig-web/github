@@ -164,9 +164,9 @@ $(function () {
 
     $card.hide();
     $cardOff.show();
-    setTimeout(() => {
-      $cardOff.addClass("expanded");
-    }, 150);
+    // setTimeout(() => {
+    //   $cardOff.addClass("expanded");
+    // }, 150);
 
     setTimeout(() => {
       window.location.href = "ktm.html";
