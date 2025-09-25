@@ -1,13 +1,9 @@
 .info-1 {
-  background-image: url(../img/common/dimmed-info.png);
+  background-image: url(../img/common/dimmed.png);
 }
 
-.tutorial-bg {
-  background-image: url(../img/select/tutorial-bg.png);
-}
-
-.tutorial-bg-2 {
-  background-image: url(../img/select/tutorial-bg-2.png);
+.tutorial {
+  background-image: url(../img/select/tutorial1.png);
 }
 
 .close {
@@ -16,7 +12,7 @@
   right: 1%;
   width: 10%;
   height: 10%;
-  background: url(../img/select/close.png) center/contain no-repeat;
+  background: url(../img/common/x.png) center/contain no-repeat;
 }
 
 .select-main {
@@ -26,345 +22,78 @@
   position: relative;
 }
 
-.select-main-2 {
-  background: url(../img/select/main-bg-2.png) center/contain no-repeat;
+.play-wrap {
   width: 100%;
   height: 100%;
   position: relative;
-  overflow: hidden;
 }
 
-.droppable {
+.combo1 {
   position: absolute;
-  width: 16vh;
-  height: 16vh;
+  top: 38.6%;
+  left: -1.2%;
+  width: 11.8%;
+  height: 11.8%;
+}
+.combo2 {
+  position: absolute;
+  top: 38.6%;
+  left: 4.04%;
+  width: 11.8%;
+  height: 11.8%;
+}
+.combo3 {
+  position: absolute;
+  top: 38.6%;
+  left: 9.3%;
+  width: 11.8%;
+  height: 11.8%;
 }
 
-.droppable::after {
-  content: "";
+.player {
+  width: 20%;
+  height: 20%;
   position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
+  visibility: hidden;
+}
+
+.player#player1 {
+  bottom: 3.4%;
+  left: 14.2%;
+}
+
+.player#player2 {
+  width: 18%;
+  height: 18%;
+  bottom: 5.7%;
+  left: 28%;
+}
+
+.player#player3 {
+  width: 17.3%;
+  height: 17.3%;
+  bottom: 6.1%;
+  left: 41%;
+}
+
+.player#player4 {
+  bottom: 3.7%;
+  left: 53.5%;
+  width: 17.4%;
+  height: 17.4%;
+}
+
+.player#player5 {
+  bottom: 4.9%;
+  left: 68.2%;
+  width: 17.4%;
+  height: 17.4%;
+}
+
+.pad {
   width: 80%;
-  height: 20px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 80%;
-}
-
-.droppable img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.jg-empty {
-  top: 33%;
-  left: 6.5%;
-}
-.j-empty {
-  top: 43%;
-  left: 22%;
-}
-.sg-empty {
-  top: 33%;
-  left: 36.5%;
-}
-.ggr-empty {
-  top: 43%;
-  left: 52.5%;
-}
-.b-empty {
-  top: 33%;
-  left: 67%;
-}
-.tps-empty {
-  top: 43%;
-  left: 81.5%;
-}
-
-.tray {
+  height: 38%;
   position: absolute;
-  bottom: 4%;
-  left: 7%;
-  width: 84%;
-  height: fit-content;
-}
-
-.tray img {
-  width: 100%;
-  object-fit: contain;
-}
-
-.piece {
-  position: absolute;
-  object-fit: contain;
-  width: 9%;
-  top: 8%;
-}
-
-.piece:hover {
-  animation: wiggle 1s ease-in-out infinite;
-}
-
-.piece.tps {
-  left: 8%;
-}
-.piece.sg {
-  left: 23%;
-  top: 11%;
-}
-.piece.b {
-  left: 38%;
-  top: 10%;
-}
-.piece.jg {
-  left: 54%;
-}
-.piece.j {
-  left: 69%;
-  width: 8.5%;
-  top: 10%;
-}
-.piece.ggr {
-  width: 9.5%;
-  left: 83%;
-}
-
-@keyframes wiggle {
-  0% {
-    transform: rotate(-10deg);
-  }
-
-  50% {
-    transform: rotate(10deg);
-  }
-
-  100% {
-    transform: rotate(-10deg);
-  }
-}
-
-/* 드래그앤드롭 관련 스타일 */
-.piece.dragging {
-  opacity: 0.7;
-  transform: scale(1.1);
-}
-
-/* 성공 애니메이션 */
-.finish-animation {
-  position: absolute;
-  width: 12%;
-  height: 26%;
-  background-repeat: no-repeat;
-  background-size: 100%;
-  animation: finish 2s ease-out 1 forwards;
-  background-position: center;
-  z-index: 11;
-  opacity: 1 !important;
-  scale: 1.5;
-}
-
-.filled {
-  animation: wiggle 2s ease-out infinite forwards;
-}
-
-.filled.stopped {
-  animation: none !important;
-}
-
-.notes {
-  position: absolute;
-  width: 2.5vh;
-  height: 2.5vh;
-  top: 0;
-  left: 0;
-}
-
-.notes img {
-  position: absolute;
-}
-
-.select-completed {
-  background: url(../img/common/dimmed.png) center/contain no-repeat;
-  display: grid;
-  place-content: center;
-}
-
-.select-completed img {
-  width: 40vw;
-  height: 40vw;
-}
-
-.songpyun-before {
-  background: url(../img/select/songpyun-before.png) center/contain no-repeat;
-}
-
-.songpyun-before img {
-  width: 40vw;
-  height: 40vh;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-
-.select-1-songpyun-half,
-.select-2-songpyun-half {
-  display: none;
-}
-.message {
-  width: 15vw !important;
-  height: 15vh !important;
-  top: 56% !important;
-  display: none;
-}
-
-.message-content {
-  background: url(../img/select/select-1-success-message.png) center/contain
-    no-repeat;
-}
-
-.message-content-2 {
-  background: url(../img/select/select-2-success-message.png) center/contain
-    no-repeat;
-}
-
-/* 타원 궤도 */
-.ellipse-track {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 60vw;
-  height: 35vw;
-  transform: translate(-50%, -50%);
-  z-index: 6;
-  background: url(../img/select/slider-track.png) center/contain no-repeat;
-}
-
-/* 중앙 회전 요소 */
-.center-element {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 70vw;
-  height: 70vh;
-  transform: translate(-50%, -50%);
-  z-index: 5;
-  transition: transform 0.3s ease;
-}
-
-.center-element img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* 사람 요소들 */
-.moon {
-  position: absolute;
-  width: 10vw;
-  height: 10vw;
-  cursor: grab;
-  z-index: 10;
-  transition: transform 0.1s ease;
-  top: 43%;
-  left: 68%;
-  scale: 1.2;
-}
-
-.moon:active {
-  cursor: grabbing;
-  transform: scale(1.3);
-}
-
-.moon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-/* 드래그 중일 때 효과 */
-.moon.dragging {
-  z-index: 20;
-  transform: scale(1.2);
-  filter: brightness(1.2);
-}
-
-.person {
-  position: absolute;
-  bottom: 0;
-  width: 20vw;
-  height: 20vw;
-}
-
-#person-1 {
-  left: 0%;
-}
-
-#person-2 {
-  right: 5%;
-}
-#person-2.active {
-  transform: scale(1.4);
-}
-
-#person-3 {
-  right: -5%;
-}
-
-.lyrics-wrapper {
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  width: 10vw;
-  height: 10vw;
-  position: absolute;
-  bottom: 35%;
-  left: 3%;
-}
-
-.lyrics-wrapper.common {
-  background-image: url(../img/select/lyrics-common.png);
-}
-
-.lyrics-wrapper.lyrics-1 {
-  background-image: url(../img/select/lyrics-1.png);
-}
-
-.lyrics-wrapper.lyrics-2 {
-  background-image: url(../img/select/lyrics-2.png);
-}
-
-.lyrics-wrapper.lyrics-3 {
-  background-image: url(../img/select/lyrics-3.png);
-}
-
-.lyrics-wrapper.lyrics-4 {
-  background-image: url(../img/select/lyrics-4.png);
-}
-
-.good-wrapper {
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  width: 30vw;
-  height: 9vw;
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.good-wrapper.good-1 {
-  background-image: url(../img/select/good-1.png);
-}
-
-.good-wrapper.good-2 {
-  background-image: url(../img/select/good-2.png);
-}
-
-.good-wrapper.good-3 {
-  background-image: url(../img/select/good-3.png);
+  right: 0;
+  top: 23%;
 }

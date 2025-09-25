@@ -329,7 +329,7 @@ img {
 .btn-top.btn-back {
   top: 4%;
   left: 3%;
-  background: url(../img/common/prev.png) center no-repeat;
+  background: url(../img/common/go_back.png) center no-repeat;
 }
 
 @keyframes finish {

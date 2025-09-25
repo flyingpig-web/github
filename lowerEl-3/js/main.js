@@ -29,12 +29,12 @@ $(function () {
   // 선택 버튼 1, 2 이벤트 설정
   handleSelectButtonClick(
     $(".btn-select-01"),
-    "select_01.html",
+    "select1.html",
     "sound/dubs/ch3_02.mp3"
   );
   handleSelectButtonClick(
     $(".btn-select-02"),
-    "select_03.html",
+    "select2.html",
     "sound/dubs/ch3_03.mp3"
   );
   handleSelectButtonClick(

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>종묘제례악</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/import.css"
+    />
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="dimmed bg info-1"></div>
+        <div class="dimmed bg tutorial display-none">
+          <div class="close" role="button"></div>
+        </div>
+
+        <div class="select-main pointer-none">
+          <div class="container select-bg">
+            <a
+              onclick="window.history.back()"
+              class="btn-top btn-back btn-effect"
+              role="button"
+            >
+              <span class="sr-only">뒤로가기</span>
+            </a>
+
+            <a
+              href="main.html"
+              class="btn-top btn-home btn-effect"
+              role="button"
+            >
+              <span class="sr-only">홈으로</span>
+            </a>
+
+            <!-- Play -->
+            <div class="play-wrap">
+              <div class="pad"></div>
+
+              <!-- 콤보 -->
+              <img
+                class="combo1"
+                src="img/select/combo1.png"
+                alt="1번 연주 성공"
+              />
+              <img
+                class="combo2"
+                src="img/select/combo2.png"
+                alt="2번 연주 성공"
+              />
+              <img
+                class="combo3"
+                src="img/select/combo3.png"
+                alt="3번 연주 성공"
+              />
+
+              <!-- 연주자들 -->
+              <img
+                class="player"
+                src="img/select/player1.png"
+                alt="박"
+                id="player1"
+              />
+              <img
+                class="player"
+                src="img/select/player2.png"
+                alt="축"
+                id="player2"
+              />
+              <img
+                class="player"
+                src="img/select/player3.png"
+                alt="시작"
+                id="player3"
+              />
+              <img
+                class="player"
+                src="img/select/player4.png"
+                alt="절고"
+                id="player4"
+              />
+              <img
+                class="player"
+                src="img/select/player5.png"
+                alt="드오"
+                id="player5"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <audio id="bgm-tutorial" src="sound/dubs/ch3_04.mp3"></audio>
+      <!-- 7초 -->
+      <audio id="bgm-main" src="sound/dubs/ch3_05.mp3"></audio>
+      <audio id="effect" src="sound/effect/active_effect.mp3"></audio>
+    </main>
+
+    <!-- Scripts loaded after DOM is ready -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/select1.js"></script>
+  </body>
+</html>
