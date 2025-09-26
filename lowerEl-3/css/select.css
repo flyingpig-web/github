@@ -100,13 +100,31 @@
 }
 
 .target-zone {
-  width: 6vw;
+  width: 7vw;
   height: 12vw;
   position: absolute;
   top: 16%;
   left: 5%;
   cursor: pointer;
   z-index: 10;
+}
+
+.target-zone-effect {
+  width: 24vw;
+  height: 24vw;
+  background: url(../img/select/notes/touch-effect.png) center / contain
+    no-repeat;
+  z-index: 0;
+  top: 18%;
+  position: fixed;
+  left: 18%;
+  scale: 0.6;
+}
+
+.target-zone-effect.active {
+  background: url(../img/select/notes/touch-effect-active.png) center / contain
+    no-repeat;
+  scale: 1;
 }
 
 .rail {
@@ -157,7 +175,7 @@
     transform: translateX(20%);
   }
   to {
-    transform: translateX(-200%);
+    transform: translateX(-202%);
   }
 }
 

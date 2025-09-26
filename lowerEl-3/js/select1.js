@@ -8,49 +8,12 @@ $(function () {
   const $combo1 = $(".combo1");
   const $combo2 = $(".combo2");
   const $combo3 = $(".combo3");
+  const $targetZoneEffect = $(".target-zone-effect");
   const heemun = $("#heemun")[0];
 
-  let comboCount = 0;
   let gameStarted = false;
-  let clickedElements = new Set(); // 클릭된 요소들을 추적
-  let currentSetProgress = {}; // 각 세트별 진행 상황
-
-  // 세트별 이미지 정의 (이미지가 있는 note만)
-  const sets = [
-    {
-      id: "set1",
-      images: [
-        "dwo.png",
-        "bak.png",
-        "chook-a.png",
-        "chook-a.png",
-        "chook-a.png",
-        "julgo-a.png",
-      ],
-      completed: false,
-      clickedCount: 0,
-    },
-    {
-      id: "set2",
-      images: ["chook-b.png", "chook-b.png", "chook-b.png", "julgo-b.png"],
-      completed: false,
-      clickedCount: 0,
-    },
-    {
-      id: "set3",
-      images: ["chook-c.png", "chook-c.png", "chook-c.png", "julgo-c.png"],
-      completed: false,
-      clickedCount: 0,
-    },
-    {
-      id: "set4",
-      images: ["sijak.png"],
-      completed: false,
-      clickedCount: 0,
-    },
-  ];
-
   let gameEndTimer = null;
+  let activatedCombos = new Set(); // 이미 활성화된 콤보들을 추적
 
   $info1.on("click", function () {
     $info1.hide();
@@ -77,23 +40,40 @@ $(function () {
     $rail.addClass("moving");
     heemun.play();
 
-    // "시작" 이미지 감지를 위한 주기적 체크 시작
-    startSijakImageCheck();
+    // 콤보 및 "시작" 이미지 감지를 위한 주기적 체크 시작
+    startImageCheck();
   }
 
-  function startSijakImageCheck() {
+  function startImageCheck() {
     const checkInterval = setInterval(() => {
       if (!gameStarted) {
         clearInterval(checkInterval);
         return;
       }
 
-      // "시작" 이미지 찾기
+      const targetRect = $targetZone[0].getBoundingClientRect();
+
+      // data-combo 속성을 가진 이미지들 체크
+      $("div[data-combo]").each(function () {
+        const comboNumber = $(this).attr("data-combo");
+        const imageRect = this.getBoundingClientRect();
+
+        // 이미지가 target-zone과 겹치는지 확인
+        if (
+          !activatedCombos.has(comboNumber) &&
+          targetRect.left < imageRect.right &&
+          targetRect.right > imageRect.left &&
+          targetRect.top < imageRect.bottom &&
+          targetRect.bottom > imageRect.top
+        ) {
+          activateCombo(comboNumber);
+          activatedCombos.add(comboNumber);
+        }
+      });
+
+      // "시작" 이미지 체크
       const sijakImages = $(".note img[src*='sijak.png']");
-
       if (sijakImages.length > 0) {
-        const targetRect = $targetZone[0].getBoundingClientRect();
-
         sijakImages.each(function () {
           const imageRect = this.getBoundingClientRect();
 
@@ -108,15 +88,35 @@ $(function () {
     }, 100); // 100ms마다 체크
   }
 
+  function activateCombo(comboNumber) {
+    console.log(`콤보 ${comboNumber} 활성화!`);
+
+    // 해당 콤보 이미지 활성화
+    if (comboNumber === "1") {
+      $combo1.show().addClass("combo-effect");
+      setTimeout(() => $combo1.removeClass("combo-effect"), 1000);
+    } else if (comboNumber === "2") {
+      $combo2.show().addClass("combo-effect");
+      setTimeout(() => $combo2.removeClass("combo-effect"), 1000);
+    } else if (comboNumber === "3") {
+      $combo3.show().addClass("combo-effect");
+      setTimeout(() => $combo3.removeClass("combo-effect"), 1000);
+    }
+
+    // 효과음 재생
+    if ($("#effect")[0]) {
+      $("#effect")[0].play();
+    }
+  }
+
   function startGameEndSequence() {
     gameEndTimer = setTimeout(() => {
       // heemun 음원 fadeOut
       fadeOutAudio(heemun, 2000, () => {
-        // fadeOut 완료 후 alert 표시
-        alert("활동이 완료되었습니다!");
+        // 활동완료
         gameStarted = false;
       });
-    }, 10000); // 5초 후
+    }, 6000); // 6초 후
   }
 
   function fadeOutAudio(audioElement, duration, callback) {
@@ -153,51 +153,23 @@ $(function () {
     return false;
   }
 
-  function getImageFileName(imgSrc) {
-    return imgSrc.split("/").pop();
-  }
+  function showTargetZoneEffect() {
+    // 1. display-none 제거
+    $targetZoneEffect.removeClass("display-none");
 
-  function findSetByImage(imageName) {
-    for (let set of sets) {
-      if (set.images.includes(imageName) && !set.completed) {
-        return set;
-      }
-    }
-    return null;
-  }
+    // 2. 0.1초 후 active 클래스 추가
+    setTimeout(() => {
+      $targetZoneEffect.addClass("active");
 
-  function checkSetCompletion(set) {
-    return set.clickedCount >= set.images.length;
-  }
-
-  function increaseCombo() {
-    comboCount++;
-
-    // 콤보에 따라 이미지 표시
-    if (comboCount === 1) {
-      $combo1.show().addClass("combo-effect");
-      setTimeout(() => $combo1.removeClass("combo-effect"), 1000);
-    } else if (comboCount === 2) {
-      $combo2.show().addClass("combo-effect");
-      setTimeout(() => $combo2.removeClass("combo-effect"), 1000);
-    } else if (comboCount === 3) {
-      $combo3.show().addClass("combo-effect");
-      setTimeout(() => $combo3.removeClass("combo-effect"), 1000);
-
-      // 3콤보 달성 시 게임 완료
+      // 3. 0.2초 후 display-none 다시 추가
       setTimeout(() => {
-        alert("축하합니다! 3콤보를 달성했습니다!");
-      }, 1500);
-    }
+        $targetZoneEffect.removeClass("active").addClass("display-none");
+      }, 100);
+    }, 100);
   }
 
   function resetGame() {
-    comboCount = 0;
-    clickedElements.clear();
-    sets.forEach((set) => {
-      set.completed = false;
-      set.clickedCount = 0;
-    });
+    activatedCombos.clear();
     $(".combo1, .combo2, .combo3").hide();
 
     // 게임 종료 타이머가 있다면 정리
@@ -209,35 +181,20 @@ $(function () {
 
   // note 이미지 클릭 이벤트
   $(document).on("click", ".note img", function () {
-    // 중복 클릭 방지
-    const elementId =
-      $(this).attr("src") + "_" + $(this).closest(".note").index();
-    if (clickedElements.has(elementId)) {
-      return;
-    }
+    if (!gameStarted) return;
 
+    // target-zone에서 클릭했는지 확인
     if (checkNoteInTargetZone(this)) {
-      const imageName = getImageFileName($(this).attr("src"));
-      const targetSet = findSetByImage(imageName);
+      showTargetZoneEffect();
 
-      if (targetSet) {
-        // 클릭된 요소 기록
-        clickedElements.add(elementId);
-        targetSet.clickedCount++;
-
-        // 세트 완성 확인
-        if (checkSetCompletion(targetSet)) {
-          targetSet.completed = true;
-          increaseCombo();
-
-          if ($("#effect")[0]) {
-            $("#effect")[0].play(); // 효과음 재생
-          }
-        }
+      // 효과음 재생
+      if ($("#effect")[0]) {
+        $("#effect")[0].play();
       }
+
+      console.log("타이밍에 맞는 클릭!");
     } else {
-      // 빗나간 경우 게임 리셋
-      //   resetGame();
+      console.log("타이밍이 맞지 않습니다.");
     }
   });
 
