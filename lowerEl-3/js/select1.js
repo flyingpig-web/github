@@ -42,10 +42,17 @@ $(function () {
       completed: false,
       clickedCount: 0,
     },
+    {
+      id: "set4",
+      images: ["sijak.png"],
+      completed: false,
+      clickedCount: 0,
+    },
   ];
 
+  let gameEndTimer = null;
+
   $info1.on("click", function () {
-    console.log("sdfa");
     $info1.hide();
     $tutorial.removeClass("display-none");
     $bgmTutorial.play();
@@ -69,6 +76,63 @@ $(function () {
     gameStarted = true;
     $rail.addClass("moving");
     heemun.play();
+
+    // "시작" 이미지 감지를 위한 주기적 체크 시작
+    startSijakImageCheck();
+  }
+
+  function startSijakImageCheck() {
+    const checkInterval = setInterval(() => {
+      if (!gameStarted) {
+        clearInterval(checkInterval);
+        return;
+      }
+
+      // "시작" 이미지 찾기
+      const sijakImages = $(".note img[src*='sijak.png']");
+
+      if (sijakImages.length > 0) {
+        const targetRect = $targetZone[0].getBoundingClientRect();
+
+        sijakImages.each(function () {
+          const imageRect = this.getBoundingClientRect();
+
+          // "시작" 이미지가 target-zone을 완전히 지났는지 확인
+          if (imageRect.right < targetRect.left) {
+            clearInterval(checkInterval);
+            startGameEndSequence();
+            return false; // each 루프 종료
+          }
+        });
+      }
+    }, 100); // 100ms마다 체크
+  }
+
+  function startGameEndSequence() {
+    gameEndTimer = setTimeout(() => {
+      // heemun 음원 fadeOut
+      fadeOutAudio(heemun, 2000, () => {
+        // fadeOut 완료 후 alert 표시
+        alert("활동이 완료되었습니다!");
+        gameStarted = false;
+      });
+    }, 10000); // 5초 후
+  }
+
+  function fadeOutAudio(audioElement, duration, callback) {
+    const startVolume = audioElement.volume;
+    const fadeStep = startVolume / (duration / 50); // 50ms 간격으로 볼륨 감소
+
+    const fadeInterval = setInterval(() => {
+      if (audioElement.volume > fadeStep) {
+        audioElement.volume -= fadeStep;
+      } else {
+        audioElement.volume = 0;
+        audioElement.pause();
+        clearInterval(fadeInterval);
+        if (callback) callback();
+      }
+    }, 50);
   }
 
   function checkNoteInTargetZone(clickedImg) {
@@ -135,6 +199,12 @@ $(function () {
       set.clickedCount = 0;
     });
     $(".combo1, .combo2, .combo3").hide();
+
+    // 게임 종료 타이머가 있다면 정리
+    if (gameEndTimer) {
+      clearTimeout(gameEndTimer);
+      gameEndTimer = null;
+    }
   }
 
   // note 이미지 클릭 이벤트
@@ -143,7 +213,6 @@ $(function () {
     const elementId =
       $(this).attr("src") + "_" + $(this).closest(".note").index();
     if (clickedElements.has(elementId)) {
-      console.log("이미 클릭한 요소입니다!");
       return;
     }
 
@@ -156,10 +225,6 @@ $(function () {
         clickedElements.add(elementId);
         targetSet.clickedCount++;
 
-        console.log(
-          `${targetSet.id}: ${targetSet.clickedCount}/${targetSet.images.length} 완료`
-        );
-
         // 세트 완성 확인
         if (checkSetCompletion(targetSet)) {
           targetSet.completed = true;
@@ -168,10 +233,6 @@ $(function () {
           if ($("#effect")[0]) {
             $("#effect")[0].play(); // 효과음 재생
           }
-
-          console.log(`${targetSet.id} 세트 완성! 콤보 증가`);
-        } else {
-          console.log(`${targetSet.id} 세트 진행 중...`);
         }
       }
     } else {

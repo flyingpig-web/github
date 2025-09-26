@@ -100,10 +100,9 @@
 }
 
 .target-zone {
-  width: 12vw;
+  width: 6vw;
   height: 12vw;
   position: absolute;
-  border-radius: 50%;
   top: 16%;
   left: 5%;
   cursor: pointer;
@@ -150,7 +149,7 @@
 
 /* 스크롤 애니메이션 */
 .rail.moving {
-  animation: slideLeft 60s forwards linear;
+  animation: slideLeft 16s forwards linear;
 }
 
 @keyframes slideLeft {
