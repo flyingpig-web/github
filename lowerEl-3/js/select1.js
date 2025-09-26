@@ -9,7 +9,14 @@ $(function () {
   const $combo2 = $(".combo2");
   const $combo3 = $(".combo3");
   const $targetZoneEffect = $(".target-zone-effect");
+  const $select1Success = $(".select-1-success");
+  const $ktmWrapper = $(".ktm-wrapper");
+
+  // sounds
   const heemun = $("#heemun")[0];
+  const heemunFinish = $("#heemun-finish")[0];
+  const success = $("#success")[0];
+  const finishSound = $("#finish-sound")[0];
 
   let gameStarted = false;
   let gameEndTimer = null;
@@ -189,6 +196,23 @@ $(function () {
       fadeOutAudio(heemun, 2000, () => {
         // 활동완료
         gameStarted = false;
+        $select1Success.removeClass("display-none");
+        success.play();
+        $(".select-main").addClass("pointer-none");
+
+        setTimeout(() => {
+          heemunFinish.play();
+          setTimeout(() => {
+            $select1Success.fadeOut(500);
+            fadeOutAudio(heemunFinish, 1000);
+            $ktmWrapper.fadeIn(500);
+            $ktmWrapper.addClass("pointer-none");
+            finishSound.play();
+            setTimeout(() => {
+              $ktmWrapper.removeClass("pointer-none");
+            }, 5000);
+          }, 10000);
+        }, 4000);
       });
     }, 6000); // 6초 후
   }
@@ -281,4 +305,23 @@ $(function () {
 
   // 초기 콤보 이미지 숨김
   $(".combo1, .combo2, .combo3").hide();
+
+  $(".ktm-card").on("click", function () {
+    const cardExpandEffect = new Audio("sound/sfx/card_expand_01.wav");
+    const $card = $(this);
+    const $cardOff = $(".ktm-card-off");
+
+    // 효과음 재생
+    cardExpandEffect.play();
+
+    $card.hide();
+    $cardOff.show();
+    // setTimeout(() => {
+    //   $cardOff.addClass("expanded");
+    // }, 150);
+
+    setTimeout(() => {
+      window.location.href = "ktm.html";
+    }, 3000);
+  });
 });

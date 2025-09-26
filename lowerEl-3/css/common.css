@@ -181,7 +181,7 @@ img {
   z-index: 999;
   max-width: calc(100dvh / 9 * 16);
   max-height: calc(100dvw / 16 * 9);
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .bounce {
