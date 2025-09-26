@@ -57,6 +57,10 @@
   visibility: hidden;
 }
 
+.player.visible {
+  visibility: visible;
+}
+
 .player#player1 {
   bottom: 3.4%;
   left: 14.2%;
@@ -90,6 +94,45 @@
   height: 17.4%;
 }
 
+.spotlight {
+  position: absolute;
+  width: 22vw;
+  height: 22vw;
+  visibility: hidden;
+  z-index: 5;
+  transform: scaleY(1.2);
+  clip-path: inset(13% 0 0 0);
+}
+
+.spotlight#spotlight1 {
+  bottom: 1%;
+  left: 13.5%;
+}
+
+.spotlight#spotlight2 {
+  bottom: 1%;
+  left: 26%;
+}
+
+.spotlight#spotlight3 {
+  bottom: 1%;
+  left: 39%;
+}
+
+.spotlight#spotlight4 {
+  bottom: 1%;
+  left: 51%;
+}
+
+.spotlight#spotlight5 {
+  bottom: 1%;
+  left: 66%;
+}
+
+.spotlight.visible {
+  visibility: visible;
+}
+
 .pad {
   width: 80%;
   height: 38%;
@@ -100,7 +143,7 @@
 }
 
 .target-zone {
-  width: 7vw;
+  width: 12vw;
   height: 12vw;
   position: absolute;
   top: 16%;

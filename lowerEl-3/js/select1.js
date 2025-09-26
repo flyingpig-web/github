@@ -14,6 +14,7 @@ $(function () {
   let gameStarted = false;
   let gameEndTimer = null;
   let activatedCombos = new Set(); // 이미 활성화된 콤보들을 추적
+  let playerVisibleTimers = {}; // player visible 타이머들을 추적
 
   $info1.on("click", function () {
     $info1.hide();
@@ -71,6 +72,24 @@ $(function () {
         }
       });
 
+      // note 이미지들이 target-zone을 통과할 때 player 활성화 체크
+      $(".note img").each(function () {
+        const imageRect = this.getBoundingClientRect();
+        const imageSrc = $(this).attr("src");
+
+        // 이미지가 target-zone을 통과하는지 확인 (이미지의 중심이 target-zone을 지날 때)
+        const imageCenterX = imageRect.left + imageRect.width / 2;
+
+        if (
+          imageCenterX >= targetRect.left &&
+          imageCenterX <= targetRect.right &&
+          imageRect.top < targetRect.bottom &&
+          imageRect.bottom > targetRect.top
+        ) {
+          activatePlayerByImage(imageSrc);
+        }
+      });
+
       // "시작" 이미지 체크
       const sijakImages = $(".note img[src*='sijak.png']");
       if (sijakImages.length > 0) {
@@ -89,8 +108,6 @@ $(function () {
   }
 
   function activateCombo(comboNumber) {
-    console.log(`콤보 ${comboNumber} 활성화!`);
-
     // 해당 콤보 이미지 활성화
     if (comboNumber === "1") {
       $combo1.show().addClass("combo-effect");
@@ -106,6 +123,63 @@ $(function () {
     // 효과음 재생
     if ($("#effect")[0]) {
       $("#effect")[0].play();
+    }
+  }
+
+  function getInstrumentalFromImage(imageSrc) {
+    const fileName = imageSrc.split("/").pop();
+
+    if (fileName.includes("dwo")) return "dwo";
+    if (fileName.includes("bak")) return "bak";
+    if (fileName.includes("chook")) return "chook"; // a,b,c 구분 없이
+    if (fileName.includes("julgo")) return "julgo"; // a,b,c 구분 없이
+    if (fileName.includes("sijak")) return "sijak";
+
+    return null;
+  }
+
+  function activatePlayerByImage(imageSrc) {
+    const instrumental = getInstrumentalFromImage(imageSrc);
+
+    if (!instrumental) return;
+
+    // sijak이 활성화되면 모든 player를 visible로 유지
+    if (instrumental === "sijak") {
+      // 모든 기존 타이머 제거
+      Object.values(playerVisibleTimers).forEach((timer) => {
+        clearTimeout(timer);
+      });
+      playerVisibleTimers = {};
+
+      // 모든 player와 spotlight에 visible 클래스 추가 (타이머 없이 유지)
+      $(".player").addClass("visible");
+      $(".spotlight").addClass("visible");
+      return;
+    }
+
+    // 해당 instrumental을 가진 player 찾기
+    const $player = $(`.player[data-instrumental="${instrumental}"]`);
+
+    if ($player.length > 0) {
+      const playerId = $player.attr("id");
+      const playerNumber = playerId.replace("player", "");
+      const $spotlight = $(`#spotlight${playerNumber}`);
+
+      // 이미 타이머가 있다면 제거 (중복 방지)
+      if (playerVisibleTimers[playerId]) {
+        clearTimeout(playerVisibleTimers[playerId]);
+      }
+
+      // player와 spotlight에 visible 클래스 추가
+      $player.addClass("visible");
+      $spotlight.addClass("visible");
+
+      // 0.3초 후 visible 클래스 제거
+      playerVisibleTimers[playerId] = setTimeout(() => {
+        $player.removeClass("visible");
+        $spotlight.removeClass("visible");
+        delete playerVisibleTimers[playerId];
+      }, 300);
     }
   }
 
@@ -177,6 +251,16 @@ $(function () {
       clearTimeout(gameEndTimer);
       gameEndTimer = null;
     }
+
+    // player visible 타이머들 정리
+    Object.values(playerVisibleTimers).forEach((timer) => {
+      clearTimeout(timer);
+    });
+    playerVisibleTimers = {};
+
+    // 모든 player와 spotlight에서 visible 클래스 제거
+    $(".player").removeClass("visible");
+    $(".spotlight").removeClass("visible");
   }
 
   // note 이미지 클릭 이벤트
@@ -191,10 +275,7 @@ $(function () {
       if ($("#effect")[0]) {
         $("#effect")[0].play();
       }
-
-      console.log("타이밍에 맞는 클릭!");
     } else {
-      console.log("타이밍이 맞지 않습니다.");
     }
   });
 
