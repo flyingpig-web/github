@@ -309,3 +309,42 @@
   transform: scale(1.4);
   z-index: 40;
 }
+
+/* select-2 */
+.tutorial-2 {
+  background-image: url(../img/select2/tutorial.png);
+}
+
+.start-btn {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36%;
+  height: 18%;
+}
+
+.tutorial-2-popup-wrapper {
+  position: relative;
+}
+
+.tutorial-2-popup {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform: translate(50%, 50%);
+}
+
+.tutorial-2-popup-close {
+  width: 16%;
+  height: 12%;
+  position: absolute;
+  top: 51%;
+}
+
+.select-main-2 {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: url(../img/select2/main-bg.png) center/contain no-repeat;
+}
