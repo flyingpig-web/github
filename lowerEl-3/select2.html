@@ -16,11 +16,11 @@
     <main>
       <div class="wrap">
         <div
-          class="dimmed bg info-1"
+          class="dimmed bg info-1 display-none"
           style="background-color: transparent !important"
         ></div>
         <div
-          class="dimmed bg tutorial-2 pointer-none"
+          class="dimmed bg tutorial-2 pointer-none display-none"
           style="background-color: transparent !important; z-index: 9"
         >
           <img
@@ -50,7 +50,8 @@
           />
         </div>
 
-        <div class="select-main-2 pointer-none display-none">
+        <!-- <div class="select-main-2 pointer-none display-none"> -->
+        <div class="select-main-2">
           <div class="container select-bg">
             <a
               onclick="window.history.back()"
@@ -69,7 +70,12 @@
             </a>
 
             <!-- Play -->
-            <div class="play-wrap"></div>
+            <div class="play-wrap">
+              <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+              </div>
+              <img src="img/select2/clock.png" alt="시계" class="clock" />
+            </div>
           </div>
         </div>
       </div>
