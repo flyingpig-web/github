@@ -379,3 +379,45 @@
   top: 76%;
   right: 0.5%;
 }
+
+.target {
+  position: absolute;
+}
+
+.click-point-1 {
+  width: 12%;
+  top: 46%;
+  left: 18%;
+  height: 14%;
+}
+.target-1 {
+  width: 11%;
+  height: 11%;
+  top: 48.5%;
+  left: 18.9%;
+}
+
+.click-point-2 {
+  width: 10%;
+  height: 12%;
+  top: 47%;
+  left: 57.5%;
+}
+.target-2 {
+  width: 7.5%;
+  height: 7.5%;
+  top: 50.3%;
+  left: 59%;
+}
+
+.click-point-3 {
+  width: 10%;
+  top: 53%;
+  right: 12%;
+}
+.target-3 {
+  width: 9.5%;
+  height: 9.5%;
+  top: 54.3%;
+  right: 12.5%;
+}
