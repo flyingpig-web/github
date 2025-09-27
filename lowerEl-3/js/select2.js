@@ -17,6 +17,18 @@ $(function () {
   let clickedTargets = new Set();
   const totalTargets = 3;
 
+  // Check if restart parameter exists
+  const urlParams = new URLSearchParams(window.location.search);
+  const isRestart = urlParams.get("restart") === "true";
+
+  // Skip tutorial if restart
+  if (isRestart) {
+    $info1.hide();
+    $tutorial2.addClass("display-none");
+    $selectMain.removeClass("display-none pointer-none");
+    $bgmMain.play();
+  }
+
   // Audio fadeOut utility function
   function fadeOutAudio(audioElement, duration) {
     if (!audioElement || audioElement.paused) return;
@@ -99,27 +111,6 @@ $(function () {
     stopTimer();
     handleSuccess();
   }
-
-  // Game Reset Function
-  function resetGame() {
-    clickedTargets.clear();
-
-    $("[class*='click-point-'] img").addClass("display-none");
-    $("[class*='target-']").addClass("display-none");
-
-    if (gameTimer) {
-      clearTimeout(gameTimer);
-      gameTimer = null;
-    }
-
-    timerStarted = false;
-    $progressBarFill.removeClass("start-timer").css({
-      "animation-play-state": "running",
-      transition: "transform 30s linear",
-    });
-  }
-
-  // Event Listeners
 
   // Initial tutorial flow
   $info1.on("click", function () {
