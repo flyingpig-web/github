@@ -29,7 +29,6 @@ $(function () {
         audioElement.pause();
         audioElement.currentTime = 0;
         clearInterval(fadeInterval);
-        console.log("오디오 fadeOut 완료");
       }
     }, 50);
   }
@@ -51,10 +50,9 @@ $(function () {
     $(".tutorial-2-popup-wrapper").addClass("display-none");
     $tutorial2.addClass("display-none");
     $bgmTutorial.pause();
-    $bgmMain.play();
     $selectMain.removeClass("display-none");
     $selectMain.removeClass("pointer-none");
-
+    $bgmMain.play();
     // 게임 시작과 함께 타이머 시작
   });
 
@@ -62,9 +60,16 @@ $(function () {
     $(".tutorial-2-popup-wrapper").addClass("display-none");
   });
 
+  $bgmMain.addEventListener("ended", function () {
+    startTimer();
+  });
+
   $selectMain.on("click", function () {
-    $bgmMain.pause();
+    // bgmMain이 끝나면 startTimer() 호출하도록 이벤트 리스너 추가
+
+    // bgmMain 재생 시작
     $bgmMain.currentTime = 0;
+    $bgmMain.pause();
     startTimer();
   });
 
@@ -81,13 +86,9 @@ $(function () {
     gameTimer = setTimeout(() => {
       onTimerComplete();
     }, 30000); // 30초
-
-    console.log("30초 타이머 시작");
   }
 
   function onTimerComplete() {
-    console.log("30초 타이머 완료!");
-
     // yukSeong1 사운드 fadeOut
     fadeOutAudio(yukSeong1, 1000);
 
@@ -103,7 +104,6 @@ $(function () {
 
   function handleTimeUp() {
     // 30초가 지났을 때의 처리 로직
-    console.log("시간 종료 처리");
 
     // 게임 종료 처리 - pointer-none 추가
     $selectMain.addClass("pointer-none");
@@ -112,6 +112,10 @@ $(function () {
     if ($bgmMain) {
       $bgmMain.pause();
     }
+
+    // .select-2-success fadeIn 효과
+    $(".select-2-success").removeClass("display-none");
+    $(".select-2-success").fadeIn(500);
 
     // 결과 화면으로 이동하거나 다른 처리
     // alert("시간이 종료되었습니다!");
@@ -143,10 +147,6 @@ $(function () {
       audioElement.play();
     }
 
-    console.log(
-      `${soundId} 클릭 완료 (${clickedTargets.size}/${totalTargets})`
-    );
-
     // 4. 모든 타겟이 클릭되었는지 확인
     if (clickedTargets.size >= totalTargets) {
       onAllTargetsClicked();
@@ -154,8 +154,6 @@ $(function () {
   });
 
   function onAllTargetsClicked() {
-    console.log("성공! 모든 타겟 클릭 완료");
-
     // yukSeong1 사운드 fadeOut
     fadeOutAudio(yukSeong1, 1000);
 
@@ -185,15 +183,17 @@ $(function () {
     });
 
     timerStarted = false;
-    console.log("타이머 정지 - 현재 위치에서 고정");
   }
 
   function handleSuccess() {
     // 성공 시 처리 로직
-    console.log("게임 성공 처리");
 
     // 게임 비활성화 - pointer-none 추가
     $selectMain.addClass("pointer-none");
+
+    // .select-2-success fadeIn 효과
+    $(".select-2-success").removeClass("display-none");
+    $(".select-2-success").fadeIn(500);
 
     // 성공 효과음이나 다른 처리 추가 가능
     // 예: 성공 화면 표시, 다음 단계로 이동 등
@@ -218,7 +218,5 @@ $(function () {
       "animation-play-state": "running",
       transition: "transform 30s linear",
     });
-
-    console.log("게임 리셋");
   }
 });
