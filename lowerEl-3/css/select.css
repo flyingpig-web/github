@@ -386,9 +386,9 @@
 
 .click-point-1 {
   width: 12%;
+  height: 14%;
   top: 46%;
   left: 18%;
-  height: 14%;
 }
 .target-1 {
   width: 11%;
@@ -399,7 +399,7 @@
 
 .click-point-2 {
   width: 10%;
-  height: 12%;
+  height: 14%;
   top: 47%;
   left: 57.5%;
 }
@@ -412,6 +412,7 @@
 
 .click-point-3 {
   width: 10%;
+  height: 14%;
   top: 53%;
   right: 12%;
 }

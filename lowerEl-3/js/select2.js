@@ -8,6 +8,8 @@ $(function () {
 
   let timerStarted = false;
   let gameTimer = null;
+  let clickedTargets = new Set(); // 클릭된 타겟들을 추적
+  const totalTargets = 3; // 총 타겟 개수
 
   $info1.on("click", function () {
     $info1.hide();
@@ -86,6 +88,102 @@ $(function () {
 
     // 결과 화면으로 이동하거나 다른 처리
     // alert("시간이 종료되었습니다!");
+  }
+
+  // click-point 클릭 이벤트
+  $(document).on("click", "[class*='click-point-']", function () {
+    const $clickPoint = $(this);
+    const soundId = $clickPoint.attr("data-sound");
+
+    // 이미 클릭된 타겟인지 확인
+    if (clickedTargets.has(soundId)) {
+      return; // 이미 클릭된 경우 무시
+    }
+
+    // 클릭된 타겟 추가
+    clickedTargets.add(soundId);
+
+    // 1. click-point 안쪽 이미지의 display-none 제거
+    $clickPoint.find("img").removeClass("display-none");
+
+    // 2. 해당하는 target 이미지의 display-none 제거
+    const targetClass = soundId.replace("target", "target"); // target-1 → target-1
+    $(`.${targetClass}`).removeClass("display-none");
+
+    // 3. data-sound에 해당하는 오디오 재생
+    const audioElement = $(`#${soundId}`)[0];
+    if (audioElement) {
+      audioElement.play();
+    }
+
+    console.log(
+      `${soundId} 클릭 완료 (${clickedTargets.size}/${totalTargets})`
+    );
+
+    // 4. 모든 타겟이 클릭되었는지 확인
+    if (clickedTargets.size >= totalTargets) {
+      onAllTargetsClicked();
+    }
+  });
+
+  function onAllTargetsClicked() {
+    console.log("성공! 모든 타겟 클릭 완료");
+
+    // 타이머 정지
+    stopTimer();
+
+    // 추가 성공 처리 로직
+    handleSuccess();
+  }
+
+  function stopTimer() {
+    if (gameTimer) {
+      clearTimeout(gameTimer);
+      gameTimer = null;
+    }
+
+    // progress-bar 애니메이션 정지
+    $progressBarFill.css({
+      "animation-play-state": "paused",
+      transition: "none",
+    });
+
+    timerStarted = false;
+    console.log("타이머 정지");
+  }
+
+  function handleSuccess() {
+    // 성공 시 처리 로직
+    console.log("게임 성공 처리");
+
+    // 게임 비활성화
+    $selectMain.addClass("pointer-none");
+
+    // 성공 효과음이나 다른 처리 추가 가능
+    // 예: 성공 화면 표시, 다음 단계로 이동 등
+  }
+
+  function resetGame() {
+    clickedTargets.clear();
+
+    // 모든 이미지 숨기기
+    $("[class*='click-point-'] img").addClass("display-none");
+    $("[class*='target-']").addClass("display-none");
+
+    // 타이머 리셋
+    if (gameTimer) {
+      clearTimeout(gameTimer);
+      gameTimer = null;
+    }
+
+    timerStarted = false;
+    $progressBarFill.removeClass("start-timer");
+    $progressBarFill.css({
+      "animation-play-state": "running",
+      transition: "transform 30s linear",
+    });
+
+    console.log("게임 리셋");
   }
 
   function startGame() {
