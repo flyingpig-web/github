@@ -6,10 +6,33 @@ $(function () {
   const $selectMain = $(".select-main-2");
   const $progressBarFill = $(".progress-bar-fill");
 
+  // sounds
+  const yukSeong1 = $("#yuk-seong-1")[0];
+
   let timerStarted = false;
   let gameTimer = null;
   let clickedTargets = new Set(); // 클릭된 타겟들을 추적
   const totalTargets = 3; // 총 타겟 개수
+
+  // 오디오 fadeOut 함수
+  function fadeOutAudio(audioElement, duration) {
+    if (!audioElement || audioElement.paused) return;
+
+    const startVolume = audioElement.volume;
+    const fadeStep = startVolume / (duration / 50); // 50ms마다 볼륨 감소
+
+    const fadeInterval = setInterval(() => {
+      if (audioElement.volume > fadeStep) {
+        audioElement.volume -= fadeStep;
+      } else {
+        audioElement.volume = 0;
+        audioElement.pause();
+        audioElement.currentTime = 0;
+        clearInterval(fadeInterval);
+        console.log("오디오 fadeOut 완료");
+      }
+    }, 50);
+  }
 
   $info1.on("click", function () {
     $info1.hide();
@@ -47,6 +70,7 @@ $(function () {
 
   function startTimer() {
     if (timerStarted) return;
+    yukSeong1.play();
 
     timerStarted = true;
 
@@ -64,6 +88,9 @@ $(function () {
   function onTimerComplete() {
     console.log("30초 타이머 완료!");
 
+    // yukSeong1 사운드 fadeOut
+    fadeOutAudio(yukSeong1, 1000);
+
     // 여기에 30초 지났을 때 실행할 로직 추가
     // 예: 게임 종료, 결과 화면 표시 등
 
@@ -78,7 +105,7 @@ $(function () {
     // 30초가 지났을 때의 처리 로직
     console.log("시간 종료 처리");
 
-    // 예시: 게임 종료 처리
+    // 게임 종료 처리 - pointer-none 추가
     $selectMain.addClass("pointer-none");
 
     // 음악 정지
@@ -129,6 +156,9 @@ $(function () {
   function onAllTargetsClicked() {
     console.log("성공! 모든 타겟 클릭 완료");
 
+    // yukSeong1 사운드 fadeOut
+    fadeOutAudio(yukSeong1, 1000);
+
     // 타이머 정지
     stopTimer();
 
@@ -162,7 +192,7 @@ $(function () {
     // 성공 시 처리 로직
     console.log("게임 성공 처리");
 
-    // 게임 비활성화
+    // 게임 비활성화 - pointer-none 추가
     $selectMain.addClass("pointer-none");
 
     // 성공 효과음이나 다른 처리 추가 가능
@@ -190,9 +220,5 @@ $(function () {
     });
 
     console.log("게임 리셋");
-  }
-
-  function startGame() {
-    // 기존 게임 시작 로직
   }
 });
