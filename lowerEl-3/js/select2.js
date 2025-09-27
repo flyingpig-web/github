@@ -142,14 +142,20 @@ $(function () {
       gameTimer = null;
     }
 
-    // progress-bar 애니메이션 정지
+    // 현재 progress-bar의 transform 위치 계산 및 고정
+    const currentTransform = window.getComputedStyle(
+      $progressBarFill[0]
+    ).transform;
+
+    // 애니메이션 제거하고 현재 위치로 고정
+    $progressBarFill.removeClass("start-timer");
     $progressBarFill.css({
-      "animation-play-state": "paused",
+      transform: currentTransform,
       transition: "none",
     });
 
     timerStarted = false;
-    console.log("타이머 정지");
+    console.log("타이머 정지 - 현재 위치에서 고정");
   }
 
   function handleSuccess() {
