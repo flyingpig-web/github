@@ -1,0 +1,28 @@
+$(function () {
+  const $select3Player = $("#select-3-player");
+  const $select3PlayerActive = $("#select-3-player-active");
+  const $select3Cursor = $("#select-3-cursor");
+  const $select3Bak = $("#select-3-bak");
+  const $select3BakActive = $("#select-3-bak-active");
+  const $select3Moktui = $("#select-3-moktui");
+  const $select3Chae = $("#select-3-chae");
+  const $select3NoteWrapper = $(".select-3-note-wrapper");
+  const $select3Jio = $("#select-3-jio");
+  const $mainBgm = $("#main-bgm")[0];
+
+  $select3Player.on("click", function () {
+    $select3Player.addClass("display-none");
+    $select3Cursor.addClass("display-none");
+    $select3PlayerActive.removeClass("display-none");
+    $select3Jio.removeClass("display-none");
+
+    setTimeout(() => {
+      $mainBgm.play();
+      $select3Moktui.removeClass("display-none");
+      $select3NoteWrapper.removeClass("display-none");
+      $select3Bak.addClass("display-none");
+      $select3BakActive.removeClass("display-none");
+      $select3Chae.removeClass("display-none");
+    }, 1000);
+  });
+});

@@ -429,3 +429,105 @@
   top: 54.3%;
   right: 12.5%;
 }
+
+/* select-3 */
+.select-main-3 {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: url(../img/select3/main-bg.png) center/contain no-repeat;
+}
+
+#select-3-player,
+#select-3-player-active {
+  width: 66%;
+  height: 66%;
+  position: absolute;
+  bottom: 0;
+  right: -18%;
+}
+
+#select-3-cursor,
+#select-3-jio {
+  width: 10%;
+  height: 10%;
+  position: absolute;
+  top: 20%;
+  right: 8%;
+}
+
+#select-3-jio {
+  width: 20%;
+  height: 20%;
+  top: 19%;
+  left: 64%;
+}
+
+#select-3-bak,
+#select-3-bak-active {
+  width: 30%;
+  height: 30%;
+  left: 3%;
+  position: absolute;
+  bottom: 21%;
+}
+
+#select-3-julgo {
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  bottom: 21%;
+  left: 21%;
+}
+
+#select-3-uh {
+  position: absolute;
+  width: 30%;
+  height: 30%;
+  bottom: 21%;
+  left: 41%;
+}
+
+.select-3-note-wrapper {
+  position: relative;
+  width: 10%;
+  height: 10%;
+  top: 0;
+  left: 0;
+}
+
+.select-3-note {
+  width: 40%;
+  height: 40%;
+  position: absolute;
+}
+.select-3-note:nth-child(1) {
+  bottom: 0;
+  left: 23%;
+}
+.select-3-note:nth-child(2) {
+  bottom: -16%;
+  right: 6%;
+}
+.select-3-note:nth-child(3) {
+  top: 12%;
+  right: 10%;
+}
+
+#select-3-moktui {
+  position: absolute;
+  width: 16%;
+  height: 16%;
+  bottom: 32%;
+  left: 22.5%;
+  z-index: -1;
+}
+
+#select-3-chae {
+  position: absolute;
+  width: 12%;
+  height: 12%;
+  bottom: 39%;
+  left: 47.5%;
+  z-index: 1;
+}
