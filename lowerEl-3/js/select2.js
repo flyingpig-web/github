@@ -10,6 +10,7 @@ $(function () {
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
   const yukSeong1 = $("#yuk-seong-1")[0];
+  const resultFailed = $("#result-failed")[0];
 
   // Game State
   let timerStarted = false;
@@ -70,6 +71,7 @@ $(function () {
     fadeOutAudio(yukSeong1, 1000);
     timerStarted = false;
     gameTimer = null;
+    resultFailed.play();
     handleTimeUp();
   }
 
