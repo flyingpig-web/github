@@ -9,6 +9,10 @@ $(function () {
   const $select3NoteWrapper = $(".select-3-note-wrapper");
   const $select3Jio = $("#select-3-jio");
   const $mainBgm = $("#main-bgm")[0];
+  const $successBgm = $("#success-bgm")[0];
+  const $select3Success = $(".select-3-success");
+  const $ktmWrapper = $(".ktm-wrapper");
+  const $ch315 = $("#ch3-15")[0];
 
   $select3Player.on("click", function () {
     $select3Player.addClass("display-none");
@@ -16,13 +20,27 @@ $(function () {
     $select3PlayerActive.removeClass("display-none");
     $select3Jio.removeClass("display-none");
 
+    $mainBgm.play();
+    $select3Moktui.removeClass("display-none");
+    $select3NoteWrapper.removeClass("display-none");
+    $select3Bak.addClass("display-none");
+    $select3BakActive.removeClass("display-none");
+    $select3Chae.removeClass("display-none");
+
     setTimeout(() => {
-      $mainBgm.play();
-      $select3Moktui.removeClass("display-none");
-      $select3NoteWrapper.removeClass("display-none");
-      $select3Bak.addClass("display-none");
-      $select3BakActive.removeClass("display-none");
-      $select3Chae.removeClass("display-none");
-    }, 1000);
+      $select3Success.removeClass("display-none").fadeIn(500);
+      $successBgm.play();
+    }, 7000);
+
+    setTimeout(() => {
+      $select3Success.addClass("display-none");
+      $ktmWrapper.removeClass("display-none").fadeIn(500);
+      $ktmWrapper.addClass("pointer-none");
+      $ch315.play();
+    }, 10000);
+
+    setTimeout(() => {
+      $ktmWrapper.removeClass("pointer-none");
+    }, 14000);
   });
 });

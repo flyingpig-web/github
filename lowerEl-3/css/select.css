@@ -249,16 +249,13 @@
   }
 }
 
-.ktm-wrapper {
-  display: none;
-}
 .ktm-wrapper .btn-replay {
   position: absolute;
   width: 20%;
   height: 20%;
   left: 27%;
   bottom: 7%;
-  background-image: url(../img/common/replay.png);
+  background-image: url(../img/common/replay-2.png);
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -270,7 +267,7 @@
   position: absolute;
   width: 20%;
   height: 20%;
-  right: 27%;
+  right: 28%;
   bottom: 7%;
   background-image: url(../img/common/exit.png);
   background-repeat: no-repeat;
@@ -372,12 +369,12 @@
   height: 100%;
   border-radius: 50px;
   background-color: #98ce92;
-  transform: translateY(10%);
+  transform: translateY(0%);
   transition: transform 30s linear;
 }
 
 .progress-bar-fill.start-timer {
-  transform: translateY(100%);
+  transform: translateY(95%);
 }
 .clock {
   width: 12%;

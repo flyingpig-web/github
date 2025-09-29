@@ -42,4 +42,38 @@ $(function () {
   $(".btn-effect").on("mouseover", function () {
     btnHoverEffect.play();
   });
+
+  // ========== ktm.html에서 뒤로가기 후 ktm-wrapper fadeIn 처리 ==========
+  // ktm.html에서 뒤로가기 클릭 시에만 작동하는 특수 처리
+  function checkKtmBackReturn() {
+    const fromKtmBack = sessionStorage.getItem("fromKtmBack");
+    if (fromKtmBack === "true") {
+      const $ktmWrapper = $(".ktm-wrapper");
+      if ($ktmWrapper.length > 0) {
+        // ktm-wrapper가 존재하면 fadeIn
+        $ktmWrapper.fadeIn(500);
+      }
+      // 플래그 제거 (한 번만 실행)
+      sessionStorage.removeItem("fromKtmBack");
+    }
+  }
+
+  // 페이지 로드 시 체크
+  checkKtmBackReturn();
+
+  $(".ktm-card").on("click", function () {
+    const cardExpandEffect = new Audio("sound/sfx/card_expand_01.wav");
+    const $card = $(this);
+    const $cardOff = $(".ktm-card-off");
+
+    // 효과음 재생
+    cardExpandEffect.play();
+
+    $card.hide();
+    $cardOff.show();
+
+    setTimeout(() => {
+      window.location.href = "ktm.html";
+    }, 3000);
+  });
 });
