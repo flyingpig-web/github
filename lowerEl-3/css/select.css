@@ -192,6 +192,7 @@
   justify-content: center;
   flex-shrink: 0;
   margin-bottom: 2%;
+  position: relative;
 }
 
 .note img {
@@ -199,6 +200,12 @@
   height: 94%;
   object-fit: contain;
   z-index: 11;
+}
+
+.note img.note-text {
+  position: absolute;
+  bottom: -75%;
+  width: 50%;
 }
 
 .note-dot {
