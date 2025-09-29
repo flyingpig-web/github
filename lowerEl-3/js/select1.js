@@ -203,9 +203,9 @@ $(function () {
         setTimeout(() => {
           heemunFinish.play();
           setTimeout(() => {
-            $select1Success.fadeOut(500);
+            $select1Success.addClass("display-none");
             fadeOutAudio(heemunFinish, 1000);
-            $ktmWrapper.fadeIn(500);
+            $ktmWrapper.removeClass("display-none");
             $ktmWrapper.addClass("pointer-none");
             finishSound.play();
             setTimeout(() => {
@@ -299,7 +299,6 @@ $(function () {
       if ($("#effect")[0]) {
         $("#effect")[0].play();
       }
-    } else {
     }
   });
 
@@ -316,9 +315,6 @@ $(function () {
 
     $card.hide();
     $cardOff.show();
-    // setTimeout(() => {
-    //   $cardOff.addClass("expanded");
-    // }, 150);
 
     setTimeout(() => {
       window.location.href = "ktm.html";

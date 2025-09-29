@@ -321,13 +321,13 @@ img {
 }
 
 .btn-top.btn-home {
-  top: 4%;
+  top: 6%;
   right: 3%;
   background: url(../img/common/home.png) center no-repeat;
 }
 
 .btn-top.btn-back {
-  top: 4%;
+  top: 6%;
   left: 3%;
   background: url(../img/common/go_back.png) center no-repeat;
 }
