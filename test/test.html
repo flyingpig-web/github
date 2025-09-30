@@ -2,89 +2,14 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>해금 파츠별 색상 적용</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        padding: 20px;
-        background: #f4f4f4;
-      }
-      .stage {
-        position: relative;
-        width: 500px;
-        height: 600px;
-        margin: auto;
-        border: 1px solid #ccc;
-        background: #fff;
-      }
-
-      /* 공통 파츠 스타일 */
-      .part {
-        position: absolute;
-        inset: 0;
-        background: #cccccc;
-        background-size: cover;
-        background-repeat: repeat;
-        -webkit-mask-repeat: no-repeat;
-        -webkit-mask-position: center;
-        mask-repeat: no-repeat;
-        mask-position: center;
-        -webkit-mask-size: contain;
-        mask-size: contain;
-      }
-
-      /* 각 파츠별 */
-      .pegbox {
-        -webkit-mask-image: url("pegbox.png"); /* 줄감개 */
-        mask-image: url("pegbox.png");
-        width: 50%;
-        height: 50%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1;
-      }
-      .neck {
-        -webkit-mask-image: url("neck.png"); /* 목대 */
-        mask-image: url("neck.png");
-        width: 50%;
-        height: 56%;
-        top: 46%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-      }
-      .body {
-        -webkit-mask-image: url("body.png"); /* 울림통 */
-        mask-image: url("body.png");
-        width: 20%;
-        top: 38%;
-        left: 29%;
-        z-index: 3;
-      }
-      .bow {
-        -webkit-mask-image: url("bow.png"); /* 활대 */
-        mask-image: url("bow.png");
-        width: 50%;
-        height: 50%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 4;
-      }
-
-      .controls {
-        margin-top: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-      .controls label {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/common.css"
+    />
   </head>
   <body>
     <h1>해금 파츠별 색상 적용 데모</h1>
@@ -107,7 +32,24 @@
       <label>활대 색상 <input type="color" id="cBow" value="#E06666" /></label>
     </div>
 
+    <!-- 마스크 PNG를 로컬에서 고르는 입력 (CORS 회피용) -->
+    <div class="controls" style="margin-top: 8px">
+      <label
+        >줄감개 마스크 <input type="file" id="mPeg" accept="image/*"
+      /></label>
+      <label
+        >목대 마스크 <input type="file" id="mNeck" accept="image/*"
+      /></label>
+      <label
+        >울림통 마스크 <input type="file" id="mBody" accept="image/*"
+      /></label>
+      <label
+        >활대 마스크 <input type="file" id="mBow" accept="image/*"
+      /></label>
+    </div>
+
     <script>
+      // 파츠 엘리먼트
       const parts = {
         pegbox: document.getElementById("pegbox"),
         neck: document.getElementById("neck"),
@@ -115,19 +57,55 @@
         bow: document.getElementById("bow"),
       };
 
-      // 각 색상 피커 이벤트
-      document.getElementById("cPeg").addEventListener("input", (e) => {
-        parts.pegbox.style.background = e.target.value;
-      });
-      document.getElementById("cNeck").addEventListener("input", (e) => {
-        parts.neck.style.background = e.target.value;
-      });
-      document.getElementById("cBody").addEventListener("input", (e) => {
-        parts.body.style.background = e.target.value;
-      });
-      document.getElementById("cBow").addEventListener("input", (e) => {
-        parts.bow.style.background = e.target.value;
-      });
+      // 색상 변경
+      document
+        .getElementById("cPeg")
+        .addEventListener(
+          "input",
+          (e) => (parts.pegbox.style.background = e.target.value)
+        );
+      document
+        .getElementById("cNeck")
+        .addEventListener(
+          "input",
+          (e) => (parts.neck.style.background = e.target.value)
+        );
+      document
+        .getElementById("cBody")
+        .addEventListener(
+          "input",
+          (e) => (parts.body.style.background = e.target.value)
+        );
+      document
+        .getElementById("cBow")
+        .addEventListener(
+          "input",
+          (e) => (parts.bow.style.background = e.target.value)
+        );
+
+      // 파일 → dataURL → mask-image 적용 (file://에서도 CORS 없이 동작)
+      function wireMask(fileInputId, targetEl) {
+        const input = document.getElementById(fileInputId);
+        input.addEventListener("change", () => {
+          const file = input.files && input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            const url = reader.result; // data:image/png;base64,....
+            targetEl.style.webkitMaskImage = `url("${url}")`;
+            targetEl.style.maskImage = `url("${url}")`;
+            // 공통 CSS에서 size/position/repeat은 이미 지정되어 있음
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      wireMask("mPeg", parts.pegbox);
+      wireMask("mNeck", parts.neck);
+      wireMask("mBody", parts.body);
+      wireMask("mBow", parts.bow);
+
+      // 참고: 서버 환경(예: Live Server)이라면 CSS의 url(../img/*.png)도 정상 작동합니다.
     </script>
   </body>
 </html>
