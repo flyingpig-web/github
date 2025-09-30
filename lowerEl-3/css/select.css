@@ -96,8 +96,8 @@
 
 .spotlight {
   position: absolute;
-  width: 22vw;
-  height: 22vw;
+  width: 22%;
+  height: 39%;
   visibility: hidden;
   z-index: 5;
   transform: scaleY(1.2);
@@ -184,8 +184,8 @@
 }
 
 .note {
-  width: 13vw;
-  height: 13vw;
+  width: 8%;
+  height: 55%;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
