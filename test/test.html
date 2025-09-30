@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>해금 파츠별 색상 적용</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        background: #f4f4f4;
+      }
+      .stage {
+        position: relative;
+        width: 500px;
+        height: 600px;
+        margin: auto;
+        border: 1px solid #ccc;
+        background: #fff;
+      }
+
+      /* 공통 파츠 스타일 */
+      .part {
+        position: absolute;
+        inset: 0;
+        background: #cccccc;
+        background-size: cover;
+        background-repeat: repeat;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-repeat: no-repeat;
+        mask-position: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+      }
+
+      /* 각 파츠별 */
+      .pegbox {
+        -webkit-mask-image: url("pegbox.png"); /* 줄감개 */
+        mask-image: url("pegbox.png");
+        width: 50%;
+        height: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+      }
+      .neck {
+        -webkit-mask-image: url("neck.png"); /* 목대 */
+        mask-image: url("neck.png");
+        width: 50%;
+        height: 56%;
+        top: 46%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+      }
+      .body {
+        -webkit-mask-image: url("body.png"); /* 울림통 */
+        mask-image: url("body.png");
+        width: 20%;
+        top: 38%;
+        left: 29%;
+        z-index: 3;
+      }
+      .bow {
+        -webkit-mask-image: url("bow.png"); /* 활대 */
+        mask-image: url("bow.png");
+        width: 50%;
+        height: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 4;
+      }
+
+      .controls {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .controls label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>해금 파츠별 색상 적용 데모</h1>
+
+    <div class="stage">
+      <div class="part pegbox" id="pegbox"></div>
+      <div class="part neck" id="neck"></div>
+      <div class="part body" id="body"></div>
+      <div class="part bow" id="bow"></div>
+    </div>
+
+    <div class="controls">
+      <label
+        >줄감개 색상 <input type="color" id="cPeg" value="#7ACBFF"
+      /></label>
+      <label>목대 색상 <input type="color" id="cNeck" value="#FFD966" /></label>
+      <label
+        >울림통 색상 <input type="color" id="cBody" value="#93C47D"
+      /></label>
+      <label>활대 색상 <input type="color" id="cBow" value="#E06666" /></label>
+    </div>
+
+    <script>
+      const parts = {
+        pegbox: document.getElementById("pegbox"),
+        neck: document.getElementById("neck"),
+        body: document.getElementById("body"),
+        bow: document.getElementById("bow"),
+      };
+
+      // 각 색상 피커 이벤트
+      document.getElementById("cPeg").addEventListener("input", (e) => {
+        parts.pegbox.style.background = e.target.value;
+      });
+      document.getElementById("cNeck").addEventListener("input", (e) => {
+        parts.neck.style.background = e.target.value;
+      });
+      document.getElementById("cBody").addEventListener("input", (e) => {
+        parts.body.style.background = e.target.value;
+      });
+      document.getElementById("cBow").addEventListener("input", (e) => {
+        parts.bow.style.background = e.target.value;
+      });
+    </script>
+  </body>
+</html>
