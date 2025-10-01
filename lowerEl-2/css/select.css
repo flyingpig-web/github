@@ -1,3 +1,29 @@
 .info-1 {
   background-image: url(../img/common/dimmed.png);
 }
+
+.tutorial {
+  background-image: url(../img/select/tutorial.png);
+}
+
+.close {
+  position: absolute;
+  top: 5%;
+  right: 1%;
+  width: 10%;
+  height: 10%;
+  background: url(../img/common/x.png) center/contain no-repeat;
+}
+
+.select-main {
+  background: url(../img/select/main-bg.png) center/contain no-repeat;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.play-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
