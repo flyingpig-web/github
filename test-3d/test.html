@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>해금 3D 파츠 분리 데모 (file:// 친화/UMD)</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #111;
+        color: #e5e7eb;
+      }
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+      .panel {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        background: rgba(20, 20, 20, 0.9);
+        color: #e5e7eb;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 12px;
+        width: 340px;
+        max-height: calc(100vh - 20px);
+        overflow: auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+      .group {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .group h3 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        letter-spacing: 0.2px;
+        color: #a3b3ff;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 6px 0;
+      }
+      .row label {
+        min-width: 70px;
+        font-size: 12px;
+        color: #cbd5e1;
+      }
+      input[type="color"] {
+        width: 42px;
+        height: 28px;
+        padding: 0;
+        border: none;
+        background: transparent;
+      }
+      input[type="file"] {
+        flex: 1;
+      }
+      input[type="range"] {
+        width: 100%;
+      }
+      button {
+        padding: 6px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: #1f2937;
+        color: #e5e7eb;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #263241;
+      }
+      small {
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // 즉시 실행되는 기본 테스트
+      console.log("=== 기본 스크립트 테스트 ===");
+      console.log("페이지 로드됨:", new Date());
+      console.log("document.readyState:", document.readyState);
+
+      // DOM 로드 완료 시 테스트
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOMContentLoaded 이벤트 발생");
+        const loadStatus = document.getElementById("loadStatus");
+        if (loadStatus) {
+          loadStatus.textContent = "기본 스크립트 작동 중...";
+          loadStatus.style.color = "#00ff00";
+          console.log("loadStatus 요소 업데이트 완료");
+        } else {
+          console.error("loadStatus 요소를 찾을 수 없음");
+        }
+      });
+
+      // 페이지 완전 로드 시 테스트
+      window.addEventListener("load", function () {
+        console.log("window load 이벤트 발생");
+      });
+    </script>
+
+    <div id="app"></div>
+
+    <div class="panel">
+      <div class="group">
+        <h3>디버그 테스트</h3>
+        <div class="row">
+          <button
+            onclick="console.log('기본 JavaScript 작동 확인!'); alert('JavaScript가 작동합니다!');"
+          >
+            JS 테스트
+          </button>
+          <button
+            onclick="console.log('현재 시간:', new Date()); document.getElementById('loadStatus').textContent = '테스트 완료: ' + new Date().toLocaleTimeString();"
+          >
+            상태 테스트
+          </button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h3>모델 업로드</h3>
+        <div class="row">
+          <label>GLB/GLTF</label>
+          <input id="modelFile" type="file" accept=".glb,.gltf" />
+        </div>
+        <div class="row">
+          <button id="clearModel">모델 제거</button>
+          <button id="testFileInput">파일 입력 테스트</button>
+          <button id="createTestModel">테스트 모델 생성</button>
+          <small id="loadStatus" style="margin-left: 10px; color: #94a3b8"
+            >대기 중...</small
+          >
+        </div>
+        <small id="uploadHelp"
+          >• <b>.glb 권장</b> (내장 텍스처 포함)<br />• .gltf는 data URI만
+          지원(외부 .bin/.png 참조형은 file://에서 불가)</small
+        >
+      </div>
+
+      <div class="group">
+        <h3>뷰</h3>
+        <div class="row">
+          <button id="resetView">초기 시점</button>
+          <button id="resetAll" style="margin-left: auto">모두 리셋</button>
+        </div>
+        <small>마우스: 회전 / 휠: 줌 / 우클릭: 팬</small>
+      </div>
+
+      <div class="group" data-part="pegbox">
+        <h3>줄감개 (pegbox)</h3>
+        <div class="row">
+          <label>색상</label
+          ><input id="color-pegbox" type="color" value="#7ACBFF" />
+        </div>
+        <div class="row">
+          <label>텍스처</label
+          ><input id="tex-pegbox" type="file" accept="image/*" />
+        </div>
+        <div class="row">
+          <label>타일</label
+          ><input
+            id="tile-pegbox"
+            type="range"
+            min="1"
+            max="8"
+            step="0.1"
+            value="1"
+          />
+        </div>
+        <div class="row">
+          <label>회전</label
+          ><input
+            id="rot-pegbox"
+            type="range"
+            min="0"
+            max="360"
+            step="1"
+            value="0"
+          />
+        </div>
+        <div class="row"><button data-reset="pegbox">리셋</button></div>
+      </div>
+
+      <div class="group" data-part="neck">
+        <h3>목대 (neck)</h3>
+        <div class="row">
+          <label>색상</label
+          ><input id="color-neck" type="color" value="#FFD966" />
+        </div>
+        <div class="row">
+          <label>텍스처</label
+          ><input id="tex-neck" type="file" accept="image/*" />
+        </div>
+        <div class="row">
+          <label>타일</label
+          ><input
+            id="tile-neck"
+            type="range"
+            min="1"
+            max="8"
+            step="0.1"
+            value="1.2"
+          />
+        </div>
+        <div class="row">
+          <label>회전</label
+          ><input
+            id="rot-neck"
+            type="range"
+            min="0"
+            max="360"
+            step="1"
+            value="90"
+          />
+        </div>
+        <div class="row"><button data-reset="neck">리셋</button></div>
+      </div>
+
+      <div class="group" data-part="body">
+        <h3>울림통 (body)</h3>
+        <div class="row">
+          <label>색상</label
+          ><input id="color-body" type="color" value="#93C47D" />
+        </div>
+        <div class="row">
+          <label>텍스처</label
+          ><input id="tex-body" type="file" accept="image/*" />
+        </div>
+        <div class="row">
+          <label>타일</label
+          ><input
+            id="tile-body"
+            type="range"
+            min="1"
+            max="8"
+            step="0.1"
+            value="1.5"
+          />
+        </div>
+        <div class="row">
+          <label>회전</label
+          ><input
+            id="rot-body"
+            type="range"
+            min="0"
+            max="360"
+            step="1"
+            value="0"
+          />
+        </div>
+        <div class="row"><button data-reset="body">리셋</button></div>
+      </div>
+
+      <div class="group" data-part="bow">
+        <h3>활대 (bow)</h3>
+        <div class="row">
+          <label>색상</label
+          ><input id="color-bow" type="color" value="#E06666" />
+        </div>
+        <div class="row">
+          <label>텍스처</label
+          ><input id="tex-bow" type="file" accept="image/*" />
+        </div>
+        <div class="row">
+          <label>타일</label
+          ><input
+            id="tile-bow"
+            type="range"
+            min="1"
+            max="8"
+            step="0.1"
+            value="1"
+          />
+        </div>
+        <div class="row">
+          <label>회전</label
+          ><input
+            id="rot-bow"
+            type="range"
+            min="0"
+            max="360"
+            step="1"
+            value="0"
+          />
+        </div>
+        <div class="row"><button data-reset="bow">리셋</button></div>
+      </div>
+    </div>
+
+    <script>
+      console.log("=== 스크립트 로드 시작 ===");
+
+      // 전역 변수 선언
+      let THREE, OrbitControls, GLTFLoader;
+      let scene, camera, renderer, controls;
+      let loadedModel = null;
+      let parts = {};
+
+      // 모듈 로드 함수
+      async function loadModules() {
+        try {
+          console.log("Three.js 모듈 로드 시작...");
+
+          // Three.js 스크립트 동적 로드 (더 안정적인 버전 사용)
+          const script1 = document.createElement("script");
+          script1.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+          script1.onload = () => {
+            console.log("Three.js 로드 완료");
+            THREE = window.THREE;
+
+            // OrbitControls 로드 (r128 버전)
+            const script2 = document.createElement("script");
+            script2.src =
+              "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js";
+            script2.onload = () => {
+              console.log("OrbitControls 로드 완료");
+              console.log("THREE.OrbitControls:", THREE.OrbitControls);
+              console.log("window.THREE:", window.THREE);
+
+              // OrbitControls는 전역 THREE 객체에 추가됨
+              if (THREE.OrbitControls) {
+                OrbitControls = THREE.OrbitControls;
+              } else {
+                console.error("THREE.OrbitControls를 찾을 수 없습니다");
+                updateStatus("OrbitControls 로드 실패", true);
+                return;
+              }
+
+              // GLTFLoader 로드
+              loadGLTFLoader();
+            };
+            script2.onerror = () => {
+              console.error("OrbitControls 로드 실패, 대체 경로 시도...");
+
+              // 대체 경로로 시도
+              const script2Alt = document.createElement("script");
+              script2Alt.src =
+                "https://threejs.org/examples/js/controls/OrbitControls.js";
+              script2Alt.onload = () => {
+                console.log("OrbitControls 대체 경로로 로드 완료");
+                if (THREE.OrbitControls) {
+                  OrbitControls = THREE.OrbitControls;
+                  // GLTFLoader 로드 계속
+                  loadGLTFLoader();
+                } else {
+                  console.error("OrbitControls 대체 로드도 실패");
+                  updateStatus("OrbitControls 완전 실패", true);
+                }
+              };
+              script2Alt.onerror = () => {
+                console.error(
+                  "OrbitControls 대체 로드도 실패, 기본 컨트롤 사용"
+                );
+                updateStatus("기본 카메라 컨트롤 사용", false);
+                OrbitControls = null; // OrbitControls 없이 진행
+                loadGLTFLoader();
+              };
+              document.head.appendChild(script2Alt);
+            };
+            document.head.appendChild(script2);
+          };
+          script1.onerror = () => {
+            console.error("Three.js 로드 실패");
+            updateStatus("Three.js 로드 실패", true);
+          };
+          document.head.appendChild(script1);
+        } catch (error) {
+          console.error("모듈 로드 중 오류:", error);
+          updateStatus("모듈 로드 실패", true);
+        }
+      }
+
+      // GLTFLoader 로드 함수 (여러 경로 시도)
+      function loadGLTFLoader() {
+        console.log("GLTFLoader 로드 시도 1: cdnjs r128");
+        const script3 = document.createElement("script");
+        script3.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.js";
+        script3.onload = () => {
+          console.log("GLTFLoader 로드 완료");
+          console.log("THREE.GLTFLoader:", THREE.GLTFLoader);
+
+          if (THREE.GLTFLoader) {
+            GLTFLoader = THREE.GLTFLoader;
+            // 모든 모듈 로드 완료 후 초기화
+            initializeApp();
+          } else {
+            console.error("THREE.GLTFLoader를 찾을 수 없습니다");
+            updateStatus("GLTFLoader 로드 실패", true);
+          }
+        };
+        script3.onerror = () => {
+          console.error("GLTFLoader 로드 실패, 대체 경로 시도...");
+          tryAlternativeGLTFLoader();
+        };
+        document.head.appendChild(script3);
+      }
+
+      // GLTFLoader 대체 경로들을 순차적으로 시도
+      function tryAlternativeGLTFLoader() {
+        const alternatives = [
+          {
+            name: "jsdelivr r128",
+            url: "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js",
+          },
+          {
+            name: "unpkg r128",
+            url: "https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js",
+          },
+          {
+            name: "threejs.org",
+            url: "https://threejs.org/examples/js/loaders/GLTFLoader.js",
+          },
+          {
+            name: "jsdelivr latest",
+            url: "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js",
+          },
+          {
+            name: "unpkg latest",
+            url: "https://unpkg.com/three/examples/js/loaders/GLTFLoader.js",
+          },
+        ];
+
+        let currentIndex = 0;
+
+        function tryNext() {
+          if (currentIndex >= alternatives.length) {
+            console.error("모든 GLTFLoader 경로 실패, 수동 구현 시도...");
+            tryManualGLTFLoader();
+            return;
+          }
+
+          const alt = alternatives[currentIndex];
+          console.log(`GLTFLoader 로드 시도 ${currentIndex + 2}: ${alt.name}`);
+
+          const script = document.createElement("script");
+          script.src = alt.url;
+
+          script.onload = () => {
+            console.log(`GLTFLoader ${alt.name}로 로드 성공`);
+            if (THREE.GLTFLoader) {
+              GLTFLoader = THREE.GLTFLoader;
+              initializeApp();
+            } else {
+              console.log(
+                `${alt.name} 로드됐지만 THREE.GLTFLoader 없음, 다음 시도...`
+              );
+              currentIndex++;
+              tryNext();
+            }
+          };
+
+          script.onerror = () => {
+            console.log(`${alt.name} 로드 실패, 다음 시도...`);
+            currentIndex++;
+            tryNext();
+          };
+
+          document.head.appendChild(script);
+        }
+
+        tryNext();
+      }
+
+      // 수동 GLTFLoader 구현 (최후의 수단)
+      function tryManualGLTFLoader() {
+        console.log("수동 GLTFLoader 구현 시도...");
+
+        // 간단한 GLTFLoader 대체 구현
+        if (!THREE.GLTFLoader) {
+          THREE.GLTFLoader = function () {
+            this.load = function (url, onLoad, onProgress, onError) {
+              console.log("수동 GLTFLoader: 파일 로드 시도", url);
+
+              fetch(url)
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error(
+                      `HTTP ${response.status}: ${response.statusText}`
+                    );
+                  }
+                  return response.arrayBuffer();
+                })
+                .then((buffer) => {
+                  console.log("파일 로드 완료, 파싱 시도...");
+                  // 간단한 GLB 파싱 (매우 기본적)
+                  try {
+                    const result = { scene: new THREE.Group() };
+                    console.log("수동 파싱 완료 (빈 그룹)");
+                    onLoad(result);
+                  } catch (parseError) {
+                    console.error("수동 파싱 실패:", parseError);
+                    if (onError) onError(parseError);
+                  }
+                })
+                .catch((error) => {
+                  console.error("수동 GLTFLoader 로드 실패:", error);
+                  if (onError) onError(error);
+                });
+            };
+
+            this.parse = function (data, path, onLoad, onError) {
+              console.log("수동 GLTFLoader: 파싱 시도");
+              try {
+                const result = { scene: new THREE.Group() };
+                console.log("수동 파싱 완료 (빈 그룹)");
+                onLoad(result);
+              } catch (error) {
+                console.error("수동 파싱 실패:", error);
+                if (onError) onError(error);
+              }
+            };
+          };
+
+          GLTFLoader = THREE.GLTFLoader;
+          console.log("수동 GLTFLoader 구현 완료");
+          updateStatus("수동 GLTFLoader 사용", false);
+        }
+
+        initializeApp();
+      }
+
+      // 기본 카메라 컨트롤 설정
+      function setupBasicControls() {
+        let isMouseDown = false;
+        let mouseX = 0,
+          mouseY = 0;
+        let cameraDistance = 5;
+        let cameraAngleX = 0,
+          cameraAngleY = 0;
+
+        // 객체 중심점 계산
+        let targetCenter = new THREE.Vector3(0, 0, 0);
+
+        // 프록시 그룹이 있으면 그 중심을 사용
+        if (scene) {
+          const box = new THREE.Box3();
+          scene.traverse((child) => {
+            if (child.isMesh && child.visible) {
+              box.expandByObject(child);
+            }
+          });
+
+          if (!box.isEmpty()) {
+            box.getCenter(targetCenter);
+            console.log("객체 중심점:", targetCenter);
+          }
+        }
+
+        // 초기 카메라 각도 계산 (객체 중심 기준)
+        const initialPos = camera.position.clone().sub(targetCenter);
+        cameraDistance = initialPos.length();
+        cameraAngleY = Math.atan2(initialPos.x, initialPos.z);
+        cameraAngleX = Math.asin(initialPos.y / cameraDistance);
+
+        renderer.domElement.addEventListener("mousedown", (event) => {
+          isMouseDown = true;
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+        });
+
+        renderer.domElement.addEventListener("mousemove", (event) => {
+          if (!isMouseDown) return;
+
+          const deltaX = event.clientX - mouseX;
+          const deltaY = event.clientY - mouseY;
+
+          cameraAngleY -= deltaX * 0.01;
+          cameraAngleX -= deltaY * 0.01;
+
+          // 각도 제한
+          cameraAngleX = Math.max(
+            -Math.PI / 2 + 0.1,
+            Math.min(Math.PI / 2 - 0.1, cameraAngleX)
+          );
+
+          updateCameraPosition();
+
+          mouseX = event.clientX;
+          mouseY = event.clientY;
+        });
+
+        renderer.domElement.addEventListener("mouseup", () => {
+          isMouseDown = false;
+        });
+
+        renderer.domElement.addEventListener("wheel", (event) => {
+          event.preventDefault();
+          cameraDistance += event.deltaY * 0.01;
+          cameraDistance = Math.max(1, Math.min(20, cameraDistance));
+          updateCameraPosition();
+        });
+
+        function updateCameraPosition() {
+          const x =
+            cameraDistance * Math.sin(cameraAngleY) * Math.cos(cameraAngleX);
+          const y = cameraDistance * Math.sin(cameraAngleX);
+          const z =
+            cameraDistance * Math.cos(cameraAngleY) * Math.cos(cameraAngleX);
+
+          // 객체 중심점을 기준으로 카메라 위치 설정
+          camera.position.set(
+            targetCenter.x + x,
+            targetCenter.y + y,
+            targetCenter.z + z
+          );
+          camera.lookAt(targetCenter);
+        }
+
+        console.log("기본 카메라 컨트롤 설정 완료");
+      }
+
+      // 앱 초기화 함수
+      function initializeApp() {
+        try {
+          console.log("=== 앱 초기화 시작 ===");
+          console.log("THREE 객체 확인:", !!THREE);
+          console.log("OrbitControls 확인:", !!OrbitControls);
+          console.log("GLTFLoader 확인:", !!GLTFLoader);
+
+          if (!THREE) {
+            throw new Error("THREE 객체가 없습니다");
+          }
+
+          // ---- 렌더러/씬/카메라 ----
+          try {
+            console.log("렌더러 생성 시작...");
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            console.log("렌더러 생성 완료:", !!renderer);
+
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // outputColorSpace 설정 (버전별 호환성 확인)
+            if (THREE.SRGBColorSpace !== undefined) {
+              renderer.outputColorSpace = THREE.SRGBColorSpace;
+            } else if (renderer.outputEncoding !== undefined) {
+              renderer.outputEncoding = THREE.sRGBEncoding;
+            }
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            console.log("렌더러 설정 완료");
+          } catch (rendererError) {
+            console.error("렌더러 생성 실패:", rendererError);
+            throw new Error("렌더러 초기화 실패: " + rendererError.message);
+          }
+
+          try {
+            console.log("DOM 요소 확인...");
+            const appElement = document.getElementById("app");
+            console.log("app 요소:", !!appElement);
+
+            if (appElement) {
+              appElement.appendChild(renderer.domElement);
+              console.log("렌더러 DOM 요소 추가 완료");
+            } else {
+              throw new Error("app 요소를 찾을 수 없습니다");
+            }
+          } catch (domError) {
+            console.error("DOM 요소 처리 실패:", domError);
+            throw new Error("DOM 초기화 실패: " + domError.message);
+          }
+
+          try {
+            console.log("씬 생성 시작...");
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0d0f14);
+            console.log("씬 생성 완료");
+
+            console.log("카메라 생성 시작...");
+            camera = new THREE.PerspectiveCamera(
+              45,
+              window.innerWidth / window.innerHeight,
+              0.1,
+              100
+            );
+            camera.position.set(2.4, 1.4, 3.4);
+            console.log("카메라 생성 완료");
+          } catch (sceneError) {
+            console.error("씬/카메라 생성 실패:", sceneError);
+            throw new Error("씬/카메라 초기화 실패: " + sceneError.message);
+          }
+
+          // OrbitControls 설정 (있는 경우)
+          try {
+            console.log("컨트롤 초기화 시작...");
+
+            // 객체 중심점 계산
+            let targetCenter = new THREE.Vector3(0, 0, 0);
+            const box = new THREE.Box3();
+            scene.traverse((child) => {
+              if (child.isMesh && child.visible) {
+                box.expandByObject(child);
+              }
+            });
+
+            if (!box.isEmpty()) {
+              box.getCenter(targetCenter);
+              console.log("컨트롤 타겟 중심점:", targetCenter);
+            }
+
+            if (OrbitControls) {
+              controls = new OrbitControls(camera, renderer.domElement);
+              controls.enableDamping = true;
+              controls.target.copy(targetCenter); // 객체 중심을 타겟으로 설정
+              controls.update();
+              console.log("OrbitControls 초기화 완료, 타겟:", controls.target);
+            } else {
+              console.log("OrbitControls 없음, 기본 컨트롤 사용");
+              // 기본 마우스 컨트롤 구현
+              setupBasicControls();
+            }
+          } catch (controlError) {
+            console.error("컨트롤 초기화 실패:", controlError);
+            console.log("기본 컨트롤로 대체...");
+            try {
+              setupBasicControls();
+            } catch (basicControlError) {
+              console.error("기본 컨트롤도 실패:", basicControlError);
+              // 컨트롤 없이 진행
+            }
+          }
+
+          // 라이트/그리드
+          try {
+            console.log("라이트 설정 시작...");
+            scene.add(new THREE.HemisphereLight(0xffffff, 0x202020, 0.7));
+            const dir = new THREE.DirectionalLight(0xffffff, 1.0);
+            dir.position.set(3, 5, 3);
+            scene.add(dir);
+            console.log("라이트 설정 완료");
+
+            console.log("그리드 설정 시작...");
+            const grid = new THREE.GridHelper(10, 10, 0x3b82f6, 0x1f2937);
+            grid.position.y = -0.6;
+            scene.add(grid);
+            console.log("그리드 설정 완료");
+          } catch (lightError) {
+            console.error("라이트/그리드 설정 실패:", lightError);
+            // 라이트 없이 진행 (치명적이지 않음)
+          }
+
+          // ---- 프록시 해금(기본으로 보이도록) ----
+          let proxyGroup, makeMat;
+          try {
+            console.log("프록시 모델 생성 시작...");
+            proxyGroup = new THREE.Group();
+            scene.add(proxyGroup);
+
+            makeMat = (hex) =>
+              new THREE.MeshStandardMaterial({
+                color: new THREE.Color(hex),
+                metalness: 0.05,
+                roughness: 0.65,
+              });
+            console.log("프록시 그룹 생성 완료");
+          } catch (proxyError) {
+            console.error("프록시 그룹 생성 실패:", proxyError);
+            throw new Error("프록시 모델 초기화 실패: " + proxyError.message);
+          }
+
+          let pegbox, neck, body, bow;
+          try {
+            console.log("개별 프록시 모델 생성 시작...");
+
+            pegbox = new THREE.Mesh(
+              new THREE.BoxGeometry(0.35, 0.25, 0.25),
+              makeMat("#7ACBFF")
+            );
+            pegbox.position.set(0, 0.55, 0);
+            pegbox.name = "pegbox";
+            proxyGroup.add(pegbox);
+
+            neck = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.08, 0.09, 1.2, 48, 1, false),
+              makeMat("#FFD966")
+            );
+            neck.position.set(0, 0, 0);
+            neck.rotation.z = Math.PI * 0.02;
+            neck.name = "neck";
+            proxyGroup.add(neck);
+
+            // CapsuleGeometry가 없을 수 있으므로 대체
+            try {
+              body = new THREE.Mesh(
+                new THREE.CapsuleGeometry(0.22, 0.25, 1, 32),
+                makeMat("#93C47D")
+              );
+            } catch (capsuleError) {
+              console.log("CapsuleGeometry 없음, BoxGeometry로 대체");
+              body = new THREE.Mesh(
+                new THREE.BoxGeometry(0.44, 0.7, 0.22),
+                makeMat("#93C47D")
+              );
+            }
+            body.position.set(-0.35, -0.25, 0);
+            body.rotation.z = Math.PI * 0.2;
+            body.name = "body";
+            proxyGroup.add(body);
+
+            bow = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.02, 0.02, 2.2, 32),
+              makeMat("#E06666")
+            );
+            bow.position.set(0.65, 0.1, 0.0);
+            bow.rotation.z = -Math.PI * 0.25;
+            bow.name = "bow";
+            proxyGroup.add(bow);
+
+            console.log("개별 프록시 모델 생성 완료");
+          } catch (meshError) {
+            console.error("프록시 메시 생성 실패:", meshError);
+            throw new Error("프록시 메시 초기화 실패: " + meshError.message);
+          }
+
+          // ---- 파츠 상태/텍스처 유틸 ----
+          parts = {
+            pegbox: {
+              mesh: pegbox,
+              baseColor: "#7ACBFF",
+              tile: 1,
+              rot: 0,
+              map: null,
+            },
+            neck: {
+              mesh: neck,
+              baseColor: "#FFD966",
+              tile: 1.2,
+              rot: 90,
+              map: null,
+            },
+            body: {
+              mesh: body,
+              baseColor: "#93C47D",
+              tile: 1.5,
+              rot: 0,
+              map: null,
+            },
+            bow: {
+              mesh: bow,
+              baseColor: "#E06666",
+              tile: 1,
+              rot: 0,
+              map: null,
+            },
+          };
+          const texLoader = new THREE.TextureLoader();
+
+          function setColor(partKey, hex) {
+            const p = parts[partKey];
+            p.baseColor = hex;
+            p.mesh.material.color.set(hex);
+            p.mesh.material.needsUpdate = true;
+          }
+          function applyTexture(partKey, dataURL) {
+            const p = parts[partKey];
+            if (p.map) {
+              p.map.dispose();
+              p.map = null;
+            }
+            texLoader.load(dataURL, (tex) => {
+              tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+              tex.repeat.set(p.tile, p.tile);
+              tex.center.set(0.5, 0.5);
+              tex.rotation = THREE.MathUtils.degToRad(p.rot);
+              tex.colorSpace = THREE.SRGBColorSpace;
+              p.map = tex;
+              const m = p.mesh.material;
+              m.map = tex;
+              m.color.set("#ffffff");
+              m.needsUpdate = true;
+            });
+          }
+          function setTile(partKey, t) {
+            const p = parts[partKey];
+            p.tile = t;
+            if (p.map) {
+              p.map.repeat.set(t, t);
+              p.map.needsUpdate = true;
+            }
+          }
+          function setRotation(partKey, deg) {
+            const p = parts[partKey];
+            p.rot = deg;
+            if (p.map) {
+              p.map.center.set(0.5, 0.5);
+              p.map.rotation = THREE.MathUtils.degToRad(deg);
+              p.map.needsUpdate = true;
+            }
+          }
+          function resetPart(partKey) {
+            const p = parts[partKey];
+            if (p.map) {
+              p.map.dispose();
+              p.map = null;
+            }
+            p.mesh.material.map = null;
+            p.mesh.material.color.set(p.baseColor);
+            p.mesh.material.needsUpdate = true;
+            setTile(
+              partKey,
+              partKey === "neck" ? 1.2 : partKey === "body" ? 1.5 : 1
+            );
+            setRotation(partKey, partKey === "neck" ? 90 : 0);
+            document.getElementById(`tile-${partKey}`).value =
+              partKey === "neck" ? 1.2 : partKey === "body" ? 1.5 : 1;
+            document.getElementById(`rot-${partKey}`).value =
+              partKey === "neck" ? 90 : 0;
+          }
+
+          ["pegbox", "neck", "body", "bow"].forEach((k) => {
+            document
+              .getElementById(`color-${k}`)
+              .addEventListener("input", (e) => setColor(k, e.target.value));
+            document
+              .getElementById(`tex-${k}`)
+              .addEventListener("change", (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                const r = new FileReader();
+                r.onload = () => applyTexture(k, r.result);
+                r.readAsDataURL(f);
+              });
+            document
+              .getElementById(`tile-${k}`)
+              .addEventListener("input", (e) =>
+                setTile(k, parseFloat(e.target.value))
+              );
+            document
+              .getElementById(`rot-${k}`)
+              .addEventListener("input", (e) =>
+                setRotation(k, parseFloat(e.target.value))
+              );
+            document
+              .querySelector(`[data-reset="${k}"]`)
+              .addEventListener("click", () => resetPart(k));
+          });
+          Object.entries(parts).forEach(([k, v]) => setColor(k, v.baseColor));
+
+          // ---- GLB/GLTF 업로드 (file:// 대응) ----
+          let gltfLoader = null;
+          if (GLTFLoader) {
+            console.log("GLTFLoader 생성 시작...");
+            gltfLoader = new GLTFLoader();
+            console.log("GLTFLoader 생성 완료:", !!gltfLoader);
+          } else {
+            console.log("GLTFLoader 없음, 파일 업로드 기능 비활성화");
+            updateStatus("파일 업로드 기능 비활성화", false);
+          }
+
+          console.log("파일 입력 요소 검색 중...");
+          const modelInput = document.getElementById("modelFile");
+          let loadedModel = null;
+
+          // 파일 입력 요소 초기화 확인
+          console.log("파일 입력 요소 초기화:", modelInput);
+          console.log("파일 입력 요소 ID:", modelInput?.id);
+          console.log("파일 입력 요소 타입:", modelInput?.type);
+          console.log("파일 입력 요소 accept:", modelInput?.accept);
+          console.log("파일 입력 요소 부모:", modelInput?.parentElement);
+
+          if (!modelInput) {
+            console.error("모델 파일 입력 요소를 찾을 수 없습니다!");
+            console.log("전체 DOM 구조 확인:");
+            console.log("document.body:", document.body);
+            console.log(
+              "모든 input 요소들:",
+              document.querySelectorAll("input")
+            );
+            updateStatus("파일 입력 요소 오류", true);
+          } else {
+            console.log("파일 입력 요소 찾기 성공!");
+
+            // GLTFLoader가 없으면 파일 입력 비활성화
+            if (!GLTFLoader) {
+              modelInput.disabled = true;
+              modelInput.title =
+                "GLTFLoader를 사용할 수 없어 파일 업로드가 비활성화되었습니다";
+
+              // 업로드 관련 버튼들도 비활성화
+              const clearButton = document.getElementById("clearModel");
+              const testButton = document.getElementById("testFileInput");
+              if (clearButton) {
+                clearButton.disabled = true;
+                clearButton.title = "GLTFLoader 없음";
+              }
+              if (testButton) {
+                testButton.disabled = true;
+                testButton.title = "GLTFLoader 없음";
+              }
+
+              console.log("파일 업로드 관련 요소들 비활성화 완료");
+
+              // 도움말 텍스트 업데이트
+              const uploadHelp = document.getElementById("uploadHelp");
+              if (uploadHelp) {
+                if (GLTFLoader) {
+                  uploadHelp.innerHTML =
+                    "• <b>GLTFLoader 사용 가능</b> - GLB/GLTF 파일 업로드 가능<br />• 수동 구현으로 기본 기능만 지원";
+                  uploadHelp.style.color = "#ffa500";
+                } else {
+                  uploadHelp.innerHTML =
+                    "• <b>GLTFLoader 없음</b> - 파일 업로드 불가<br />• 기본 해금 모델과 테스트 모델만 사용 가능";
+                  uploadHelp.style.color = "#ef4444";
+                }
+              }
+            }
+          }
+
+          // GLTFLoader가 있을 때만 이벤트 리스너 등록
+          if (GLTFLoader && gltfLoader) {
+            // 이벤트 리스너 등록 전 확인
+            console.log("파일 입력 이벤트 리스너 등록 시도...");
+
+            // 클릭 이벤트도 추가하여 디버깅
+            modelInput.addEventListener("click", () => {
+              console.log("파일 입력 요소 클릭됨");
+            });
+
+            modelInput.addEventListener("change", (event) => {
+              console.log("파일 입력 이벤트 발생:", event);
+              console.log("파일 입력 요소:", modelInput);
+              console.log("선택된 파일들:", modelInput.files);
+
+              const file = modelInput.files && modelInput.files[0];
+              if (!file) {
+                console.log("파일이 선택되지 않음");
+                updateStatus("파일이 선택되지 않음", true);
+                return;
+              }
+
+              updateStatus(`로딩 중: ${file.name}`);
+              console.log(
+                "파일 선택됨:",
+                file.name,
+                "크기:",
+                file.size,
+                "bytes",
+                "타입:",
+                file.type
+              );
+
+              const ext = file.name.toLowerCase().split(".").pop();
+              console.log("파일 확장자:", ext);
+
+              // 파일 형식 검증
+              if (ext !== "glb" && ext !== "gltf") {
+                console.error("지원하지 않는 파일 형식:", ext);
+                updateStatus("지원하지 않는 형식", true);
+                alert(
+                  "지원하지 않는 형식입니다. .glb 또는 .gltf를 선택하세요."
+                );
+                modelInput.value = ""; // 입력 초기화
+                return;
+              }
+
+              // 파일 크기 검증 (100MB 제한)
+              const maxSize = 100 * 1024 * 1024; // 100MB
+              if (file.size > maxSize) {
+                console.error("파일 크기가 너무 큼:", file.size);
+                updateStatus("파일이 너무 큼 (100MB 제한)", true);
+                alert(
+                  "파일 크기가 100MB를 초과합니다. 더 작은 파일을 선택해주세요."
+                );
+                modelInput.value = ""; // 입력 초기화
+                return;
+              }
+
+              // 기존 모델 제거
+              if (loadedModel) {
+                scene.remove(loadedModel);
+                loadedModel.traverse((o) => {
+                  if (o.isMesh) {
+                    o.geometry?.dispose?.();
+                    o.material?.dispose?.();
+                  }
+                });
+                loadedModel = null;
+                // 프록시 다시 보이게
+                Object.values(parts).forEach((p) => (p.mesh.visible = true));
+              }
+
+              const reader = new FileReader();
+
+              if (ext === "glb") {
+                reader.onload = (event) => {
+                  console.log("GLB 파일 읽기 완료, 파싱 시작...");
+                  console.log(
+                    "읽은 데이터 크기:",
+                    event.target.result.byteLength,
+                    "bytes"
+                  );
+                  const arrayBuffer = reader.result;
+
+                  try {
+                    gltfLoader.parse(
+                      arrayBuffer,
+                      "",
+                      (gltf) => {
+                        console.log("GLB 파싱 성공:", gltf);
+                        onModelLoaded(gltf.scene);
+                      },
+                      (err) => {
+                        console.error("GLB parse error", err);
+                        updateStatus("GLB 파싱 실패", true);
+                        alert("GLB 파일을 로드할 수 없습니다: " + err.message);
+                      }
+                    );
+                  } catch (parseError) {
+                    console.error("GLB 파싱 중 예외 발생:", parseError);
+                    updateStatus("GLB 파싱 중 오류", true);
+                    alert(
+                      "GLB 파일 파싱 중 오류가 발생했습니다: " +
+                        parseError.message
+                    );
+                  }
+                };
+                reader.onerror = (event) => {
+                  console.error("파일 읽기 실패:", event);
+                  updateStatus("파일 읽기 실패", true);
+                  alert("파일을 읽는 중 오류가 발생했습니다.");
+                };
+                reader.onprogress = (event) => {
+                  if (event.lengthComputable) {
+                    const progress = Math.round(
+                      (event.loaded / event.total) * 100
+                    );
+                    updateStatus(`파일 읽는 중... ${progress}%`);
+                  }
+                };
+                console.log("GLB 파일 읽기 시작...");
+                reader.readAsArrayBuffer(file);
+              } else if (ext === "gltf") {
+                reader.onload = (event) => {
+                  try {
+                    console.log("GLTF 파일 읽기 완료, 파싱 시작...");
+                    console.log(
+                      "읽은 텍스트 크기:",
+                      event.target.result.length,
+                      "characters"
+                    );
+                    const text = reader.result;
+
+                    // JSON 유효성 검사
+                    let gltfJson;
+                    try {
+                      gltfJson = JSON.parse(text);
+                      console.log("GLTF JSON 파싱 성공:", gltfJson);
+
+                      // 외부 리소스 참조 확인
+                      if (
+                        gltfJson.buffers &&
+                        gltfJson.buffers.some(
+                          (buffer) =>
+                            buffer.uri && !buffer.uri.startsWith("data:")
+                        )
+                      ) {
+                        console.warn(
+                          "외부 .bin 파일을 참조하는 GLTF 파일입니다:",
+                          gltfJson.buffers
+                        );
+                        updateStatus("외부 .bin 파일 참조 - GLB 권장", true);
+                        alert(
+                          "이 GLTF 파일은 외부 .bin 파일을 참조합니다.\n" +
+                            "file:// 프로토콜에서는 외부 파일 로드가 제한됩니다.\n" +
+                            "GLB 형식으로 내보내거나 웹 서버에서 실행해주세요."
+                        );
+                        return;
+                      }
+
+                      if (
+                        gltfJson.images &&
+                        gltfJson.images.some(
+                          (image) => image.uri && !image.uri.startsWith("data:")
+                        )
+                      ) {
+                        console.warn(
+                          "외부 이미지 파일을 참조하는 GLTF 파일입니다:",
+                          gltfJson.images
+                        );
+                        updateStatus("외부 이미지 파일 참조 - GLB 권장", true);
+                        alert(
+                          "이 GLTF 파일은 외부 이미지 파일을 참조합니다.\n" +
+                            "file:// 프로토콜에서는 외부 파일 로드가 제한됩니다.\n" +
+                            "GLB 형식으로 내보내거나 웹 서버에서 실행해주세요."
+                        );
+                        return;
+                      }
+                    } catch (jsonError) {
+                      console.error("GLTF JSON 파싱 실패:", jsonError);
+                      updateStatus("유효하지 않은 GLTF JSON", true);
+                      alert("유효한 GLTF JSON 파일이 아닙니다.");
+                      return;
+                    }
+
+                    const blobURL = URL.createObjectURL(
+                      new Blob([text], { type: "model/gltf+json" })
+                    );
+
+                    gltfLoader.load(
+                      blobURL,
+                      (gltf) => {
+                        URL.revokeObjectURL(blobURL);
+                        console.log("GLTF 파싱 성공:", gltf);
+                        onModelLoaded(gltf.scene);
+                      },
+                      (progress) => {
+                        console.log("GLTF 로딩 진행률:", progress);
+                      },
+                      (err) => {
+                        URL.revokeObjectURL(blobURL);
+                        console.error("GLTF 로드 실패:", err);
+                        updateStatus("GLTF 로드 실패", true);
+                        alert(
+                          "이 GLTF는 외부 리소스를 참조하는 것 같습니다. GLB로 내보내 주세요."
+                        );
+                      }
+                    );
+                  } catch (e) {
+                    console.error("GLTF 파싱 에러:", e);
+                    updateStatus("GLTF 파싱 에러", true);
+                    alert("유효한 GLTF가 아닙니다. GLB를 사용해 주세요.");
+                  }
+                };
+                reader.onerror = (event) => {
+                  console.error("GLTF 파일 읽기 실패:", event);
+                  updateStatus("파일 읽기 실패", true);
+                  alert("GLTF 파일을 읽는 중 오류가 발생했습니다.");
+                };
+                reader.onprogress = (event) => {
+                  if (event.lengthComputable) {
+                    const progress = Math.round(
+                      (event.loaded / event.total) * 100
+                    );
+                    updateStatus(`파일 읽는 중... ${progress}%`);
+                  }
+                };
+                console.log("GLTF 파일 읽기 시작...");
+                reader.readAsText(file);
+              } else {
+                updateStatus("지원하지 않는 형식", true);
+                alert(
+                  "지원하지 않는 형식입니다. .glb 또는 .gltf를 선택하세요."
+                );
+              }
+            });
+
+            function onModelLoaded(model) {
+              console.log("onModelLoaded 호출됨, 모델:", model);
+
+              if (!model) {
+                console.error("모델이 null입니다");
+                updateStatus("모델 로드 실패: 빈 모델", true);
+                return;
+              }
+
+              loadedModel = model;
+
+              // 모델 정보 로깅
+              console.log("모델 children 수:", model.children.length);
+              model.traverse((child) => {
+                console.log("Child:", child.name, child.type, child);
+                if (child.isMesh) {
+                  console.log(
+                    "  - Mesh:",
+                    child.name,
+                    "geometry:",
+                    child.geometry,
+                    "material:",
+                    child.material
+                  );
+                }
+              });
+
+              // 모델을 씬에 추가
+              scene.add(model);
+              console.log("모델이 씬에 추가됨");
+
+              // 바운딩 박스 계산
+              const box = new THREE.Box3().setFromObject(model);
+              console.log("바운딩 박스:", box);
+
+              if (box.isEmpty()) {
+                console.warn(
+                  "바운딩 박스가 비어있습니다. 모델에 지오메트리가 없을 수 있습니다."
+                );
+                updateStatus("모델 로드됨 (지오메트리 없음)", true);
+                return;
+              }
+
+              const size = new THREE.Vector3();
+              box.getSize(size);
+              const center = new THREE.Vector3();
+              box.getCenter(center);
+
+              console.log("모델 크기:", size);
+              console.log("모델 중심:", center);
+
+              // 스케일링 및 위치 조정
+              const maxDim = Math.max(size.x, size.y, size.z) || 1;
+              const scale = 1.8 / maxDim;
+              model.scale.setScalar(scale);
+              model.position.sub(center.multiplyScalar(scale));
+
+              console.log("적용된 스케일:", scale);
+              console.log("최종 위치:", model.position);
+
+              // 모든 메시에 기본 재질 적용 (가시성 보장)
+              let meshCount = 0;
+              model.traverse((child) => {
+                if (child.isMesh) {
+                  meshCount++;
+                  // 재질이 없거나 투명한 경우 기본 재질 적용
+                  if (!child.material || child.material.transparent) {
+                    child.material = new THREE.MeshStandardMaterial({
+                      color: 0x888888,
+                      metalness: 0.1,
+                      roughness: 0.7,
+                    });
+                  }
+                  // 가시성 확보
+                  child.visible = true;
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                }
+              });
+
+              console.log("처리된 메시 수:", meshCount);
+
+              // 이름 매핑 시도: pegbox/neck/body/bow
+              let mappedCount = 0;
+              ["pegbox", "neck", "body", "bow"].forEach((key) => {
+                const found = model.getObjectByName(key);
+                if (found && found.isMesh) {
+                  console.log(`"${key}" 파츠 매핑 성공:`, found);
+                  parts[key].mesh.visible = false; // 프록시 숨김
+                  parts[key].mesh = found; // 타겟 교체
+                  mappedCount++;
+
+                  if (!(found.material instanceof THREE.MeshStandardMaterial)) {
+                    const old = found.material;
+                    found.material = makeMat(parts[key].baseColor);
+                    if (old && old.dispose) old.dispose();
+                  } else {
+                    found.material.color.set(parts[key].baseColor);
+                  }
+                  found.material.needsUpdate = true;
+                } else {
+                  console.warn(
+                    `모델에서 "${key}" 오브젝트를 찾지 못했습니다. 프록시를 계속 사용합니다.`
+                  );
+                }
+              });
+
+              // 현재 UI 상태 재적용
+              ["pegbox", "neck", "body", "bow"].forEach((k) => {
+                setColor(k, document.getElementById(`color-${k}`).value);
+                const tile = parseFloat(
+                  document.getElementById(`tile-${k}`).value
+                );
+                const rot = parseFloat(
+                  document.getElementById(`rot-${k}`).value
+                );
+                setTile(k, tile);
+                setRotation(k, rot);
+              });
+
+              updateStatus(
+                `로드 완료 (메시: ${meshCount}, 매핑: ${mappedCount})`
+              );
+              console.log("모델 로딩 완료");
+
+              // 새 모델 로드 후 카메라 타겟 업데이트
+              updateCameraTarget();
+            }
+
+            // 카메라 타겟을 현재 객체 중심으로 업데이트하는 함수
+            function updateCameraTarget() {
+              const newBox = new THREE.Box3();
+              scene.traverse((child) => {
+                if (child.isMesh && child.visible) {
+                  newBox.expandByObject(child);
+                }
+              });
+
+              if (!newBox.isEmpty()) {
+                const newCenter = new THREE.Vector3();
+                newBox.getCenter(newCenter);
+                console.log("새 카메라 타겟:", newCenter);
+
+                if (controls && controls.target) {
+                  controls.target.copy(newCenter);
+                  controls.update();
+                } else {
+                  camera.lookAt(newCenter);
+                }
+              }
+            }
+
+            // ---- 뷰 리셋/전체 리셋/리사이즈/루프 ----
+            const initCamPos = camera.position.clone();
+
+            // 객체 중심점을 초기 타겟으로 설정
+            let initTarget = new THREE.Vector3(0, 0, 0);
+            const resetBox = new THREE.Box3();
+            scene.traverse((child) => {
+              if (child.isMesh && child.visible) {
+                resetBox.expandByObject(child);
+              }
+            });
+            if (!resetBox.isEmpty()) {
+              resetBox.getCenter(initTarget);
+            }
+
+            document
+              .getElementById("resetView")
+              .addEventListener("click", () => {
+                camera.position.copy(initCamPos);
+                if (controls && controls.target) {
+                  controls.target.copy(initTarget);
+                  controls.update();
+                } else {
+                  // 기본 컨트롤의 경우 카메라가 객체 중심을 바라보도록
+                  camera.lookAt(initTarget);
+                }
+                console.log("뷰 리셋 완료, 타겟:", initTarget);
+              });
+            document
+              .getElementById("resetAll")
+              .addEventListener("click", () => {
+                ["pegbox", "neck", "body", "bow"].forEach(resetPart);
+                Object.entries(parts).forEach(([k, v]) =>
+                  setColor(k, v.baseColor)
+                );
+              });
+
+            // 모델 제거 버튼
+            document
+              .getElementById("clearModel")
+              .addEventListener("click", () => {
+                if (loadedModel) {
+                  scene.remove(loadedModel);
+                  loadedModel.traverse((o) => {
+                    if (o.isMesh) {
+                      o.geometry?.dispose?.();
+                      o.material?.dispose?.();
+                    }
+                  });
+                  loadedModel = null;
+
+                  // 프록시 다시 보이게 하고 원래 메시로 복원
+                  ["pegbox", "neck", "body", "bow"].forEach((key) => {
+                    const proxyMesh = proxyGroup.getObjectByName(key);
+                    if (proxyMesh) {
+                      parts[key].mesh = proxyMesh;
+                      proxyMesh.visible = true;
+                    }
+                  });
+
+                  updateStatus("모델 제거됨");
+                  console.log("모델 제거됨");
+                }
+
+                // 파일 입력 초기화
+                document.getElementById("modelFile").value = "";
+              });
+
+            // 파일 입력 테스트 버튼
+            document
+              .getElementById("testFileInput")
+              .addEventListener("click", () => {
+                console.log("=== 파일 입력 테스트 시작 ===");
+                console.log("파일 입력 요소:", modelInput);
+                console.log("파일 입력 요소 존재:", !!modelInput);
+                console.log("파일 입력 요소 타입:", modelInput?.type);
+                console.log("파일 입력 요소 accept:", modelInput?.accept);
+                console.log("현재 선택된 파일:", modelInput?.files);
+                console.log("파일 개수:", modelInput?.files?.length);
+
+                if (modelInput?.files?.length > 0) {
+                  console.log("선택된 파일 정보:");
+                  Array.from(modelInput.files).forEach((file, index) => {
+                    console.log(`  파일 ${index + 1}:`, {
+                      name: file.name,
+                      size: file.size,
+                      type: file.type,
+                      lastModified: new Date(file.lastModified),
+                    });
+                  });
+                } else {
+                  console.log("선택된 파일이 없습니다.");
+                }
+
+                // 파일 선택 다이얼로그 강제 열기
+                console.log("파일 선택 다이얼로그 열기 시도...");
+                modelInput?.click();
+                console.log("=== 파일 입력 테스트 완료 ===");
+
+                updateStatus("파일 입력 테스트 완료 - 콘솔 확인");
+              });
+          } else {
+            console.log("GLTFLoader 없음, 파일 업로드 기능 건너뜀");
+            // GLTFLoader가 없을 때 사용자에게 알림
+            const statusMsg = "GLTFLoader 없음 - 기본 모델만 사용 가능";
+            updateStatus(statusMsg, false);
+          }
+
+          // 테스트 모델 생성 버튼
+          document
+            .getElementById("createTestModel")
+            .addEventListener("click", () => {
+              console.log("=== 테스트 모델 생성 시작 ===");
+
+              try {
+                // 간단한 큐브 모델 생성
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshStandardMaterial({
+                  color: 0x00ff00,
+                  metalness: 0.1,
+                  roughness: 0.7,
+                });
+                const testCube = new THREE.Mesh(geometry, material);
+                testCube.position.set(1.5, 0, 0);
+                testCube.name = "TestCube";
+
+                // 기존 모델 제거
+                if (loadedModel) {
+                  scene.remove(loadedModel);
+                  loadedModel.traverse((o) => {
+                    if (o.isMesh) {
+                      o.geometry?.dispose?.();
+                      o.material?.dispose?.();
+                    }
+                  });
+                }
+
+                // 테스트 모델을 그룹으로 만들어서 추가
+                const testGroup = new THREE.Group();
+                testGroup.add(testCube);
+                testGroup.name = "TestModel";
+
+                scene.add(testGroup);
+                loadedModel = testGroup;
+
+                console.log("테스트 모델 생성 완료:", testGroup);
+                updateStatus("테스트 모델 생성 완료");
+
+                // 프록시 모델 숨기기
+                Object.values(parts).forEach((p) => (p.mesh.visible = false));
+
+                // 카메라 타겟 업데이트
+                updateCameraTarget();
+              } catch (error) {
+                console.error("테스트 모델 생성 실패:", error);
+                updateStatus("테스트 모델 생성 실패", true);
+              }
+            });
+
+          window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+          });
+
+          try {
+            console.log("렌더링 루프 시작...");
+            renderer.setAnimationLoop(() => {
+              if (controls && controls.update) {
+                controls.update();
+              }
+              renderer.render(scene, camera);
+            });
+            console.log("렌더링 루프 설정 완료");
+          } catch (renderError) {
+            console.error("렌더링 루프 설정 실패:", renderError);
+            throw new Error("렌더링 초기화 실패: " + renderError.message);
+          }
+
+          console.log("=== 앱 초기화 완료 ===");
+          updateStatus("초기화 완료");
+        } catch (error) {
+          console.error("=== 앱 초기화 중 오류 발생 ===");
+          console.error("오류 메시지:", error.message);
+          console.error("오류 스택:", error.stack);
+          updateStatus("초기화 실패", true);
+        }
+      }
+
+      // updateStatus 함수 정의
+      function updateStatus(message, isError = false) {
+        console.log("updateStatus 호출됨:", message, isError);
+        const status = document.getElementById("loadStatus");
+        if (status) {
+          status.textContent = message;
+          status.style.color = isError ? "#ef4444" : "#94a3b8";
+        }
+      }
+
+      // 페이지 로드 완료 후 모듈 로드 시작
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", loadModules);
+      } else {
+        loadModules();
+      }
+    </script>
+  </body>
+</html>
