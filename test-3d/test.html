@@ -565,6 +565,9 @@
         cameraAngleY = Math.atan2(initialPos.x, initialPos.z);
         cameraAngleX = Math.asin(initialPos.y / cameraDistance);
 
+        // 현재 X축 각도를 고정값으로 저장
+        const fixedCameraAngleX = cameraAngleX;
+
         renderer.domElement.addEventListener("mousedown", (event) => {
           isMouseDown = true;
           mouseX = event.clientX;
@@ -578,13 +581,8 @@
           const deltaY = event.clientY - mouseY;
 
           cameraAngleY -= deltaX * 0.01;
-          cameraAngleX -= deltaY * 0.01;
-
-          // 각도 제한
-          cameraAngleX = Math.max(
-            -Math.PI / 2 + 0.1,
-            Math.min(Math.PI / 2 - 0.1, cameraAngleX)
-          );
+          // X축 회전은 고정 - Y축 회전만 허용
+          cameraAngleX = fixedCameraAngleX;
 
           updateCameraPosition();
 
@@ -685,7 +683,7 @@
               0.1,
               100
             );
-            camera.position.set(2.4, 1.4, 3.4);
+            camera.position.set(0, 0, 5);
             console.log("카메라 생성 완료");
           } catch (sceneError) {
             console.error("씬/카메라 생성 실패:", sceneError);
@@ -713,6 +711,17 @@
             if (OrbitControls) {
               controls = new OrbitControls(camera, renderer.domElement);
               controls.enableDamping = true;
+              controls.enableRotate = true;
+              controls.enableZoom = true;
+              controls.enablePan = true;
+
+              // 현재 카메라 각도를 기준으로 X축 고정
+              const currentPos = camera.position.clone().sub(targetCenter);
+              const currentDistance = currentPos.length();
+              const currentAngleX = Math.asin(currentPos.y / currentDistance);
+
+              controls.minPolarAngle = currentAngleX; // 현재 각도로 고정
+              controls.maxPolarAngle = currentAngleX; // 현재 각도로 고정
               controls.target.copy(targetCenter); // 객체 중심을 타겟으로 설정
               controls.update();
               console.log("OrbitControls 초기화 완료, 타겟:", controls.target);
@@ -1409,7 +1418,7 @@
             }
 
             // ---- 뷰 리셋/전체 리셋/리사이즈/루프 ----
-            const initCamPos = camera.position.clone();
+            const initCamPos = new THREE.Vector3(0, 0, 5);
 
             // 객체 중심점을 초기 타겟으로 설정
             let initTarget = new THREE.Vector3(0, 0, 0);
