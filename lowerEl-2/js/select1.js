@@ -58,4 +58,59 @@ $(function () {
       window.location.href = "ktm.html";
     }, 3000);
   });
+
+  const $targetNeck = $("#target-neck");
+  const $targetBody = $("#target-body");
+  const $targetJua = $("#target-jua");
+  const $targetBow = $("#target-bow");
+  const $targetMenu = $("#target-menu");
+  var currentTarget = "neck"; // neck, body, jua, bow
+
+  // paints
+  const $paintBlue = $("#paint-blue");
+  const $paintPink = $("#paint-pink");
+  const $paintGreen = $("#paint-green");
+  const $paintYellow = $("#paint-yellow");
+
+  $targetNeck.on("click", function () {
+    $targetMenu.attr("src", "img/select/haegeum/menu-neck.png");
+    currentTarget = "neck";
+  });
+  $targetBody.on("click", function () {
+    $targetMenu.attr("src", "img/select/haegeum/menu-body.png");
+    currentTarget = "body";
+  });
+  $targetJua.on("click", function () {
+    $targetMenu.attr("src", "img/select/haegeum/menu-jua.png");
+    currentTarget = "jua";
+  });
+  $targetBow.on("click", function () {
+    $targetMenu.attr("src", "img/select/haegeum/menu-bow.png");
+    currentTarget = "bow";
+  });
+
+  $paintBlue.on("click", function () {
+    $(`#haegeum-${currentTarget}`).attr(
+      "src",
+      `img/select/haegeum/${currentTarget}-blue.png`
+    );
+  });
+  $paintPink.on("click", function () {
+    $(`#haegeum-${currentTarget}`).attr(
+      "src",
+      `img/select/haegeum/${currentTarget}-pink.png`
+    );
+  });
+  $paintGreen.on("click", function () {
+    $(`#haegeum-${currentTarget}`).attr(
+      "src",
+      `img/select/haegeum/${currentTarget}-green.png`
+    );
+  });
+  $paintYellow.on("click", function () {
+    $(`#haegeum-${currentTarget}`).attr(
+      "src",
+      `img/select/haegeum/${currentTarget}-yellow.png`
+    );
+  });
 });
