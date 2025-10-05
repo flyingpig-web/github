@@ -11,6 +11,10 @@
   filter: var(--btn-active-effect);
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 html,
 body {
   overflow: hidden;

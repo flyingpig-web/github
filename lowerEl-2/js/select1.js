@@ -72,45 +72,126 @@ $(function () {
   const $paintGreen = $("#paint-green");
   const $paintYellow = $("#paint-yellow");
 
+  // targetSound
+  const soundMap = {
+    neck: { src: "ch2_07", isPlayed: false },
+    body: { src: "ch2_08", isPlayed: false },
+    jua: { src: "ch2_09", isPlayed: false },
+    bow: { src: "ch2_10", isPlayed: false },
+  };
+  const effect = $("#effect")[0];
+
+  const paintMap = {
+    neck: "",
+    body: "",
+    jua: "",
+    bow: "",
+  };
+
   $targetNeck.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-neck.png");
     currentTarget = "neck";
+    if (!soundMap[currentTarget].isPlayed) {
+      $(`#${soundMap[currentTarget].src}`)[0].play();
+      soundMap[currentTarget].isPlayed = true;
+    }
   });
   $targetBody.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-body.png");
     currentTarget = "body";
+    if (!soundMap[currentTarget].isPlayed) {
+      $(`#${soundMap[currentTarget].src}`)[0].play();
+      soundMap[currentTarget].isPlayed = true;
+    }
   });
   $targetJua.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-jua.png");
     currentTarget = "jua";
+    if (!soundMap[currentTarget].isPlayed) {
+      $(`#${soundMap[currentTarget].src}`)[0].play();
+      soundMap[currentTarget].isPlayed = true;
+    }
   });
   $targetBow.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-bow.png");
     currentTarget = "bow";
+    if (!soundMap[currentTarget].isPlayed) {
+      $(`#${soundMap[currentTarget].src}`)[0].play();
+      soundMap[currentTarget].isPlayed = true;
+    }
   });
 
   $paintBlue.on("click", function () {
+    effect.currentTime = 0;
+    effect.play();
+    paintMap[currentTarget] = "blue";
     $(`#haegeum-${currentTarget}`).attr(
       "src",
       `img/select/haegeum/${currentTarget}-blue.png`
     );
+    checkPaintMapComplete();
   });
   $paintPink.on("click", function () {
+    effect.currentTime = 0;
+    effect.play();
+    paintMap[currentTarget] = "pink";
     $(`#haegeum-${currentTarget}`).attr(
       "src",
       `img/select/haegeum/${currentTarget}-pink.png`
     );
+    checkPaintMapComplete();
   });
   $paintGreen.on("click", function () {
+    effect.currentTime = 0;
+    effect.play();
+    paintMap[currentTarget] = "green";
     $(`#haegeum-${currentTarget}`).attr(
       "src",
       `img/select/haegeum/${currentTarget}-green.png`
     );
+    checkPaintMapComplete();
   });
   $paintYellow.on("click", function () {
+    effect.currentTime = 0;
+    effect.play();
+    paintMap[currentTarget] = "yellow";
     $(`#haegeum-${currentTarget}`).attr(
       "src",
       `img/select/haegeum/${currentTarget}-yellow.png`
     );
+    checkPaintMapComplete();
+  });
+
+  const $select1Success = $(".select-1-success");
+  const $successButton = $(".success-button");
+
+  // paintMap이 모두 채워졌는지 확인하는 함수
+  function checkPaintMapComplete() {
+    const allParts = Object.values(paintMap);
+    const isComplete = allParts.every((color) => color !== "");
+
+    if (isComplete) {
+      $select1Success.removeClass("display-none");
+    }
+  }
+
+  $successButton.on("mousedown", function () {
+    $successButton.attr("src", "img/select/haegeum/success-active.png");
+  });
+
+  $successButton.on("mouseup", function () {
+    $successButton.attr("src", "img/select/haegeum/success.png");
+  });
+
+  $successButton.on("mouseleave", function () {
+    $successButton.attr("src", "img/select/haegeum/success.png");
+  });
+
+  $successButton.on("click", function () {
+    const queryParams = new URLSearchParams();
+    for (const [part, color] of Object.entries(paintMap)) {
+      queryParams.append(part, color);
+    }
+    window.location.href = `select2.html?${queryParams.toString()}`;
   });
 });
