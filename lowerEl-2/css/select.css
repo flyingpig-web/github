@@ -141,3 +141,91 @@
 .select-1-success .success-button {
   width: 40%;
 }
+
+/* select-2 */
+.select-main-2 {
+  background: url(../img/select/detail/main-bg.png) center/contain no-repeat;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.up-btn {
+  background: url(../img/select/detail/up.png) center/contain no-repeat;
+  width: 10%;
+  height: 20%;
+  position: absolute;
+  bottom: 5%;
+  left: 37%;
+}
+
+.down-btn {
+  background: url(../img/select/detail/down.png) center/contain no-repeat;
+  width: 10%;
+  height: 20%;
+  position: absolute;
+  bottom: 5%;
+  left: 54%;
+}
+
+.finish-btn {
+  background: url(../img/select/detail/finish.png) center/contain no-repeat;
+  width: 20%;
+  height: 20%;
+  position: absolute;
+  bottom: 0%;
+  right: 3%;
+}
+
+.success-board {
+  width: 80%;
+  transform: translate(12%, 9%);
+}
+
+.ktm-card {
+  position: absolute;
+  width: fit-content;
+  height: 50%;
+  left: 40%;
+  top: 17%;
+  /* transition: transform 0.3s ease-out; */
+  cursor: pointer;
+}
+
+.ktm-card-off {
+  display: none;
+  position: absolute;
+  width: fit-content;
+  height: 64%;
+  left: 36%;
+  top: 10%;
+  transition: transform 0.3s ease-out;
+}
+
+.ktm-wrapper .btn-replay {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  left: 27%;
+  bottom: 7%;
+  background-image: url(../img/common/replay-2.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.ktm-wrapper .btn-replay:hover {
+  background-image: url(../img/common/replay-active.png);
+}
+
+.ktm-wrapper .btn-home {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  right: 28%;
+  bottom: 7%;
+  background-image: url(../img/common/exit.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.ktm-wrapper .btn-home:hover {
+  background-image: url(../img/common/exit_active.png);
+}
