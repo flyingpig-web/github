@@ -342,3 +342,33 @@
   bottom: 50%;
   left: 27%;
 }
+
+.notes {
+  display: none;
+}
+
+.notes.playing {
+  display: block;
+}
+
+#note-1 {
+  position: absolute;
+  top: 68%;
+  left: 38%;
+  width: 3%;
+  z-index: 1;
+}
+
+#note-2 {
+  position: absolute;
+  top: 36%;
+  left: 36%;
+  width: 5%;
+}
+
+#note-3 {
+  position: absolute;
+  top: 34%;
+  left: 60%;
+  width: 8%;
+}

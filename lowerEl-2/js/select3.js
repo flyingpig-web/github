@@ -69,6 +69,16 @@ $(function () {
     $(".progress-bar-fill").css("height", `${progressPercentage}%`);
   }
 
+  // 연주 중일 때 모든 notes 표시하는 함수
+  function showAllNotes() {
+    $(".notes").addClass("playing");
+  }
+
+  // 연주가 끝났을 때 모든 notes 숨기는 함수
+  function hideAllNotes() {
+    $(".notes").removeClass("playing");
+  }
+
   // 간단한 클릭으로 테스트
   $(".select-3-bow").on("click", function (e) {
     playNextNote();
@@ -100,6 +110,11 @@ $(function () {
           if (totalMoves < maxMoves) {
             totalMoves++;
             updateProgress();
+          }
+
+          // 첫 번째 노트 재생 시 모든 notes 표시
+          if (playIndex === 0) {
+            showAllNotes();
           }
 
           // 현재 재생 중인 소리 멈춤
@@ -140,6 +155,11 @@ $(function () {
 
               // 인덱스 증가
               playIndex++;
+
+              // 모든 노트 재생 완료 시 notes 숨김
+              if (playIndex >= plays.length) {
+                hideAllNotes();
+              }
             }, 200);
           } else {
           }
@@ -178,6 +198,11 @@ $(function () {
   function playNextNote() {
     if (playIndex >= plays.length) return;
 
+    // 첫 번째 노트 재생 시 모든 notes 표시
+    if (playIndex === 0) {
+      showAllNotes();
+    }
+
     // 현재 재생 중인 소리 멈춤
     if (currentAudio) {
       currentAudio.pause();
@@ -215,6 +240,11 @@ $(function () {
 
       // 인덱스 증가는 여기서만 한 번
       playIndex++;
+
+      // 모든 노트 재생 완료 시 notes 숨김
+      if (playIndex >= plays.length) {
+        hideAllNotes();
+      }
     }, 1000);
   }
 
