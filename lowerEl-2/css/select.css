@@ -291,6 +291,9 @@
 }
 .sound-card.active {
   height: 100%;
+  box-shadow: 0 0 20px #ffe600, 0 0 40px #ffe600;
+  border: 2px solid #ffe600;
+  border-radius: 8px;
 }
 
 .sound-card.mi {
@@ -327,6 +330,7 @@
 .select-3-bow {
   width: 100%;
   transform: rotate(18deg);
+  cursor: pointer;
 }
 
 .select-3-arrow {
