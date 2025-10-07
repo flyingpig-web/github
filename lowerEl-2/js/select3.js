@@ -74,9 +74,10 @@ $(function () {
     $(".notes").addClass("playing");
   }
 
-  // 연주가 끝났을 때 모든 notes 숨기는 함수
+  // 연주가 끝났을 때 모든 notes와 arrow 숨기는 함수
   function hideAllNotes() {
     $(".notes").removeClass("playing");
+    $(".select-3-arrow").fadeOut(500);
   }
 
   // 간단한 클릭으로 테스트
