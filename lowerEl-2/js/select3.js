@@ -18,7 +18,7 @@ $(function () {
   });
 
   $close.on("click", function () {
-    $tutorial.fadeOut(500);
+    $tutorial.fadeOut(200);
     bgmTutorial.pause();
     bgmMain.play();
     setTimeout(() => {
@@ -57,6 +57,9 @@ $(function () {
   let dragStartY = 0;
   let currentAudio = null;
   let hasMovedEnough = false;
+  let lastDirection = null; // 'left', 'right', null
+  let lastPosition = { left: 0, top: 0 };
+  let directionChangeCount = 0; // 방향 변경 횟수 추적
 
   // 간단한 클릭으로 테스트
   $(".select-3-bow").on("click", function (e) {
@@ -70,28 +73,80 @@ $(function () {
       console.log("드래그 시작");
       isDragging = true;
       hasMovedEnough = false;
+      lastDirection = null;
+      lastPosition = { left: ui.position.left, top: ui.position.top };
     },
     drag: function (event, ui) {
       if (!isDragging) return;
 
-      const deltaX = ui.position.left - (ui.originalPosition.left || 0);
-      const deltaY = ui.position.top - (ui.originalPosition.top || 0);
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+      const currentX = ui.position.left;
+      const lastX = lastPosition.left;
+      const deltaX = currentX - lastX;
 
-      console.log("움직임 거리:", distance);
+      // 충분한 거리를 움직였을 때만 방향 감지
+      if (Math.abs(deltaX) > 15) {
+        // 15px 이상 움직였을 때만
+        let currentDirection = deltaX > 0 ? "right" : "left";
 
-      // 5% 이상 움직였는지 확인 (최소 20px)
-      const minDistance = Math.max(20, window.innerWidth * 0.05);
-      if (distance >= minDistance && !hasMovedEnough) {
-        hasMovedEnough = true;
-        console.log("충분히 움직임! 노트 재생");
-        playNextNote();
+        // 방향이 바뀌었을 때만 새로운 노트 재생
+        if (currentDirection !== lastDirection) {
+          console.log("방향 변경됨! 노트 재생 -", playIndex);
+
+          // 현재 재생 중인 소리 멈춤
+          if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+          }
+
+          // 새 소리 재생 (안전하게 체크)
+          if (plays[playIndex]) {
+            currentAudio = plays[playIndex];
+            currentAudio.currentTime = 0;
+            currentAudio.play();
+
+            // 해당 sound-card에 active 클래스 추가
+            const $targetCard = $(`.sound-card[data-index="${playIndex}"]`);
+            $targetCard.addClass("active");
+
+            // 활대 움직임 효과
+            const $bow = $(".select-3-bow");
+            const moveX = (Math.random() - 0.5) * 20; // -10px ~ 10px
+            const moveY = (Math.random() - 0.5) * 20;
+            $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
+
+            // 1초 후 active 클래스 제거 및 카드 축소
+            setTimeout(() => {
+              $targetCard.removeClass("active");
+              $targetCard.css({
+                transform: "scale(0.8) translateX(-50px)",
+                opacity: "0",
+                transition: "all 0.2s ease",
+              });
+
+              // 카드 완전히 사라진 후 제거
+              setTimeout(() => {
+                $targetCard.remove();
+              }, 200);
+
+              // 인덱스 증가
+              playIndex++;
+              console.log("다음 인덱스:", playIndex);
+            }, 1000);
+          } else {
+            console.log("연주 완료! 더 이상 재생할 노트가 없습니다.");
+          }
+
+          lastDirection = currentDirection;
+          // 위치를 현재 위치로 업데이트 (다음 방향 감지를 위해)
+          lastPosition = { left: currentX, top: ui.position.top };
+        }
       }
     },
     stop: function (event, ui) {
       console.log("드래그 종료");
       isDragging = false;
       hasMovedEnough = false;
+      lastDirection = null;
 
       // 현재 재생 중인 소리 멈춤
       if (currentAudio) {
@@ -115,6 +170,8 @@ $(function () {
   // 다음 노트 재생
   function playNextNote() {
     if (playIndex >= plays.length) return;
+
+    console.log("노트 재생:", playIndex);
 
     // 현재 재생 중인 소리 멈춤
     if (currentAudio) {
@@ -143,15 +200,17 @@ $(function () {
       $targetCard.css({
         transform: "scale(0.8) translateX(-50px)",
         opacity: "0",
-        transition: "all 0.5s ease",
+        transition: "all 0.2s ease",
       });
 
       // 카드 완전히 사라진 후 제거
       setTimeout(() => {
         $targetCard.remove();
-      }, 500);
+      }, 200);
 
+      // 인덱스 증가는 여기서만 한 번
       playIndex++;
+      console.log("다음 인덱스:", playIndex);
     }, 1000);
   }
 
