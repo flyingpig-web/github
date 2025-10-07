@@ -126,12 +126,12 @@ $(function () {
               // 카드 완전히 사라진 후 제거
               setTimeout(() => {
                 $targetCard.remove();
-              }, 200);
+              }, 100);
 
               // 인덱스 증가
               playIndex++;
               console.log("다음 인덱스:", playIndex);
-            }, 1000);
+            }, 200);
           } else {
             console.log("연주 완료! 더 이상 재생할 노트가 없습니다.");
           }
