@@ -34,7 +34,7 @@ $(function () {
   );
   handleSelectButtonClick(
     $(".btn-select-02"),
-    "select2.html",
+    "select3.html",
     "sound/dubs/ch2_04.mp3"
   );
   handleSelectButtonClick(

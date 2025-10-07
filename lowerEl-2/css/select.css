@@ -229,3 +229,109 @@
 .ktm-wrapper .btn-home:hover {
   background-image: url(../img/common/exit_active.png);
 }
+
+/* select-3 */
+
+.tutorial-3 {
+  background-image: url(../img/select/3/tutorial.png);
+}
+
+.select-main-3 {
+  background: url(../img/select/3/main-bg.png) center/contain no-repeat;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.progress-bar {
+  width: 3%;
+  height: 57%;
+  padding: 4px;
+  border-radius: 50px;
+  background-color: #67a32f;
+  position: absolute;
+  top: 27%;
+  left: 4.7%;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  width: 100%;
+  height: 0%;
+  border-radius: 50px;
+  background-color: #98ce92;
+}
+
+.progress-bar-icon {
+  width: 10%;
+  height: 10%;
+  position: absolute;
+  top: 75%;
+  left: 1.1%;
+}
+
+.sound-card-wrapper {
+  position: absolute;
+  width: 49%;
+  height: 20%;
+  top: 44%;
+  right: 3.35%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  gap: 1%;
+}
+
+.sound-card {
+  width: 22%;
+  height: 90%;
+  flex-shrink: 0;
+}
+.sound-card.active {
+  height: 100%;
+}
+
+.sound-card.mi {
+  background: url(../img/select/3/mi.png) center/contain no-repeat;
+}
+
+.sound-card.ra {
+  background: url(../img/select/3/ra.png) center/contain no-repeat;
+}
+
+.sound-card.high-do {
+  background: url(../img/select/3/high-do.png) center/contain no-repeat;
+}
+
+.sound-card.si {
+  background: url(../img/select/3/si.png) center/contain no-repeat;
+}
+
+.sound-card.high-mi {
+  background: url(../img/select/3/high-mi.png) center/contain no-repeat;
+}
+
+.select-3-bow-wrapper {
+  position: relative;
+  width: 44%;
+  height: 25%;
+  top: 56%;
+  left: 19%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.select-3-bow {
+  width: 100%;
+  transform: rotate(18deg);
+}
+
+.select-3-arrow {
+  width: 4%;
+  position: absolute;
+  bottom: 50%;
+  left: 27%;
+}

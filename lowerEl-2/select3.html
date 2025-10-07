@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>해금 알기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/import.css"
+    />
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <!-- <div
+          class="dimmed bg info-1"
+          style="background-color: transparent !important"
+        ></div> -->
+        <div
+          class="dimmed bg info-1 display-none"
+          style="background-color: transparent !important"
+        ></div>
+        <div class="dimmed bg tutorial-3 display-none pointer-none">
+          <div
+            class="close"
+            role="button"
+            style="background: none; width: 7%; height: 12%; top: 8%; right: 3%"
+          ></div>
+        </div>
+
+        <!-- <div class="select-main-3 pointer-none"> -->
+        <div class="select-main-3">
+          <div class="container select-bg">
+            <a
+              onclick="window.history.back()"
+              class="btn-top btn-back btn-effect"
+              role="button"
+            >
+              <span class="sr-only">뒤로가기</span>
+            </a>
+
+            <a
+              href="main.html"
+              class="btn-top btn-home btn-effect"
+              role="button"
+            >
+              <span class="sr-only">홈으로</span>
+            </a>
+
+            <!-- Play -->
+            <div class="play-wrap">
+              <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+              </div>
+              <img
+                src="img/select/3/progress-bar-icon.png"
+                class="progress-bar-icon"
+              />
+
+              <div class="sound-card-wrapper">
+                <div class="sound-card mi" data-index="0"></div>
+                <div class="sound-card ra" data-index="1"></div>
+                <div class="sound-card mi" data-index="2"></div>
+                <div class="sound-card ra" data-index="3"></div>
+                <div class="sound-card ra" data-index="4"></div>
+
+                <div class="sound-card mi" data-index="5"></div>
+                <div class="sound-card ra" data-index="6"></div>
+                <div class="sound-card mi" data-index="7"></div>
+                <div class="sound-card ra" data-index="8"></div>
+                <div class="sound-card ra" data-index="9"></div>
+
+                <div class="sound-card ra" data-index="10"></div>
+                <div class="sound-card ra" data-index="11"></div>
+                <div class="sound-card ra" data-index="12"></div>
+                <div class="sound-card high-do" data-index="13"></div>
+                <div class="sound-card si" data-index="14"></div>
+
+                <div class="sound-card high-do" data-index="15"></div>
+                <div class="sound-card si" data-index="16"></div>
+                <div class="sound-card ra" data-index="17"></div>
+                <div class="sound-card ra" data-index="18"></div>
+                <div class="sound-card high-mi" data-index="19"></div>
+                <div class="sound-card high-do" data-index="20"></div>
+                <div class="sound-card high-mi" data-index="21"></div>
+              </div>
+
+              <div class="select-3-bow-wrapper">
+                <img class="select-3-bow" src="img/select/3/bow.png" />
+              </div>
+
+              <img class="select-3-arrow" src="img/select/3/arrow.png" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="select-3-success dimmed display-none">
+        <img
+          src="img/select/detail/success_eunjae.png"
+          alt="성공"
+          class="success-board"
+        />
+      </div> -->
+
+      <div class="ktm-wrapper display-none dimmed">
+        <div class="container">
+          <img src="img/common/ktm_card.png" class="ktm-card" role="button" />
+          <img
+            src="img/common/ktm_card_off.png"
+            class="ktm-card-off"
+            role="button"
+          />
+
+          <a class="btn-replay" role="button" onclick="location.reload()"></a>
+          <a class="btn-home" role="button" href="main.html"></a>
+        </div>
+      </div>
+
+      <audio id="bgm-tutorial" src="sound/dubs/ch2_13.mp3"></audio>
+      <audio id="bgm-main" src="sound/dubs/ch2_14.mp3"></audio>
+
+      <!-- plays -->
+      <audio id="mi" src="sound/hadgeum/mi.mp3"></audio>
+      <audio id="ra" src="sound/hadgeum/ra.mp3"></audio>
+      <audio id="si" src="sound/hadgeum/si.mp3"></audio>
+      <audio id="high-do" src="sound/hadgeum/high-do.mp3"></audio>
+      <audio id="high-mi" src="sound/hadgeum/high-mi.mp3"></audio>
+    </main>
+
+    <!-- Scripts loaded after DOM is ready -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/select3.js"></script>
+  </body>
+</html>
