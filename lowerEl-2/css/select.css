@@ -260,13 +260,16 @@
   height: 0%;
   border-radius: 50px;
   background-color: #98ce92;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .progress-bar-icon {
   width: 10%;
   height: 10%;
   position: absolute;
-  top: 75%;
+  top: 80%;
   left: 1.1%;
 }
 

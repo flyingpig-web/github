@@ -60,17 +60,23 @@ $(function () {
   let lastDirection = null; // 'left', 'right', null
   let lastPosition = { left: 0, top: 0 };
   let directionChangeCount = 0; // 방향 변경 횟수 추적
+  let totalMoves = 0; // 총 움직임 횟수 (최대 22)
+  const maxMoves = 22; // 최대 움직임 횟수
+
+  // 진행도 업데이트 함수
+  function updateProgress() {
+    const progressPercentage = (totalMoves / maxMoves) * 100;
+    $(".progress-bar-fill").css("height", `${progressPercentage}%`);
+  }
 
   // 간단한 클릭으로 테스트
   $(".select-3-bow").on("click", function (e) {
-    console.log("활대 클릭됨");
     playNextNote();
   });
 
   // jQuery UI 드래그 기능 사용
   $(".select-3-bow").draggable({
     start: function (event, ui) {
-      console.log("드래그 시작");
       isDragging = true;
       hasMovedEnough = false;
       lastDirection = null;
@@ -90,7 +96,11 @@ $(function () {
 
         // 방향이 바뀌었을 때만 새로운 노트 재생
         if (currentDirection !== lastDirection) {
-          console.log("방향 변경됨! 노트 재생 -", playIndex);
+          // 움직임 횟수 증가 (최대 22번)
+          if (totalMoves < maxMoves) {
+            totalMoves++;
+            updateProgress();
+          }
 
           // 현재 재생 중인 소리 멈춤
           if (currentAudio) {
@@ -130,10 +140,8 @@ $(function () {
 
               // 인덱스 증가
               playIndex++;
-              console.log("다음 인덱스:", playIndex);
             }, 200);
           } else {
-            console.log("연주 완료! 더 이상 재생할 노트가 없습니다.");
           }
 
           lastDirection = currentDirection;
@@ -143,7 +151,6 @@ $(function () {
       }
     },
     stop: function (event, ui) {
-      console.log("드래그 종료");
       isDragging = false;
       hasMovedEnough = false;
       lastDirection = null;
@@ -170,8 +177,6 @@ $(function () {
   // 다음 노트 재생
   function playNextNote() {
     if (playIndex >= plays.length) return;
-
-    console.log("노트 재생:", playIndex);
 
     // 현재 재생 중인 소리 멈춤
     if (currentAudio) {
@@ -210,7 +215,6 @@ $(function () {
 
       // 인덱스 증가는 여기서만 한 번
       playIndex++;
-      console.log("다음 인덱스:", playIndex);
     }, 1000);
   }
 
