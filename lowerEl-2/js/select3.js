@@ -76,9 +76,6 @@ $(function () {
     $(".notes").addClass("playing");
   }
 
-  setTimeout(() => {
-    hideAllNotes();
-  }, 2000);
   // 연주가 끝났을 때 모든 notes와 arrow 숨기는 함수
   function hideAllNotes() {
     $(".notes").removeClass("playing");
@@ -94,11 +91,6 @@ $(function () {
       }, 3000);
     }, 500);
   }
-
-  // 간단한 클릭으로 테스트
-  $(".select-3-bow").on("click", function (e) {
-    playNextNote();
-  });
 
   // jQuery UI 드래그 기능 사용
   $(".select-3-bow").draggable({
