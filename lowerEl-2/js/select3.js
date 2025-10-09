@@ -109,7 +109,6 @@ $(function () {
   // 연주가 끝났을 때 모든 notes와 arrow 숨기는 함수
   function hideAllNotes() {
     $(".notes").removeClass("playing");
-
     setTimeout(() => {
       $(".select-3-success").removeClass("display-none");
       successBgm.play();
@@ -131,7 +130,7 @@ $(function () {
     },
     drag: function (event, ui) {
       if (!isDragging) return;
-
+      $(".select-3-arrow").hide();
       const currentX = ui.position.left;
       const lastX = lastPosition.left;
       const deltaX = currentX - lastX;
@@ -147,6 +146,12 @@ $(function () {
           if (totalMoves < maxMoves) {
             totalMoves++;
             updateProgress();
+
+            // 모든 움직임 완료 시 즉시 완료 처리
+            if (totalMoves >= maxMoves) {
+              hideAllNotes();
+              return;
+            }
           }
 
           // 첫 번째 노트 재생 시 모든 notes 표시
@@ -164,8 +169,9 @@ $(function () {
           clearAllTimeouts();
           clearAllActiveCards();
 
-          // 새 소리 재생 (안전하게 체크)
-          if (plays[playIndex]) {
+          // playIndex가 범위를 벗어나지 않도록 체크
+          if (playIndex < plays.length) {
+            // 새 소리 재생
             currentAudio = plays[playIndex];
             currentAudio.currentTime = 0;
             currentAudio.play();
@@ -180,24 +186,16 @@ $(function () {
             const moveY = (Math.random() - 0.5) * 20;
             $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
 
-            // playIndex 즉시 증가 (progress와 동기화)
-            playIndex++;
-
             // 200ms 후 카드 제거
             const timeoutId = setTimeout(() => {
               removeCardImmediately($targetCard);
-
-              // 모든 노트 재생 완료 시 notes 숨김
-              if (playIndex >= plays.length) {
-                hideAllNotes();
-              }
             }, 200);
 
             activeTimeouts.push(timeoutId);
-          } else {
-            // plays[playIndex]가 없어도 playIndex는 증가
-            playIndex++;
           }
+
+          // playIndex 증가 (progress와 동기화)
+          playIndex++;
 
           lastDirection = currentDirection;
           // 위치를 현재 위치로 업데이트 (다음 방향 감지를 위해)
@@ -220,6 +218,11 @@ $(function () {
       // 드래그 종료 시 남아있는 모든 카드 정리
       clearAllTimeouts();
       clearAllActiveCards();
+
+      // 모든 움직임 완료 시 완료 처리
+      if (totalMoves >= maxMoves) {
+        hideAllNotes();
+      }
 
       // 활대 원래 위치로 복원
       $(this).css({
@@ -252,40 +255,38 @@ $(function () {
     clearAllTimeouts();
     clearAllActiveCards();
 
-    // 새 소리 재생
-    currentAudio = plays[playIndex];
-    currentAudio.currentTime = 0;
-    currentAudio.play();
+    // playIndex가 범위를 벗어나지 않도록 체크
+    if (playIndex < plays.length) {
+      // 새 소리 재생
+      currentAudio = plays[playIndex];
+      currentAudio.currentTime = 0;
+      currentAudio.play();
 
-    // 해당 sound-card에 active 클래스 추가
-    const $targetCard = $(`.sound-card[data-index="${playIndex}"]`);
-    $targetCard.addClass("active");
+      // 해당 sound-card에 active 클래스 추가
+      const $targetCard = $(`.sound-card[data-index="${playIndex}"]`);
+      $targetCard.addClass("active");
 
-    // 활대 움직임 효과
-    const $bow = $(".select-3-bow");
-    const moveX = (Math.random() - 0.5) * 20; // -10px ~ 10px
-    const moveY = (Math.random() - 0.5) * 20;
-    $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
+      // 활대 움직임 효과
+      const $bow = $(".select-3-bow");
+      const moveX = (Math.random() - 0.5) * 20; // -10px ~ 10px
+      const moveY = (Math.random() - 0.5) * 20;
+      $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
 
-    // playIndex 즉시 증가 (progress와 동기화)
+      // 1000ms 후 카드 제거
+      const timeoutId = setTimeout(() => {
+        removeCardImmediately($targetCard);
+      }, 1000);
+
+      activeTimeouts.push(timeoutId);
+    }
+
+    // playIndex 증가 (progress와 동기화)
     playIndex++;
-
-    // 1000ms 후 카드 제거
-    const timeoutId = setTimeout(() => {
-      removeCardImmediately($targetCard);
-
-      // 모든 노트 재생 완료 시 notes 숨김
-      if (playIndex >= plays.length) {
-        hideAllNotes();
-      }
-    }, 1000);
-
-    activeTimeouts.push(timeoutId);
   }
 
   // 기존 클릭 이벤트는 제거하고 드래그 기능으로 대체
   $(".select-3-bow-wrapper").on("click", function () {
     $(".select-3-bow").css("transform", "rotate(0deg)");
-    $(".select-3-arrow").fadeOut(500);
+    $(".select-3-arrow").hide();
   });
 });
