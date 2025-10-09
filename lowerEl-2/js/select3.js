@@ -64,6 +64,7 @@ $(function () {
   let directionChangeCount = 0; // 방향 변경 횟수 추적
   let totalMoves = 0; // 총 움직임 횟수 (최대 22)
   const maxMoves = 22; // 최대 움직임 횟수
+  let activeTimeouts = []; // 활성화된 setTimeout들을 추적
 
   // 진행도 업데이트 함수
   function updateProgress() {
@@ -76,10 +77,38 @@ $(function () {
     $(".notes").addClass("playing");
   }
 
+  // 기존의 모든 setTimeout 정리
+  function clearAllTimeouts() {
+    activeTimeouts.forEach((timeoutId) => {
+      clearTimeout(timeoutId);
+    });
+    activeTimeouts = [];
+  }
+
+  // 모든 활성화된 sound-card 즉시 정리
+  function clearAllActiveCards() {
+    $(".sound-card.active").each(function () {
+      removeCardImmediately($(this));
+    });
+  }
+
+  // sound-card를 즉시 제거하는 함수
+  function removeCardImmediately($card) {
+    $card.removeClass("active");
+    $card.css({
+      transform: "scale(0.8) translateX(-50px)",
+      opacity: "0",
+      transition: "all 0.2s ease",
+    });
+
+    setTimeout(() => {
+      $card.remove();
+    }, 200);
+  }
+
   // 연주가 끝났을 때 모든 notes와 arrow 숨기는 함수
   function hideAllNotes() {
     $(".notes").removeClass("playing");
-    $(".select-3-arrow").fadeOut(500);
 
     setTimeout(() => {
       $(".select-3-success").removeClass("display-none");
@@ -107,9 +136,9 @@ $(function () {
       const lastX = lastPosition.left;
       const deltaX = currentX - lastX;
 
-      // 충분한 거리를 움직였을 때만 방향 감지
-      if (Math.abs(deltaX) > 15) {
-        // 15px 이상 움직였을 때만
+      // 충분한 거리를 움직였을 때만 방향 감지 (빠른 드래그를 위해 임계값 낮춤)
+      if (Math.abs(deltaX) > 8) {
+        // 8px 이상 움직였을 때만
         let currentDirection = deltaX > 0 ? "right" : "left";
 
         // 방향이 바뀌었을 때만 새로운 노트 재생
@@ -131,6 +160,10 @@ $(function () {
             currentAudio.currentTime = 0;
           }
 
+          // 기존의 모든 setTimeout과 활성화된 카드들 즉시 정리
+          clearAllTimeouts();
+          clearAllActiveCards();
+
           // 새 소리 재생 (안전하게 체크)
           if (plays[playIndex]) {
             currentAudio = plays[playIndex];
@@ -147,29 +180,23 @@ $(function () {
             const moveY = (Math.random() - 0.5) * 20;
             $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
 
-            // 1초 후 active 클래스 제거 및 카드 축소
-            setTimeout(() => {
-              $targetCard.removeClass("active");
-              $targetCard.css({
-                transform: "scale(0.8) translateX(-50px)",
-                opacity: "0",
-                transition: "all 0.2s ease",
-              });
+            // playIndex 즉시 증가 (progress와 동기화)
+            playIndex++;
 
-              // 카드 완전히 사라진 후 제거
-              setTimeout(() => {
-                $targetCard.remove();
-              }, 100);
-
-              // 인덱스 증가
-              playIndex++;
+            // 200ms 후 카드 제거
+            const timeoutId = setTimeout(() => {
+              removeCardImmediately($targetCard);
 
               // 모든 노트 재생 완료 시 notes 숨김
               if (playIndex >= plays.length) {
                 hideAllNotes();
               }
             }, 200);
+
+            activeTimeouts.push(timeoutId);
           } else {
+            // plays[playIndex]가 없어도 playIndex는 증가
+            playIndex++;
           }
 
           lastDirection = currentDirection;
@@ -189,6 +216,10 @@ $(function () {
         currentAudio.currentTime = 0;
         currentAudio = null;
       }
+
+      // 드래그 종료 시 남아있는 모든 카드 정리
+      clearAllTimeouts();
+      clearAllActiveCards();
 
       // 활대 원래 위치로 복원
       $(this).css({
@@ -217,6 +248,10 @@ $(function () {
       currentAudio.currentTime = 0;
     }
 
+    // 기존의 모든 setTimeout과 활성화된 카드들 즉시 정리
+    clearAllTimeouts();
+    clearAllActiveCards();
+
     // 새 소리 재생
     currentAudio = plays[playIndex];
     currentAudio.currentTime = 0;
@@ -232,32 +267,25 @@ $(function () {
     const moveY = (Math.random() - 0.5) * 20;
     $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
 
-    // 1초 후 active 클래스 제거 및 카드 축소
-    setTimeout(() => {
-      $targetCard.removeClass("active");
-      $targetCard.css({
-        transform: "scale(0.8) translateX(-50px)",
-        opacity: "0",
-        transition: "all 0.2s ease",
-      });
+    // playIndex 즉시 증가 (progress와 동기화)
+    playIndex++;
 
-      // 카드 완전히 사라진 후 제거
-      setTimeout(() => {
-        $targetCard.remove();
-      }, 200);
-
-      // 인덱스 증가는 여기서만 한 번
-      playIndex++;
+    // 1000ms 후 카드 제거
+    const timeoutId = setTimeout(() => {
+      removeCardImmediately($targetCard);
 
       // 모든 노트 재생 완료 시 notes 숨김
       if (playIndex >= plays.length) {
         hideAllNotes();
       }
     }, 1000);
+
+    activeTimeouts.push(timeoutId);
   }
 
   // 기존 클릭 이벤트는 제거하고 드래그 기능으로 대체
   $(".select-3-bow-wrapper").on("click", function () {
     $(".select-3-bow").css("transform", "rotate(0deg)");
+    $(".select-3-arrow").fadeOut(500);
   });
 });
