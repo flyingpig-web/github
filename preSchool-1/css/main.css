@@ -1,0 +1,19 @@
+.home-main {
+  background: url(../img/main/main-bg.png) center/contain no-repeat;
+}
+
+.home-main .select-1 {
+  position: absolute;
+  top: 56%;
+  left: 29%;
+  transform: translate(-50%, -50%);
+  width: 36%;
+}
+
+.home-main .select-2 {
+  position: absolute;
+  top: 56%;
+  left: 71%;
+  transform: translate(-50%, -50%);
+  width: 36%;
+}

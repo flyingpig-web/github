@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>메기고 받기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="css/import.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/main.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container home-main pointer-none">
+          <a href="index.html" class="btn-top btn-home" role="button">
+            <span class="sr-only">홈으로</span>
+          </a>
+
+          <a
+            href="index.html"
+            class="btn-top btn-back"
+            role="button"
+            onclick="window.history.back()"
+          >
+            <span class="sr-only">뒤로가기</span>
+          </a>
+
+          <img
+            src="img/main/select-1.png"
+            role="button"
+            class="select-1 btn-select"
+          />
+          <img
+            src="img/main/select-2.png"
+            role="button"
+            class="select-2 btn-select"
+          />
+        </div>
+      </div>
+    </main>
+
+    <audio id="bgm" src="sound/dubs/Yu1_02.mp3" autoplay></audio>
+  </body>
+</html>
