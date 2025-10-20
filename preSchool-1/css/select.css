@@ -5,6 +5,9 @@
 .tutorial-bg {
   background-image: url(../img/select-1/tutorial-bg.png);
 }
+.tutorial-bg-2 {
+  background-image: url(../img/select-2/tutorial-bg.png);
+}
 
 .close {
   position: absolute;
@@ -293,4 +296,40 @@
   100% {
     width: 30%;
   }
+}
+
+.select-2-bg {
+  background-image: url(../img/select-2/main-bg.png);
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.wm-wrapper {
+  position: absolute;
+  width: 35%;
+  height: 59%;
+  top: 24%;
+  left: 33%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4%;
+}
+
+.wm {
+  width: 100%;
+  height: 100%;
+}
+
+.cursor-change {
+  cursor: none;
+}
+
+#custom-cursor {
+  position: fixed;
+  width: 20%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
 }
