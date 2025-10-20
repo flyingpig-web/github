@@ -1,4 +1,5 @@
 $(function () {
+  const $container = $(".container");
   const $info1 = $(".dimmed.info-1");
   const $tutorialBg = $(".dimmed.tutorial-bg");
   const $bgmTutorial = $("#bgm-tutorial")[0];
@@ -18,6 +19,7 @@ $(function () {
   let beltInterval = null;
   let currentRound = 0; // 현재 라운드 (1, 2, 3, 4)
   let roundSuccess = [false, false, false, false]; // 각 라운드의 성공 여부
+  let progressFillInset = 100; // progress-bar-fill의 clip-path inset 값 (100%에서 시작)
   const NORMAL_VOLUME = 0.5;
   const MR_ACTIVE_VOLUME = 1;
 
@@ -33,20 +35,16 @@ $(function () {
     setTimeout(() => {
       $tutorialBg.hide();
       $bgmMain.play();
-      $selectMain.addClass("pointer-none");
+      $container.addClass("pointer-none");
     }, 500);
 
     setTimeout(() => {
-      $selectMain.removeClass("pointer-none");
+      $container.removeClass("pointer-none");
       startGame();
     }, 6000);
   });
 
   function startGame() {
-    $(".dan").addClass("dance");
-    $(".dan").attr("src", "img/select-1/dan-dance.png");
-    $(".hong").addClass("dance");
-    $(".hong").attr("src", "img/select-1/hong-dance.png");
     $(".miyo").removeClass("stop");
     $strawberryMoveWrapper.addClass("active");
 
@@ -65,6 +63,10 @@ $(function () {
 
     // bgmAR timeupdate 이벤트로 mute 제어
     bgmAR.addEventListener("timeupdate", handleBgmARMute);
+
+    setTimeout(() => {
+      stopGame();
+    }, 30000);
   }
 
   function activateStrawberry(round) {
@@ -79,6 +81,12 @@ $(function () {
     );
     $guageWrapper.append($strawberryGuage);
     currentRound = round;
+
+    if (round === 4) {
+      setTimeout(() => {
+        $(".touch-point").hide();
+      }, 3000);
+    }
   }
 
   function handleBgmARMute(e) {
@@ -171,20 +179,41 @@ $(function () {
         if (isOverlapping) {
           // 성공 처리
           roundSuccess[currentRound - 1] = true;
-          $currentStrawberry.removeClass("active").hide();
-          $(`#strawberry-guage-${currentRound}`).fadeOut(500);
+          $currentStrawberry.addClass("success");
+          $currentStrawberry.attr("src", "img/select-1/strawberry-success.png");
+
+          // touch-point opacity 효과
+          $(".touch-point").css("opacity", "0");
+          setTimeout(() => {
+            $(".touch-point").css("opacity", "1");
+          }, 1000);
+
+          // dan, hong 성공 애니메이션
+          $(".dan").addClass("dance");
+          $(".dan").attr("src", "img/select-1/dan-dance.png");
+          $(".hong").addClass("dance");
+          $(".hong").attr("src", "img/select-1/hong-dance.png");
+
+          // 1초 후 원래 상태로 복원
+          setTimeout(() => {
+            $(".dan").removeClass("dance");
+            $(".dan").attr("src", "img/select-1/dan.png");
+            $(".hong").removeClass("dance");
+            $(".hong").attr("src", "img/select-1/hong.png");
+          }, 1000);
+
+          // progress-bar-fill 업데이트 (25%씩 감소)
+          progressFillInset -= 25;
+          $(".progress-bar-fill").css(
+            "clip-path",
+            `inset(${progressFillInset}% 0 0 0)`
+          );
+
+          $(`#strawberry-guage-${currentRound}`).hide();
 
           // 라운드 초기화
           const completedRound = currentRound;
           currentRound = 0;
-
-          // 게임 완료 체크
-          if (roundSuccess.every((success) => success)) {
-            setTimeout(() => {
-              stopGame();
-              alert("게임 완료!");
-            }, 1000);
-          }
         }
       }
     }

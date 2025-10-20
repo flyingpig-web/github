@@ -165,6 +165,10 @@
   top: -17.8%;
   right: 0%;
 }
+.strawberry-move.success {
+  top: 19%;
+  scale: 1.2;
+}
 
 .select-1-glow {
   display: none;
@@ -195,4 +199,20 @@
     transform: translateX(-686%);
     display: none;
   }
+}
+
+.progress-bar {
+  position: absolute;
+  width: 3.5%;
+  z-index: 5;
+  top: 31%;
+  right: 4.4%;
+}
+.progress-bar-fill {
+  position: absolute;
+  width: 2.55%;
+  z-index: 5;
+  top: 32.2%;
+  right: 4.85%;
+  clip-path: inset(100% 0 0 0);
 }
