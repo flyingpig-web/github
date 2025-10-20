@@ -149,22 +149,43 @@ $(function () {
       $miyo.removeClass("active");
     }, 2000); // miyo-active 애니메이션 시간과 동일 (2초)
 
+    // strawberry-move가 touch-point 영역에 도달했는지 확인
     if (currentRound > 0) {
-      // 성공 처리
-      roundSuccess[currentRound - 1] = true;
-      $(`#strawberry-move-${currentRound}`).removeClass("active").hide();
-      $(`#strawberry-guage-${currentRound}`).fadeOut(500);
+      const $currentStrawberry = $(`.strawberry-move.active`).last();
+      if ($currentStrawberry.length > 0) {
+        const strawberryRect = $currentStrawberry[0].getBoundingClientRect();
+        const touchPointRect = this.getBoundingClientRect();
 
-      // 라운드 초기화
-      const completedRound = currentRound;
-      currentRound = 0;
+        // strawberry-move가 touch-point 영역에 반쯤이라도 들어왔는지 확인
+        const strawberryCenterX =
+          strawberryRect.left + strawberryRect.width / 2;
+        const strawberryCenterY =
+          strawberryRect.top + strawberryRect.height / 2;
 
-      // 게임 완료 체크
-      if (roundSuccess.every((success) => success)) {
-        setTimeout(() => {
-          stopGame();
-          alert("게임 완료!");
-        }, 1000);
+        const isOverlapping =
+          strawberryCenterX >= touchPointRect.left &&
+          strawberryCenterX <= touchPointRect.right &&
+          strawberryCenterY >= touchPointRect.top &&
+          strawberryCenterY <= touchPointRect.bottom;
+
+        if (isOverlapping) {
+          // 성공 처리
+          roundSuccess[currentRound - 1] = true;
+          $currentStrawberry.removeClass("active").hide();
+          $(`#strawberry-guage-${currentRound}`).fadeOut(500);
+
+          // 라운드 초기화
+          const completedRound = currentRound;
+          currentRound = 0;
+
+          // 게임 완료 체크
+          if (roundSuccess.every((success) => success)) {
+            setTimeout(() => {
+              stopGame();
+              alert("게임 완료!");
+            }, 1000);
+          }
+        }
       }
     }
   });
