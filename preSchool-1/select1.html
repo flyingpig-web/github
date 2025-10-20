@@ -58,6 +58,76 @@
                 src="img/select-1/progress-bar-fill.png"
                 class="progress-bar-fill"
               />
+              <img src="img/select-1/arrow.png" class="select-1-arrow" />
+            </div>
+
+            <div class="dimmed select-completed display-none">
+              <div class="finish-animation" style="left: 22.5%"></div>
+              <div class="finish-animation" style="left: 68%"></div>
+              <img src="img/select-1/success-ment.png" class="success-ment" />
+            </div>
+
+            <div class="display-none dimmed finish-bg pointer-none">
+              <img
+                src="img/select-1/strawberry-finish.png"
+                class="strawberry-finish"
+                role="button"
+              />
+
+              <img
+                src="img/select-1/strawberry-finish-half.png"
+                class="strawberry-finish-half pointer-none"
+                role="button"
+              />
+
+              <img
+                src="img/common/message.png"
+                class="strawberry-finish-message pointer-none"
+                role="button"
+              />
+
+              <img
+                src="img/common/replay.png"
+                alt="다시하기"
+                role="button"
+                onclick="location.reload()"
+                style="
+                  width: 15vw;
+                  height: 10vh;
+                  top: 75%;
+                  left: 33%;
+                  position: absolute;
+                "
+              />
+
+              <img
+                src="img/common/exit.png"
+                alt="나가기"
+                role="button"
+                onclick="window.location.href='main.html'"
+                style="
+                  width: 15vw;
+                  height: 10vh;
+                  top: 75%;
+                  left: 52%;
+                  position: absolute;
+                "
+              />
+            </div>
+
+            <div class="message-content dimmed display-none">
+              <img
+                class="message-content-close"
+                role="button"
+                src="img/common/close.png"
+                style="
+                  width: 10vw;
+                  height: 10vh;
+                  position: absolute;
+                  top: 13%;
+                  right: 25%;
+                "
+              />
             </div>
           </div>
         </div>
@@ -68,6 +138,10 @@
     <audio id="bgm-main" src="sound/dubs/Yu1_06.mp3"></audio>
     <audio id="bgm-ar" src="sound/external/yu1-ar.mp3" volume="0.5"></audio>
     <audio id="bgm-mr" src="sound/external/yu1-mr.mp3" volume="0.5"></audio>
+
+    <audio id="bgm-finish" src="sound/dubs/Yu1_08.mp3"></audio>
+    <audio id="bgm-finish-2" src="sound/dubs/Yu1_09.mp3"></audio>
+    <audio id="message-sound" src="sound/dubs/Yu1_10.mp3"></audio>
 
     <script src="js/common.js"></script>
     <script src="js/select-1.js"></script>

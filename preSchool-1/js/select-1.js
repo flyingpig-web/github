@@ -10,10 +10,14 @@ $(function () {
   const $strawberryMoveWrapper = $(".strawberry-move-wrapper");
   const $guageWrapper = $(".guage-wrapper");
   const $select1Glow = $(".select-1-glow");
+  const $selectCompleted = $(".select-completed");
+  const $finishBg = $(".finish-bg");
 
   // sounds
   let bgmAR = $("#bgm-ar")[0];
   let bgmMR = $("#bgm-mr")[0];
+  const bgmFinish = $("#bgm-finish")[0];
+  const bgmFinish2 = $("#bgm-finish-2")[0];
 
   // game variables
   let beltInterval = null;
@@ -85,7 +89,7 @@ $(function () {
     if (round === 4) {
       setTimeout(() => {
         $(".touch-point").hide();
-      }, 3000);
+      }, 2000);
     }
   }
 
@@ -170,11 +174,24 @@ $(function () {
         const strawberryCenterY =
           strawberryRect.top + strawberryRect.height / 2;
 
-        const isOverlapping =
-          strawberryCenterX >= touchPointRect.left &&
-          strawberryCenterX <= touchPointRect.right &&
-          strawberryCenterY >= touchPointRect.top &&
-          strawberryCenterY <= touchPointRect.bottom;
+        // 3번째 딸기는 더 관대한 성공 조건 적용
+        let isOverlapping;
+        if (currentRound === 3) {
+          // 3번째 딸기: strawberry의 일부분만 touch-point 영역에 닿으면 성공
+          isOverlapping = !(
+            strawberryRect.right < touchPointRect.left ||
+            strawberryRect.left > touchPointRect.right ||
+            strawberryRect.bottom < touchPointRect.top ||
+            strawberryRect.top > touchPointRect.bottom
+          );
+        } else {
+          // 다른 딸기들: 중심점이 touch-point 영역에 있어야 성공
+          isOverlapping =
+            strawberryCenterX >= touchPointRect.left &&
+            strawberryCenterX <= touchPointRect.right &&
+            strawberryCenterY >= touchPointRect.top &&
+            strawberryCenterY <= touchPointRect.bottom;
+        }
 
         if (isOverlapping) {
           // 성공 처리
@@ -230,5 +247,63 @@ $(function () {
     bgmAR.removeEventListener("timeupdate", handleBgmARMute);
     bgmAR.pause();
     bgmMR.pause();
+
+    finish();
   }
+
+  function finish() {
+    showFinishAnimation();
+  }
+
+  // 성공 애니메이션 표시 함수
+  function showFinishAnimation() {
+    $selectCompleted.removeClass("display-none");
+
+    // 애니메이션 완료 후 제거
+    setTimeout(() => {
+      bgmFinish.play();
+      $finishBg.removeClass("display-none");
+      $selectCompleted.addClass("display-none");
+    }, 2000);
+
+    setTimeout(() => {
+      $finishBg.removeClass("pointer-none");
+    }, 5000);
+  }
+
+  $(".strawberry-finish").on("click", () => {
+    bgmFinish2.play();
+    $(".strawberry-finish").fadeOut(500);
+
+    setTimeout(() => {
+      $(".strawberry-finish-half").fadeIn(500);
+    }, 500);
+
+    setTimeout(() => {
+      $(".strawberry-finish-half").removeClass("pointer-none");
+    }, 2000);
+  });
+
+  $(".strawberry-finish-half").on("click", () => {
+    $(".strawberry-finish-half").fadeOut(500);
+    setTimeout(() => {
+      $(".strawberry-finish-message").fadeIn(500);
+      $(".strawberry-finish-message").removeClass("pointer-none");
+    }, 500);
+  });
+
+  const $messageSound = $("#message-sound")[0];
+  $(".strawberry-finish-message").on("click", () => {
+    $(".message-content").removeClass("display-none");
+    $(".message-content").fadeIn(500);
+    $(".finish-bg").fadeOut(500);
+    $messageSound.play();
+  });
+
+  $(".message-content-close").on("click", function () {
+    $(".message-content").fadeOut(500);
+    $(".finish-bg").fadeIn(500);
+    $messageSound.pause();
+    $messageSound.currentTime = 0;
+  });
 });

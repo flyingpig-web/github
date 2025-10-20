@@ -116,57 +116,6 @@ img {
 
 /* animations */
 
-@keyframes finish {
-  0% {
-    background-image: url(../img/effect/effect_01.png);
-  }
-
-  9% {
-    background-image: url(../img/effect/effect_02.png);
-  }
-
-  18% {
-    background-image: url(../img/effect/effect_03.png);
-  }
-
-  27% {
-    background-image: url(../img/effect/effect_04.png);
-  }
-
-  36% {
-    background-image: url(../img/effect/effect_05.png);
-  }
-
-  45% {
-    background-image: url(../img/effect/effect_06.png);
-  }
-
-  54% {
-    background-image: url(../img/effect/effect_07.png);
-  }
-
-  63% {
-    background-image: url(../img/effect/effect_08.png);
-  }
-
-  72% {
-    background-image: url(../img/effect/effect_09.png);
-  }
-
-  81% {
-    background-image: url(../img/effect/effect_10.png);
-  }
-
-  90% {
-    background-image: url(../img/effect/effect_11.png);
-  }
-
-  100% {
-    opacity: 0;
-    background-image: url(../img/effect/effect_11.png);
-  }
-}
-
 .dimmed {
   position: fixed;
   top: 50%;
@@ -334,51 +283,51 @@ img {
 
 @keyframes finish {
   0% {
-    background-image: url(../img/effect/effect_01.png);
+    background-image: url(../img/glow/glow-01.png);
   }
 
   9% {
-    background-image: url(../img/effect/effect_02.png);
+    background-image: url(../img/glow/glow-02.png);
   }
 
   18% {
-    background-image: url(../img/effect/effect_03.png);
+    background-image: url(../img/glow/glow-03.png);
   }
 
   27% {
-    background-image: url(../img/effect/effect_04.png);
+    background-image: url(../img/glow/glow-04.png);
   }
 
   36% {
-    background-image: url(../img/effect/effect_05.png);
+    background-image: url(../img/glow/glow-05.png);
   }
 
   45% {
-    background-image: url(../img/effect/effect_06.png);
+    background-image: url(../img/glow/glow-06.png);
   }
 
   54% {
-    background-image: url(../img/effect/effect_07.png);
+    background-image: url(../img/glow/glow-07.png);
   }
 
   63% {
-    background-image: url(../img/effect/effect_08.png);
+    background-image: url(../img/glow/glow-08.png);
   }
 
   72% {
-    background-image: url(../img/effect/effect_09.png);
+    background-image: url(../img/glow/glow-09.png);
   }
 
   81% {
-    background-image: url(../img/effect/effect_10.png);
+    background-image: url(../img/glow/glow-10.png);
   }
 
   90% {
-    background-image: url(../img/effect/effect_11.png);
+    background-image: url(../img/glow/glow-11.png);
   }
 
   100% {
     opacity: 0;
-    background-image: url(../img/effect/effect_11.png);
+    background-image: url(../img/glow/glow-11.png);
   }
 }

@@ -216,3 +216,81 @@
   right: 4.85%;
   clip-path: inset(100% 0 0 0);
 }
+
+.select-completed {
+  background: url(../img/common/dimmed.png) center/contain no-repeat;
+  display: grid;
+  place-content: center;
+}
+.select-completed img {
+  width: 40vw;
+  height: 40vw;
+}
+
+/* 성공 애니메이션 */
+.finish-animation {
+  position: absolute;
+  width: 12%;
+  height: 26%;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  animation: finish 2s ease-out 1 forwards;
+  background-position: center;
+  z-index: 11;
+  opacity: 1 !important;
+  scale: 1.5;
+}
+
+.finish-bg {
+  background: url(../img/select-1/finish-bg.png) center/contain no-repeat;
+  position: absolute;
+}
+
+.strawberry-finish {
+  position: absolute;
+  width: 33%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: size-up 1s ease-in-out 1;
+}
+.strawberry-finish-half {
+  display: none;
+  position: absolute;
+  width: 30%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.strawberry-finish-message {
+  display: none;
+  position: absolute;
+  width: 15%;
+  top: 57%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.message-content {
+  background: url(../img/select-1/success-message-content.png) center/contain
+    no-repeat;
+}
+.select-1-arrow {
+  width: 4%;
+  position: absolute;
+  top: 67%;
+  left: 48%;
+}
+
+@keyframes size-up {
+  0% {
+    width: 5%;
+  }
+  50% {
+    width: 33%;
+  }
+  100% {
+    width: 30%;
+  }
+}
