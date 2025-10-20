@@ -51,12 +51,17 @@
 }
 
 .strawberry-guage {
-  width: 180%;
-  height: 180%;
+  width: 14%;
   object-fit: contain;
   position: absolute;
   top: -60%;
-  left: 48%;
+  left: 90%;
+}
+.strawberry-guage.active {
+  animation: strawberry-move-guage 4.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
 }
 
 .dan {
@@ -137,6 +142,8 @@
   bottom: 35%;
   left: 50%;
   transform: translateX(-50%);
+  z-index: 10;
+  cursor: pointer;
 }
 
 .strawberry-move-wrapper {
@@ -147,32 +154,33 @@
   height: 40%;
 }
 .strawberry-move.active {
-  animation: strawberry-move 3s ease-in-out;
+  animation: strawberry-move 5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
 }
 .strawberry-move {
   position: absolute;
-  top: -17.8%;
   width: 14.5%;
-}
-
-#strawberry-move-1 {
-  right: 3%;
-}
-#strawberry-move-2 {
-  right: -33%;
-}
-#strawberry-move-3 {
-  right: -63%;
-}
-#strawberry-move-4 {
-  right: -93%;
+  top: -17.8%;
+  right: 0%;
 }
 
 @keyframes strawberry-move {
   0% {
-    transform: translateX(3%);
+    transform: translateX(0%);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-690%);
+  }
+}
+
+@keyframes strawberry-move-guage {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-686%);
+    display: none;
   }
 }
