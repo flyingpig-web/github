@@ -166,6 +166,18 @@
   right: 0%;
 }
 
+.select-1-glow {
+  display: none;
+  position: absolute;
+  width: 17%;
+  position: absolute;
+  top: 20%;
+  left: 42%;
+}
+.select-1-glow.active {
+  display: block;
+}
+
 @keyframes strawberry-move {
   0% {
     transform: translateX(0%);

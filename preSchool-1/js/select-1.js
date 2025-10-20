@@ -8,6 +8,7 @@ $(function () {
   const $miyo = $(".miyo");
   const $strawberryMoveWrapper = $(".strawberry-move-wrapper");
   const $guageWrapper = $(".guage-wrapper");
+  const $select1Glow = $(".select-1-glow");
 
   // sounds
   let bgmAR = $("#bgm-ar")[0];
@@ -110,9 +111,44 @@ $(function () {
     }
   }
 
+  function showGlowEffect() {
+    $select1Glow.addClass("active");
+
+    // 0.6초 안에 glow-01.png부터 glow-11.png까지 순차적으로 표시
+    const glowImages = [];
+    for (let i = 1; i <= 11; i++) {
+      glowImages.push(`img/glow/glow-${i.toString().padStart(2, "0")}.png`);
+    }
+
+    const intervalTime = 600 / glowImages.length; // 0.6초를 11개로 나눔 (약 54.5ms)
+    let currentIndex = 0;
+
+    const glowInterval = setInterval(() => {
+      if (currentIndex < glowImages.length) {
+        $select1Glow.attr("src", glowImages[currentIndex]);
+        currentIndex++;
+      } else {
+        clearInterval(glowInterval);
+        // 모든 이미지 표시 완료 후 active 클래스 제거
+        setTimeout(() => {
+          $select1Glow.removeClass("active");
+        }, 100); // 마지막 이미지를 잠깐 더 보여주기 위해 100ms 추가
+      }
+    }, intervalTime);
+  }
+
   // touch-point 클릭 이벤트 (성공 처리)
   $(".touch-point").on("click", function () {
     $miyo.addClass("active");
+
+    // glow 효과 실행
+    showGlowEffect();
+
+    // active 애니메이션 완료 후 active 클래스 제거하여 miyo-up-down 애니메이션 재시작
+    setTimeout(() => {
+      $miyo.removeClass("active");
+    }, 2000); // miyo-active 애니메이션 시간과 동일 (2초)
+
     if (currentRound > 0) {
       // 성공 처리
       roundSuccess[currentRound - 1] = true;
