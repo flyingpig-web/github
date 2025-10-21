@@ -47,8 +47,8 @@ $(function () {
 
     // 이벤트 핸들러 함수들 정의
     handleMouseMove = (e) => {
-      cursor.style.left = e.clientX + "px";
-      cursor.style.top = e.clientY + "px";
+      cursor.style.left = e.clientX + 60 + "px";
+      cursor.style.top = e.clientY - 60 + "px";
     };
 
     handleMouseDown = (e) => {
@@ -58,6 +58,25 @@ $(function () {
     };
 
     handleMouseUp = (e) => {
+      cursor.src = "img/select-2/cursor.png";
+    };
+
+    // 터치 이벤트 핸들러들 정의
+    const handleTouchMove = (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        cursor.style.left = touch.clientX + 60 + "px";
+        cursor.style.top = touch.clientY - 60 + "px";
+      }
+    };
+
+    const handleTouchStart = (e) => {
+      cursor.src = "img/select-2/cursor-active.png";
+      // 터치 이벤트에서도 드래그 방지
+      e.preventDefault();
+    };
+
+    const handleTouchEnd = (e) => {
       cursor.src = "img/select-2/cursor.png";
     };
 
@@ -75,7 +94,7 @@ $(function () {
       cursor.src = "img/select-2/cursor.png"; // 드래그 종료 시 원래 커서로 복원
     };
 
-    // 이벤트 리스너 등록
+    // 이벤트 리스너 등록 (마우스 이벤트)
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mouseup", handleMouseUp);
@@ -83,10 +102,20 @@ $(function () {
     document.addEventListener("drag", handleDrag);
     document.addEventListener("dragend", handleDragEnd);
 
+    // 터치 이벤트 리스너 등록
+    document.addEventListener("touchmove", handleTouchMove, { passive: false });
+    document.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
+    document.addEventListener("touchend", handleTouchEnd, { passive: false });
+
     // 전역 변수에 저장 (나중에 제거하기 위해)
     window.handleDragStart = handleDragStart;
     window.handleDrag = handleDrag;
     window.handleDragEnd = handleDragEnd;
+    window.handleTouchMove = handleTouchMove;
+    window.handleTouchStart = handleTouchStart;
+    window.handleTouchEnd = handleTouchEnd;
   }
 
   function deactivateCursor() {
@@ -107,6 +136,14 @@ $(function () {
       document.removeEventListener("drag", window.handleDrag);
     if (window.handleDragEnd)
       document.removeEventListener("dragend", window.handleDragEnd);
+
+    // 터치 이벤트 리스너 제거
+    if (window.handleTouchMove)
+      document.removeEventListener("touchmove", window.handleTouchMove);
+    if (window.handleTouchStart)
+      document.removeEventListener("touchstart", window.handleTouchStart);
+    if (window.handleTouchEnd)
+      document.removeEventListener("touchend", window.handleTouchEnd);
 
     $container.removeClass("cursor-change");
   }
