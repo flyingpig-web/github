@@ -2,6 +2,7 @@ $(function () {
   const $info1 = $(".dimmed.info-1");
   const $tutorialBg = $(".dimmed.tutorial-bg-2");
   const $container = $(".container");
+  const $selectMain = $(".select-main");
   const $select2Bg = $(".select-2-bg");
   const $wmWrapper = $(".wm-wrapper");
   const $selectCompleted = $(".select-completed");
@@ -46,6 +47,7 @@ $(function () {
   let drawingPath = []; // 현재 드래그 중인 경로 (드래그 시작~끝까지만 유효)
   let currentPlayingAudio = null; // 현재 재생 중인 오디오
   let audioQueue = []; // 재생 대기 중인 오디오 큐
+  let patternStartTime = null; // 패턴 그리기 시작 시간
 
   $info1.on("click", function () {
     $info1.hide();
@@ -67,8 +69,7 @@ $(function () {
     setTimeout(() => {
       $container.removeClass("pointer-none");
       startGame();
-      // }, 9000);
-    }, 1000);
+    }, 9000);
   });
 
   function startGame() {
@@ -157,6 +158,7 @@ $(function () {
       if (currentPattern && wmNumber === currentPattern.path[0]) {
         isDrawing = true;
         drawingPath = [wmNumber]; // 드래그 시작 - 경로 초기화
+        patternStartTime = Date.now(); // 패턴 그리기 시작 시간 기록
 
         // 홀수 음원 재생 (메기기)
         if (currentBgmIndex <= 8) {
@@ -187,6 +189,7 @@ $(function () {
       if (currentPattern && wmNumber === currentPattern.path[0]) {
         isDrawing = true;
         drawingPath = [wmNumber];
+        patternStartTime = Date.now(); // 패턴 그리기 시작 시간 기록
 
         // 홀수 음원 재생 (메기기)
         if (currentBgmIndex <= 8) {
@@ -235,6 +238,13 @@ $(function () {
   }
 
   function completePattern() {
+    // 패턴 완료 시간 계산
+    const patternEndTime = Date.now();
+    const drawingTime = (patternEndTime - patternStartTime) / 1000; // 초 단위
+
+    // 시간에 따른 reaction 표시
+    showReaction(drawingTime);
+
     // 짝수 음원 재생 (받기)
     if (currentBgmIndex + 1 <= 8) {
       const evenIndex = currentBgmIndex + 1;
@@ -254,6 +264,35 @@ $(function () {
     setTimeout(() => {
       activatePattern();
     }, 1000);
+  }
+
+  // reaction 표시 함수
+  function showReaction(drawingTime) {
+    let reactionClass = "";
+    let reactionSrc = "";
+
+    // 시간에 따라 클래스와 이미지 결정
+    if (drawingTime <= 1) {
+      reactionClass = "slow";
+      reactionSrc = "img/select-2/reaction-slow.png";
+    } else if (drawingTime <= 3) {
+      reactionClass = "good";
+      reactionSrc = "img/select-2/reaction-good.png";
+    } else {
+      reactionClass = "fast";
+      reactionSrc = "img/select-2/reaction-fast.png";
+    }
+
+    // reaction 요소 생성 및 추가
+    const $reaction = $(
+      `<img src="${reactionSrc}" class="reaction ${reactionClass}" />`
+    );
+    $selectMain.append($reaction);
+
+    // 0.8초 후 제거
+    setTimeout(() => {
+      $reaction.remove();
+    }, 800);
   }
 
   function activatePattern() {
