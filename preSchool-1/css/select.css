@@ -332,6 +332,7 @@ body.game-active:active {
   height: 100%;
   -webkit-user-drag: none;
   user-drag: none;
+  object-fit: scale-down;
 }
 
 .cursor-change {
@@ -344,4 +345,15 @@ body.game-active:active {
   transform: translate(-50%, -50%);
   z-index: 9999;
   display: none;
+  pointer-events: none;
+}
+
+.pattern {
+  position: absolute;
+  top: 11%;
+  left: 9%;
+  width: 80%;
+  height: 80%;
+  scale: 1;
+  pointer-events: none;
 }
