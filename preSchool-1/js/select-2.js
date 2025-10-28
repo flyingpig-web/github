@@ -75,6 +75,34 @@ $(function () {
     $container.addClass("cursor-change");
     activateCursor();
     setupPatternDrawing();
+    setupDanceControl();
+  }
+
+  // 춤 시작 함수
+  function startDance() {
+    $(".dan-2").addClass("dance");
+    $(".dan-2").attr("src", "img/select-2/dan-dance.png");
+    $(".hong-2").addClass("dance");
+    $(".hong-2").attr("src", "img/select-2/hong-dance.png");
+  }
+
+  // 춤 중지 함수
+  function stopDance() {
+    $(".dan-2").removeClass("dance");
+    $(".dan-2").attr("src", "img/select-2/dan.png");
+    $(".hong-2").removeClass("dance");
+    $(".hong-2").attr("src", "img/select-2/hong.png");
+  }
+
+  // 춤 제어 설정
+  function setupDanceControl() {
+    $select2Bg.on("mousedown touchstart", function () {
+      startDance();
+    });
+
+    $select2Bg.on("mouseup touchend", function () {
+      stopDance();
+    });
   }
 
   // 오디오 재생 관리 함수
@@ -105,6 +133,8 @@ $(function () {
       if (audioQueue.length > 0) {
         const nextAudioData = audioQueue.shift();
         playAudioSafe(nextAudioData.element, nextAudioData.index);
+      } else {
+        stopDance();
       }
     });
   }

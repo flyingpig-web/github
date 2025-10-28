@@ -21,6 +21,7 @@
   width: 100%;
   height: 100%;
   position: relative;
+  overflow: hidden;
 }
 
 .select-bg {
@@ -386,4 +387,32 @@ body.game-active:active {
   top: 57%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.dan-2 {
+  position: absolute;
+  right: 2%;
+  width: 20%;
+  bottom: -11%;
+  z-index: 1;
+}
+.dan-2.dance {
+  width: 25%;
+  right: 0;
+  bottom: -8%;
+  animation: dance 2s ease-in-out infinite;
+}
+
+.hong-2 {
+  position: absolute;
+  left: 2%;
+  width: 23%;
+  bottom: -8%;
+  z-index: 1;
+}
+.hong-2.dance {
+  width: 24%;
+  left: 1%;
+  bottom: -9%;
+  animation: dance 2s ease-out infinite;
 }
