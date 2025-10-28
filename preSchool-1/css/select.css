@@ -288,6 +288,10 @@ body.game-active:active {
   background: url(../img/select-1/success-message-content.png) center/contain
     no-repeat;
 }
+.message-content-2 {
+  background: url(../img/select-2/success-message-content.png) center/contain
+    no-repeat;
+}
 .select-1-arrow {
   width: 4%;
   position: absolute;
@@ -356,4 +360,30 @@ body.game-active:active {
   height: 80%;
   scale: 1;
   pointer-events: none;
+}
+
+.wm-finish {
+  position: absolute;
+  width: 22%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.wm-finish-half {
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 23%;
+  top: 60%;
+}
+
+.wm-finish-message {
+  display: none;
+  position: absolute;
+  width: 15%;
+  top: 57%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

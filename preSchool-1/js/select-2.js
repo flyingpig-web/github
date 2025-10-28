@@ -4,10 +4,14 @@ $(function () {
   const $container = $(".container");
   const $select2Bg = $(".select-2-bg");
   const $wmWrapper = $(".wm-wrapper");
+  const $selectCompleted = $(".select-completed");
+  const $finishBg = $(".finish-bg");
 
   // sounds
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
+  const bgmFinish = $("#bgm-finish")[0];
+  const bgmFinish2 = $("#bgm-finish-2")[0];
 
   // 커서 이벤트 핸들러들을 저장할 변수들
   let handleMouseMove, handleMouseDown, handleMouseUp;
@@ -40,6 +44,8 @@ $(function () {
   let isDrawing = false; // 현재 그리는 중인지
   let currentBgmIndex = 1; // 현재 재생할 bgm-pattern 인덱스 (1~8)
   let drawingPath = []; // 현재 드래그 중인 경로 (드래그 시작~끝까지만 유효)
+  let currentPlayingAudio = null; // 현재 재생 중인 오디오
+  let audioQueue = []; // 재생 대기 중인 오디오 큐
 
   $info1.on("click", function () {
     $info1.hide();
@@ -71,6 +77,46 @@ $(function () {
     setupPatternDrawing();
   }
 
+  // 오디오 재생 관리 함수
+  function playAudioSafe(audioElement, audioIndex) {
+    if (!audioElement) return;
+
+    // 현재 재생 중인 오디오가 있으면 큐에 추가
+    if (currentPlayingAudio && !currentPlayingAudio.paused) {
+      audioQueue.push({ element: audioElement, index: audioIndex });
+      return;
+    }
+
+    // 재생 시작
+    currentPlayingAudio = audioElement;
+    audioElement.play();
+
+    // 재생 완료 시 다음 오디오 재생
+    audioElement.addEventListener("ended", function onEnded() {
+      audioElement.removeEventListener("ended", onEnded);
+      currentPlayingAudio = null;
+
+      // audio-8 재생 완료 시 게임 종료
+      if (audioIndex === 8) {
+        gameComplete();
+      }
+
+      // 큐에 대기 중인 오디오가 있으면 재생
+      if (audioQueue.length > 0) {
+        const nextAudioData = audioQueue.shift();
+        playAudioSafe(nextAudioData.element, nextAudioData.index);
+      }
+    });
+  }
+
+  // 게임 완료 함수
+  function gameComplete() {
+    // 여기에 게임 완료 로직 추가
+    // 예: 완료 화면 표시, 커서 비활성화 등
+    showFinishAnimation();
+    deactivateCursor();
+  }
+
   function setupPatternDrawing() {
     // 마우스 이벤트
     $(".wm").on("mousedown", function (e) {
@@ -85,7 +131,7 @@ $(function () {
         // 홀수 음원 재생 (메기기)
         if (currentBgmIndex <= 8) {
           const bgm = $(`#bgm-pattern-${currentBgmIndex}`)[0];
-          if (bgm) bgm.play();
+          if (bgm) playAudioSafe(bgm, currentBgmIndex);
         }
       }
     });
@@ -115,7 +161,7 @@ $(function () {
         // 홀수 음원 재생 (메기기)
         if (currentBgmIndex <= 8) {
           const bgm = $(`#bgm-pattern-${currentBgmIndex}`)[0];
-          if (bgm) bgm.play();
+          if (bgm) playAudioSafe(bgm, currentBgmIndex);
         }
       }
     });
@@ -161,19 +207,15 @@ $(function () {
   function completePattern() {
     // 짝수 음원 재생 (받기)
     if (currentBgmIndex + 1 <= 8) {
-      const bgm = $(`#bgm-pattern-${currentBgmIndex + 1}`)[0];
+      const evenIndex = currentBgmIndex + 1;
+      const bgm = $(`#bgm-pattern-${evenIndex}`)[0];
       if (bgm) {
-        bgm.play();
-        // 받기 음원 재생 후 다음 메기기 음원 인덱스로 이동
-        bgm.addEventListener(
-          "ended",
-          () => {
-            currentBgmIndex += 2; // 다음 홀수 인덱스로
-          },
-          { once: true }
-        );
+        playAudioSafe(bgm, evenIndex);
       }
     }
+
+    // 다음 메기기 음원 인덱스로 즉시 이동 (짝수 음원 재생과 관계없이)
+    currentBgmIndex += 2;
 
     // 현재 패턴을 완료로 표시
     patternObj[currentPatternKey].isComplete = true;
@@ -284,6 +326,23 @@ $(function () {
     window.handleTouchEnd = handleTouchEnd;
   }
 
+  // 성공 애니메이션 표시 함수
+  function showFinishAnimation() {
+    $selectCompleted.removeClass("display-none");
+
+    // 애니메이션 완료 후 제거
+    setTimeout(() => {
+      bgmFinish.play();
+      $finishBg.removeClass("display-none");
+      $selectCompleted.addClass("display-none");
+    }, 2000);
+
+    setTimeout(() => {
+      $finishBg.removeClass("pointer-none");
+    }, 5000);
+  }
+
+  // 커서 비활성화 함수
   function deactivateCursor() {
     const cursor = document.getElementById("custom-cursor");
     cursor.style.display = "none";
@@ -313,4 +372,40 @@ $(function () {
 
     $container.removeClass("cursor-change");
   }
+
+  $(".wm-finish").on("click", () => {
+    bgmFinish2.play();
+    $(".wm-finish").fadeOut(500);
+
+    setTimeout(() => {
+      $(".wm-finish-half").fadeIn(500);
+    }, 500);
+
+    setTimeout(() => {
+      $(".wm-finish-half").removeClass("pointer-none");
+    }, 2000);
+  });
+
+  $(".wm-finish-half").on("click", () => {
+    $(".wm-finish-half").fadeOut(500);
+    setTimeout(() => {
+      $(".wm-finish-message").fadeIn(500);
+      $(".wm-finish-message").removeClass("pointer-none");
+    }, 500);
+  });
+
+  const $messageSound = $("#message-sound")[0];
+  $(".wm-finish-message").on("click", () => {
+    $(".message-content-2").removeClass("display-none");
+    $(".message-content-2").fadeIn(500);
+    $(".finish-bg").fadeOut(500);
+    $messageSound.play();
+  });
+
+  $(".message-content-close").on("click", function () {
+    $(".message-content-2").fadeOut(500);
+    $(".finish-bg").fadeIn(500);
+    $messageSound.pause();
+    $messageSound.currentTime = 0;
+  });
 });
