@@ -21,65 +21,6 @@ $(function () {
     initPuzzleGame();
   }, 100);
 
-  const $hint = $(".btn-top.select-hint");
-  let hintCount = 3;
-
-  $hint.on("click", function () {
-    if (hintCount > 0) {
-      showHint();
-
-      // 힌트 카운트 감소 및 UI 업데이트
-      $hint.removeClass(`hint-${hintCount}`);
-      hintCount--;
-      $hint.addClass(`hint-${hintCount}`);
-
-      // 힌트를 모두 사용했으면 버튼 비활성화
-      if (hintCount === 0) {
-        $hint.addClass("disabled");
-      }
-    }
-  });
-
-  // 모든 힌트 효과 제거 함수
-  function clearAllHints() {
-    $(".piece, .empty-slot, .droppable").removeClass("hint-blink");
-  }
-
-  // 힌트 기능 구현
-  function showHint() {
-    // 기존 힌트 효과 먼저 제거
-    clearAllHints();
-
-    // 현재 트레이에 있는 조각들 중에서 아직 배치되지 않은 조각들만 선택
-    const $trayPieces = $(".piece.in-tray").filter(function () {
-      return (
-        $(this).css("opacity") !== "0" &&
-        $(this).css("pointer-events") !== "none"
-      );
-    });
-
-    if ($trayPieces.length === 0) return; // 배치 가능한 조각이 없으면 종료
-
-    const randomIndex = Math.floor(Math.random() * $trayPieces.length);
-    const $randomPiece = $trayPieces.eq(randomIndex);
-    const pieceIndex = parseInt($randomPiece.attr("data-index"));
-
-    // 해당 조각이 들어갈 빈칸 찾기
-    const $targetSlot = $(`.empty-slot[data-target-index="${pieceIndex}"]`);
-
-    if ($targetSlot.length === 0) return; // 해당 빈칸이 없으면 종료
-
-    // 조각과 빈칸에 반짝임 효과 적용
-    $randomPiece.addClass("hint-blink");
-    $targetSlot.addClass("hint-blink");
-
-    // 2초 후 반짝임 효과 제거
-    setTimeout(() => {
-      $randomPiece.removeClass("hint-blink");
-      $targetSlot.removeClass("hint-blink");
-    }, 2000);
-  }
-
   // select-01 퍼즐조각
   const $pieceWrapper = $(".piece-wrapper");
   const $trayLeft = $("#tray-left");
@@ -254,9 +195,6 @@ $(function () {
 
           // 빈 슬롯을 새 조각으로 교체
           $slot.replaceWith($newPiece);
-
-          // 모든 힌트 효과 제거 (드래그 성공 시)
-          clearAllHints();
 
           successSound.play();
 
