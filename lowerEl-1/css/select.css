@@ -595,6 +595,24 @@
   cursor: pointer;
 }
 
+/* 카드 흔들기 애니메이션 */
+@keyframes shake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+.ktm-card.shaking {
+  animation: shake 0.8s ease-in-out;
+}
+
 .ktm-card-off {
   display: none;
   position: absolute;
