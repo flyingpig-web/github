@@ -28,16 +28,10 @@ $(function () {
     "suldae-active.png": ch1_13Narration,
   };
 
-  $(".dimmed.info-1").on("click", function () {
-    $(".dimmed.info-1").remove();
-    $(".tutorial-3").show();
-    $(".hint-3").hide();
-    ch1_09Narration.play();
-
-    setTimeout(() => {
-      $(".select-03-bg").removeClass("pointer-none");
-    }, 9000);
-  });
+  ch1_09Narration.play();
+  setTimeout(() => {
+    $(".select-03-bg").removeClass("pointer-none");
+  }, 9000);
 
   $(".select-start-btn").on("click", function () {
     $(".dimmed.select-03-popup").addClass("flex");

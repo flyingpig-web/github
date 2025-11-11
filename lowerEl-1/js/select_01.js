@@ -3,18 +3,13 @@ $(function () {
   const successSound = new Audio("sound/sfx/puzzle_success_01.wav");
   const dropSound = new Audio("sound/sfx/puzzle_wrong_01.wav");
 
-  $(".dimmed.info-1").on("click", function () {
-    $(".dimmed.info-1").remove();
-    $(".dimmed.tutorial-1").show();
-    $(".select-main").hide();
-    select01Narration.play();
-  });
-
+  select01Narration.play();
   $(".close").on("click", function () {
     select01Narration.pause();
     $(".dimmed.tutorial-1").remove();
     $(".select-main").show();
   });
+
   setTimeout(() => {
     initPuzzleGame();
   }, 100);

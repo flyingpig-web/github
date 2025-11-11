@@ -289,13 +289,7 @@
   background-size: cover;
 }
 
-.info-1 {
-  background-image: url(../img/common/dimmed.png);
-  background-color: transparent;
-}
-
 .tutorial-1 {
-  display: none;
   background-image: url(../img/select_01/tutorial-1.png);
   background-repeat: no-repeat;
   background-color: rgba(0, 0, 0, 0.6);
