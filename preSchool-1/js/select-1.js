@@ -1,6 +1,5 @@
 $(function () {
   const $container = $(".container");
-  const $info1 = $(".dimmed.info-1");
   const $tutorialBg = $(".dimmed.tutorial-bg");
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
@@ -27,11 +26,7 @@ $(function () {
   const NORMAL_VOLUME = 0.5;
   const MR_ACTIVE_VOLUME = 1;
 
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorialBg.removeClass("display-none");
-    $bgmTutorial.play();
-  });
+  $bgmTutorial.play();
 
   $(".close").on("click", function () {
     $bgmTutorial.pause();

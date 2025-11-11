@@ -1,15 +1,10 @@
 $(function () {
-  const $info1 = $(".dimmed.info-1");
   const $tutorialBg = $(".dimmed.tutorial-bg");
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
   const $selectMain = $(".select-main");
 
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorialBg.removeClass("display-none");
-    $bgmTutorial.play();
-  });
+  $bgmTutorial.play();
 
   $(".close").on("click", function () {
     $bgmTutorial.pause();

@@ -1,5 +1,4 @@
 $(function () {
-  const $info1 = $(".dimmed.info-1");
   const $tutorial = $(".dimmed.tutorial");
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
@@ -23,11 +22,7 @@ $(function () {
   let activatedCombos = new Set(); // 이미 활성화된 콤보들을 추적
   let playerVisibleTimers = {}; // player visible 타이머들을 추적
 
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorial.removeClass("display-none");
-    $bgmTutorial.play();
-  });
+  $bgmTutorial.play();
 
   $(".close").on("click", function () {
     $bgmTutorial.pause();

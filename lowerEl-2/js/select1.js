@@ -1,16 +1,11 @@
 $(function () {
-  const $info1 = $(".dimmed.info-1");
   const $tutorial = $(".dimmed.tutorial");
 
   // sounds
   const bgmTutorial = $("#bgm-tutorial")[0];
   const bgmMain = $("#bgm-main")[0];
 
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorial.removeClass("display-none");
-    bgmTutorial.play();
-  });
+  bgmTutorial.play();
 
   $(".close").on("click", function () {
     bgmTutorial.pause();

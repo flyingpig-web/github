@@ -1,10 +1,11 @@
 $(function () {
-  const $info1 = $(".dimmed.info-1");
   const $tutorialBg = $(".dimmed.tutorial-bg-2");
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $selectMain = $(".select-main-2");
   const $centerElement = $(".center-element");
   const $bgmMain = $("#bgm-main")[0];
+
+  $bgmTutorial.play();
 
   // 타원 궤도 설정 (CSS ellipse-track과 일치)
   const ellipseA = 24; // 장축 반지름 (vw 단위) - 60vw / 2
@@ -83,14 +84,9 @@ $(function () {
   let personActivationTimeout = null;
   let goodClassTimeout = null;
 
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorialBg.removeClass("display-none");
-    $bgmTutorial.play();
-    setTimeout(() => {
-      initEllipseDrag();
-    }, 1000);
-  });
+  setTimeout(() => {
+    initEllipseDrag();
+  }, 1000);
 
   $(".close").on("click", function () {
     $bgmTutorial.pause();

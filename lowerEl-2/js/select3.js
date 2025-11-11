@@ -1,5 +1,4 @@
 $(function () {
-  const $info1 = $(".dimmed.info-1");
   const $selectMain = $(".select-main-3");
   const $tutorial = $(".tutorial-3");
   const $close = $(".close");
@@ -10,14 +9,10 @@ $(function () {
   const bgmMain = $("#bgm-main")[0];
   const successBgm = $("#success-bgm")[0];
 
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorial.removeClass("display-none");
-    bgmTutorial.play();
-    setTimeout(() => {
-      $tutorial.removeClass("pointer-none");
-    }, 7000);
-  });
+  bgmTutorial.play();
+  setTimeout(() => {
+    $tutorial.removeClass("pointer-none");
+  }, 7000);
 
   $close.on("click", function () {
     $tutorial.fadeOut(200);

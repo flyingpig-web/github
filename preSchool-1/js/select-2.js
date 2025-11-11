@@ -1,5 +1,4 @@
 $(function () {
-  const $info1 = $(".dimmed.info-1");
   const $tutorialBg = $(".dimmed.tutorial-bg-2");
   const $container = $(".container");
   const $selectMain = $(".select-main");
@@ -13,6 +12,8 @@ $(function () {
   const $bgmMain = $("#bgm-main")[0];
   const bgmFinish = $("#bgm-finish")[0];
   const bgmFinish2 = $("#bgm-finish-2")[0];
+
+  $bgmTutorial.play();
 
   // 커서 이벤트 핸들러들을 저장할 변수들
   let handleMouseMove, handleMouseDown, handleMouseUp;
@@ -48,12 +49,6 @@ $(function () {
   let currentPlayingAudio = null; // 현재 재생 중인 오디오
   let audioQueue = []; // 재생 대기 중인 오디오 큐
   let patternStartTime = null; // 패턴 그리기 시작 시간
-
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorialBg.removeClass("display-none");
-    $bgmTutorial.play();
-  });
 
   $(".close").on("click", function () {
     $bgmTutorial.pause();

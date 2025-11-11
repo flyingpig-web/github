@@ -1,6 +1,5 @@
 $(function () {
   // DOM Elements
-  const $info1 = $(".dimmed.info-1");
   const $tutorial2 = $(".dimmed.tutorial-2");
   const $selectMain = $(".select-main-2");
   const $progressBarFill = $(".progress-bar-fill");
@@ -24,10 +23,14 @@ $(function () {
 
   // Skip tutorial if restart
   if (isRestart) {
-    $info1.hide();
     $tutorial2.addClass("display-none");
     $selectMain.removeClass("display-none pointer-none");
     $bgmMain.play();
+  } else {
+    $bgmTutorial.play();
+    setTimeout(() => {
+      $tutorial2.removeClass("pointer-none");
+    }, 5000);
   }
 
   // Audio fadeOut utility function
@@ -113,17 +116,6 @@ $(function () {
     stopTimer();
     handleSuccess();
   }
-
-  // Initial tutorial flow
-  $info1.on("click", function () {
-    $info1.hide();
-    $tutorial2.removeClass("display-none");
-    $bgmTutorial.play();
-
-    setTimeout(() => {
-      $tutorial2.removeClass("pointer-none");
-    }, 5000);
-  });
 
   $(".start-btn").on("click", function () {
     $(".tutorial-2-popup-wrapper").removeClass("display-none");
