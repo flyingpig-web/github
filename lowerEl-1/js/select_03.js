@@ -9,8 +9,6 @@ $(function () {
   // 오디오 파일들
   const successSound = new Audio("sound/sfx/puzzle_success_01.wav"); // 띠링
   const failSound = new Audio("sound/sfx/puzzle_wrong_01.wav"); // 땡
-  const transitionDimIn = new Audio("sound/sfx/transition_dim_in_01.wav");
-  transitionDimIn.play();
   // 게임 상태 변수들
   let isInteractionEnabled = false;
   let completedItems = 0;

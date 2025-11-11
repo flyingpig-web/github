@@ -2,8 +2,6 @@ $(function () {
   const select01Narration = new Audio("sound/ch_01/ch1_03b.mp3");
   const successSound = new Audio("sound/sfx/puzzle_success_01.wav");
   const dropSound = new Audio("sound/sfx/puzzle_wrong_01.wav");
-  const transitionDimIn = new Audio("sound/sfx/transition_dim_in_01.wav");
-  transitionDimIn.play();
 
   $(".dimmed.info-1").on("click", function () {
     $(".dimmed.info-1").remove();
