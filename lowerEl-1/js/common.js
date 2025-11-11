@@ -1,4 +1,4 @@
-document.title = "거문고 알기"; // 제목
+document.title = "거문고 알아보기"; // 제목
 
 function shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
