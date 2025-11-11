@@ -279,7 +279,7 @@ $(function () {
 
     setTimeout(() => {
       $(".select-02-success").fadeIn(200);
-      const resultSuccess = new Audio("sound/sfx/result_shimmer_01.wav");
+      const resultSuccess = new Audio("sound/sfx/result_success_01.wav");
       resultSuccess.play();
     }, 11000);
 

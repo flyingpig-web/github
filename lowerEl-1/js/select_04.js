@@ -252,7 +252,7 @@ $(function () {
     }
     $(".select-04-bg").addClass("pointer-none");
     $(".ktm-wrapper").addClass("pointer-none");
-    const resultSuccess = new Audio("sound/sfx/result_shimmer_01.wav");
+    const resultSuccess = new Audio("sound/sfx/result_success_01.wav");
     resultSuccess.play();
     $(".select-03-success").show();
     setTimeout(() => {
