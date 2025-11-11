@@ -271,9 +271,10 @@ $(function () {
 
     const successSound = new Audio("sound/ch_01/ch1_activity1A_play.wav");
     successSound.play();
-
+    $(".select-main").addClass("pointer-none");
     setTimeout(() => {
       $(".select-01-success").addClass("flex");
+      $(".select-main").removeClass("pointer-none");
     }, 14000);
   }
 
