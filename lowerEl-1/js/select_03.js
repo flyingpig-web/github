@@ -43,7 +43,6 @@ $(function () {
     $(".tutorial-3").hide();
     $(".select-start-btn").hide();
     $(".select-03").show();
-    $(".hint-3").show();
     ch1_09Narration.pause();
     ch1_09Narration.currentTime = 0;
 
@@ -112,14 +111,9 @@ $(function () {
     draggedItem.draggable("destroy");
     draggedItem.hide();
 
-    // 드롭존의 이미지 표시 (힌트 클래스 제거 후 정상 표시)
+    // 드롭존의 이미지 표시
     const $img = dropZone.find("img");
-    $img.removeClass("hint-showing").css("opacity", "1").show();
-
-    // info-box인 경우 힌트 클래스도 제거
-    if (dropZone.hasClass("info-box")) {
-      dropZone.removeClass("hint-showing");
-    }
+    $img.css("opacity", "1").show();
 
     dropZone.removeClass("droppable");
     dropZone.css({
@@ -155,60 +149,6 @@ $(function () {
     // 실패 사운드 재생
     failSound.play();
     // revert: "invalid" 설정으로 자동으로 원래 자리로 돌아감
-  }
-
-  const $hint = $(".btn-top.select-hint");
-  let hintCount = 3;
-  $hint.on("click", function () {
-    if (hintCount > 0) {
-      showHint();
-
-      // 힌트 카운트 감소 및 UI 업데이트
-      $hint.removeClass(`hint-${hintCount}`);
-      hintCount--;
-      $hint.addClass(`hint-${hintCount}`);
-
-      // 힌트를 모두 사용했으면 버튼 비활성화
-      if (hintCount === 0) {
-        $hint.addClass("disabled");
-      }
-    }
-  });
-
-  // 힌트 기능 구현
-  function showHint() {
-    // 아직 완료되지 않은 드롭존들을 찾기
-    const $uncompletedDropZones = $(".droppable").filter(function () {
-      return $(this).hasClass("droppable");
-    });
-
-    // 안 풀린 것이 없으면 종료
-    if ($uncompletedDropZones.length === 0) return;
-
-    // 안 풀린 것들 중에서 랜덤으로 1개 선택
-    const randomIndex = Math.floor(
-      Math.random() * $uncompletedDropZones.length
-    );
-    const $selectedDropZone = $uncompletedDropZones.eq(randomIndex);
-    const $img = $selectedDropZone.find("img");
-
-    // info-box인 경우 부모 요소에 힌트 클래스 추가
-    if ($selectedDropZone.hasClass("info-box")) {
-      $selectedDropZone.addClass("hint-showing");
-
-      // 2초 후 클래스 제거
-      setTimeout(() => {
-        $selectedDropZone.removeClass("hint-showing");
-      }, 2000);
-    } else {
-      // 일반 요소인 경우 이미지에 힌트 클래스 추가
-      $img.addClass("hint-showing");
-
-      // 2초 후 클래스 제거
-      setTimeout(() => {
-        $img.removeClass("hint-showing");
-      }, 2000);
-    }
   }
 
   // 완료 메시지 표시
