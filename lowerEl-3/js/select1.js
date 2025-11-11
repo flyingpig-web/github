@@ -305,14 +305,21 @@ $(function () {
     const $card = $(this);
     const $cardOff = $(".ktm-card-off");
 
+    // 흔들기 애니메이션 추가
+    $card.addClass("shaking");
+
     // 효과음 재생
     cardExpandEffect.play();
 
-    $card.hide();
-    $cardOff.show();
+    // 애니메이션이 끝난 후 카드 전환
+    setTimeout(() => {
+      $card.removeClass("shaking");
+      $card.hide();
+      $cardOff.show();
+    }, 800); // shake 애니메이션 시간과 동일
 
     setTimeout(() => {
       window.location.href = "ktm.html";
-    }, 3000);
+    }, 1400);
   });
 });
