@@ -1064,3 +1064,7 @@
 .select-04-control-finish-btn:hover {
   background-image: url(../img/select_04/finish-active.png);
 }
+
+.btn-top.disabled {
+  filter: grayscale(100%);
+}

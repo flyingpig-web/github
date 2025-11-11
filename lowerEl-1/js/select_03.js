@@ -29,8 +29,10 @@ $(function () {
   };
 
   ch1_09Narration.play();
+  $(".btn-top").addClass("disabled");
   setTimeout(() => {
     $(".select-03-bg").removeClass("pointer-none");
+    $(".btn-top").removeClass("disabled");
   }, 9000);
 
   $(".select-start-btn").on("click", function () {
