@@ -11,7 +11,6 @@ $(function () {
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
   const bgmFinish = $("#bgm-finish")[0];
-  const bgmFinish2 = $("#bgm-finish-2")[0];
 
   $bgmTutorial.play();
 
@@ -53,7 +52,6 @@ $(function () {
   $(".close").on("click", function () {
     $bgmTutorial.pause();
     $tutorialBg.fadeOut(500);
-    activatePattern();
 
     setTimeout(() => {
       $tutorialBg.hide();
@@ -69,6 +67,7 @@ $(function () {
 
   function startGame() {
     $container.addClass("cursor-change");
+    activatePattern();
     activateCursor();
     setupPatternDrawing();
     setupDanceControl();
