@@ -438,7 +438,7 @@ $(function () {
   }
 
   $(".wm-finish").on("click", () => {
-    bgmFinish2.play();
+    $("#bgm-card-open")[0].play();
     $(".wm-finish").fadeOut(500);
 
     setTimeout(() => {
@@ -446,8 +446,10 @@ $(function () {
     }, 500);
 
     setTimeout(() => {
-      $(".wm-finish-half").removeClass("pointer-none");
-    }, 2000);
+      $(".wm-finish-half").fadeOut(500);
+      $(".wm-finish-message").fadeIn(500);
+      $(".wm-finish-message").removeClass("pointer-none");
+    }, 1500);
   });
 
   $(".wm-finish-half").on("click", () => {

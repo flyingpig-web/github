@@ -7,7 +7,17 @@
   cursor: pointer;
 }
 *[role="button"]:hover {
-  scale: 1.05;
+  animation: button-scale 1s ease-in-out infinite;
+}
+
+@keyframes button-scale {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.03;
+  }
 }
 
 *[role="button"]:active {

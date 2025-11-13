@@ -58,7 +58,7 @@ $(function () {
     setTimeout(() => activateStrawberry(1), 5000);
     setTimeout(() => activateStrawberry(2), 10000);
     setTimeout(() => activateStrawberry(3), 14500);
-    setTimeout(() => activateStrawberry(4), 17500);
+    setTimeout(() => activateStrawberry(4), 17000);
 
     // bgmAR timeupdate 이벤트로 mute 제어
     bgmAR.addEventListener("timeupdate", handleBgmARMute);
@@ -239,7 +239,8 @@ $(function () {
   }
 
   $(".strawberry-finish").on("click", () => {
-    bgmFinish2.play();
+    // bgmFinish2.play();
+    $("#bgm-card-open")[0].play();
     $(".strawberry-finish").fadeOut(500);
 
     setTimeout(() => {
@@ -247,8 +248,10 @@ $(function () {
     }, 500);
 
     setTimeout(() => {
-      $(".strawberry-finish-half").removeClass("pointer-none");
-    }, 2000);
+      $(".strawberry-finish-half").fadeOut(500);
+      $(".strawberry-finish-message").fadeIn(500);
+      $(".strawberry-finish-message").removeClass("pointer-none");
+    }, 1500);
   });
 
   $(".strawberry-finish-half").on("click", () => {
