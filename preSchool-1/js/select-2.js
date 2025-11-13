@@ -257,7 +257,7 @@ $(function () {
     // 다음 패턴 활성화
     setTimeout(() => {
       activatePattern();
-    }, 1000);
+    }, 4600);
   }
 
   // reaction 표시 함수
