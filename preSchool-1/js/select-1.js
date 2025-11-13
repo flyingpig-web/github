@@ -224,13 +224,14 @@ $(function () {
   // 성공 애니메이션 표시 함수
   function showFinishAnimation() {
     $selectCompleted.removeClass("display-none");
+    $("#bgm-congratulation")[0].play();
 
     // 애니메이션 완료 후 제거
     setTimeout(() => {
       bgmFinish.play();
       $finishBg.removeClass("display-none");
       $selectCompleted.addClass("display-none");
-    }, 2000);
+    }, 3000);
 
     setTimeout(() => {
       $finishBg.removeClass("pointer-none");
