@@ -663,7 +663,7 @@
   width: 70%;
   height: 20%;
   position: absolute;
-  bottom: 28%;
+  bottom: 24%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -690,7 +690,7 @@
 
 .select-start-btn {
   position: absolute;
-  bottom: 5%;
+  bottom: 0%;
   left: 50%;
   transform: translateX(-50%);
   width: 36%;
@@ -821,6 +821,7 @@
 .info-box {
   position: absolute;
   border-radius: 12px;
+  width: 30%;
 }
 
 .select-03-main-geomungo-wrapper .info-box.droppable {
@@ -1067,4 +1068,23 @@
 
 .btn-top.disabled {
   filter: grayscale(100%);
+}
+
+.point-line-one {
+  left: 0%;
+  top: -27%;
+  transform: translateY(-50%) rotate(39deg);
+  width: 13%;
+}
+.point-line-two {
+  left: 42%;
+  top: -52%;
+  transform: translateY(-50%) rotate(128deg);
+  width: 15%;
+}
+.point-line-three {
+  left: 77%;
+  top: -24%;
+  transform: translateY(-50%) rotate(162deg);
+  width: 25%;
 }
