@@ -262,6 +262,7 @@ body.game-active:active {
   left: 50%;
   transform: translate(-50%, -50%);
   animation: size-up 1s ease-in-out 1;
+  cursor: pointer;
 }
 .strawberry-finish-half {
   display: none;
@@ -365,6 +366,7 @@ body.game-active:active {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  cursor: pointer;
 }
 
 .wm-finish-half {
