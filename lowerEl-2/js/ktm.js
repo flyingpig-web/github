@@ -415,6 +415,8 @@ $(function () {
       }
     });
 
+    $(".ktm-popup-overlay-close").on("click", closePopup);
+
     // 전역 마우스/터치 이벤트
     $(document).on("mousemove.cardMouse touchmove.cardTouch", function (e) {
       if (interactionState.isMouseDown || interactionState.isTouchActive) {
@@ -503,6 +505,35 @@ $(function () {
     $(".btn-back, .btn-home").on("click", stopCurrentNarration);
   }
 
+  let wheelTimeout;
+  let isWheeling = false;
+  const WHEEL_END_DELAY = 150; // 휠이 멈췄다고 판단하는 기준(ms)
+
+  function bindWheelEvents() {
+    // 슬라이더와 카드 컨테이너에 휠 이벤트 바인딩
+    $(".ktm-slider-control, .ktm-cards-container").on("wheel", function (e) {
+      e.preventDefault(); // 페이지 스크롤 방지
+      if (isWheeling) return;
+      if (!isWheeling) {
+        isWheeling = true;
+      }
+
+      // end 감지 타이머 리셋
+      clearTimeout(wheelTimeout);
+      wheelTimeout = setTimeout(() => {
+        isWheeling = false;
+      }, WHEEL_END_DELAY);
+
+      if (e.originalEvent.deltaY < 0) {
+        // 휠 up
+        navigatePrevious();
+      } else if (e.originalEvent.deltaY > 0) {
+        // 휠 down
+        navigateNext();
+      }
+    });
+  }
+
   // ========== 초기화 ==========
   function init() {
     bindCardEvents();
@@ -511,6 +542,7 @@ $(function () {
     bindPopupEvents();
     bindKeyboardEvents();
     bindNavigationEvents();
+    bindWheelEvents();
     updateCardPosition();
   }
 

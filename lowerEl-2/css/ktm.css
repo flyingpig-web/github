@@ -216,3 +216,11 @@
   background: url(../img/ktm/ktm-info-close-active.png) center no-repeat;
   background-size: contain;
 }
+
+.ktm-popup-overlay-close {
+  position: absolute;
+  top: 9%;
+  right: 2%;
+  width: 15%;
+  height: 15%;
+}
