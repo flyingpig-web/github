@@ -5,7 +5,7 @@ $(function () {
   setTimeout(() => {
     const $homeMain = $(".home-main");
     $homeMain.removeClass("pointer-none");
-  }, 2000);
+  }, 3000);
 
   // 선택 버튼 마우스오버/리브 이벤트 처리 함수
   function handleSelectButtonHover($button, pageUrl, narrationUrl) {
