@@ -988,6 +988,7 @@
   z-index: 1000;
   display: none;
   overflow: hidden;
+  background-color: white;
 }
 
 .magnifier-image {
