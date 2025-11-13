@@ -233,6 +233,16 @@ $(function () {
     elements.$infoPopup.hide();
   }
 
+  // ========== PDF 다운로드 ==========
+  function downloadPDF() {
+    const link = document.createElement("a");
+    link.href = "files/pdf/ktm-info.pdf";
+    link.download = "ktm-info.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   // ========== 상호작용 상태 관리 ==========
   function resetInteractionState() {
     interactionState = {
@@ -482,6 +492,9 @@ $(function () {
     $(".ktm-info-close, .ktm-info-popup").on("click", function (e) {
       if (e.target === this) closeInfoPopup();
     });
+
+    // PDF 다운로드
+    $(".ktm-download").on("click", downloadPDF);
   }
 
   function bindKeyboardEvents() {
