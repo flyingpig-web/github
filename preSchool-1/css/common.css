@@ -6,6 +6,9 @@
 *[role="button"] {
   cursor: pointer;
 }
+*[role="button"]:hover {
+  scale: 1.05;
+}
 
 *[role="button"]:active {
   filter: var(--btn-active-effect);

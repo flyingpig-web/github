@@ -56,9 +56,9 @@ $(function () {
     }, 500);
 
     setTimeout(() => activateStrawberry(1), 5000);
-    setTimeout(() => activateStrawberry(2), 8800);
+    setTimeout(() => activateStrawberry(2), 10000);
     setTimeout(() => activateStrawberry(3), 14500);
-    setTimeout(() => activateStrawberry(4), 16500);
+    setTimeout(() => activateStrawberry(4), 17500);
 
     // bgmAR timeupdate 이벤트로 mute 제어
     bgmAR.addEventListener("timeupdate", handleBgmARMute);
@@ -71,7 +71,7 @@ $(function () {
   function activateStrawberry(round) {
     // $strawberryMoveWrapper 에 strawberry-move .active 클래스를 붙여서 append.
     const $strawberryMove = $(
-      `<img src="img/select-1/strawberry-move.png" class="strawberry-move active">`
+      `<img src="img/select-1/strawberry-move.png" class="strawberry-move active" data-round="${round}">`
     );
     $strawberryMoveWrapper.append($strawberryMove);
 
@@ -80,39 +80,25 @@ $(function () {
     );
     $guageWrapper.append($strawberryGuage);
     currentRound = round;
-
-    if (round === 4) {
-      setTimeout(() => {
-        $(".touch-point").hide();
-      }, 2000);
-    }
   }
 
   function handleBgmARMute(e) {
     const currentTime = bgmAR.currentTime;
 
-    // 7~9초: 1번 라운드 체크
+    // time은 변경되면안됨 (AR 의 구간임)
     if (currentTime >= 7.2 && currentTime < 9.48) {
       bgmAR.volume = roundSuccess[0] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[0] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    }
-    // 11.8~13.8초: 2번 라운드 체크
-    else if (currentTime >= 11.7 && currentTime < 14.2) {
+    } else if (currentTime >= 11.7 && currentTime < 14.2) {
       bgmAR.volume = roundSuccess[1] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[1] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    }
-    // 16~18초: 3번 라운드 체크
-    else if (currentTime >= 16.7 && currentTime < 19) {
+    } else if (currentTime >= 16.7 && currentTime < 19) {
       bgmAR.volume = roundSuccess[2] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[2] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    }
-    // 18~20초: 4번 라운드 체크
-    else if (currentTime >= 19 && currentTime < 21.5) {
+    } else if (currentTime >= 19 && currentTime < 21.5) {
       bgmAR.volume = roundSuccess[3] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[3] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    }
-    // 다른 구간에서는 항상 재생
-    else {
+    } else {
       bgmAR.volume = NORMAL_VOLUME;
       bgmMR.volume = NORMAL_VOLUME;
     }
@@ -163,34 +149,20 @@ $(function () {
         const strawberryRect = $currentStrawberry[0].getBoundingClientRect();
         const touchPointRect = this.getBoundingClientRect();
 
-        // strawberry-move가 touch-point 영역에 반쯤이라도 들어왔는지 확인
-        const strawberryCenterX =
-          strawberryRect.left + strawberryRect.width / 2;
-        const strawberryCenterY =
-          strawberryRect.top + strawberryRect.height / 2;
-
-        // 3번째 딸기는 더 관대한 성공 조건 적용
-        let isOverlapping;
-        if (currentRound === 3) {
-          // 3번째 딸기: strawberry의 일부분만 touch-point 영역에 닿으면 성공
-          isOverlapping = !(
-            strawberryRect.right < touchPointRect.left ||
-            strawberryRect.left > touchPointRect.right ||
-            strawberryRect.bottom < touchPointRect.top ||
-            strawberryRect.top > touchPointRect.bottom
-          );
-        } else {
-          // 다른 딸기들: 중심점이 touch-point 영역에 있어야 성공
-          isOverlapping =
-            strawberryCenterX >= touchPointRect.left &&
-            strawberryCenterX <= touchPointRect.right &&
-            strawberryCenterY >= touchPointRect.top &&
-            strawberryCenterY <= touchPointRect.bottom;
-        }
+        let isOverlapping = !(
+          strawberryRect.right < touchPointRect.left ||
+          strawberryRect.left > touchPointRect.right ||
+          strawberryRect.bottom < touchPointRect.top ||
+          strawberryRect.top > touchPointRect.bottom
+        );
 
         if (isOverlapping) {
+          // 클릭한 딸기의 실제 라운드 번호 가져오기
+          const clickedRound = parseInt($currentStrawberry.data("round"));
+
           // 성공 처리
-          roundSuccess[currentRound - 1] = true;
+          roundSuccess[clickedRound - 1] = true;
+          $("#round-success-sound")[0].play();
           $currentStrawberry.addClass("success");
           $currentStrawberry.attr("src", "img/select-1/strawberry-success.png");
 
@@ -212,7 +184,7 @@ $(function () {
             $(".dan").attr("src", "img/select-1/dan.png");
             $(".hong").removeClass("dance");
             $(".hong").attr("src", "img/select-1/hong.png");
-          }, 1000);
+          }, 2000);
 
           // progress-bar-fill 업데이트 (25%씩 감소)
           progressFillInset -= 25;
@@ -221,11 +193,10 @@ $(function () {
             `inset(${progressFillInset}% 0 0 0)`
           );
 
-          $(`#strawberry-guage-${currentRound}`).hide();
+          $(`#strawberry-guage-${clickedRound}`).hide();
 
-          // 라운드 초기화
-          const completedRound = currentRound;
-          currentRound = 0;
+          // 성공한 딸기는 active 클래스를 유지하여 계속 움직임
+          // active 클래스를 제거하지 않음
         }
       }
     }
