@@ -432,6 +432,9 @@ $(function () {
   // 성공 애니메이션 표시 함수
   function showFinishAnimation() {
     $selectCompleted.removeClass("display-none");
+    // pattern 이미지와 active 클래스 지우기
+    $selectMain.find(".pattern").remove();
+    $wmWrapper.find(".wm").removeClass("active");
 
     // 애니메이션 완료 후 제거
     setTimeout(() => {
