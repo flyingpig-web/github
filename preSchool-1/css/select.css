@@ -374,6 +374,16 @@ body.game-active:active {
   left: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
+  animation: wm-finish-pulse 1s infinite alternate;
+}
+
+@keyframes wm-finish-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
 }
 
 .wm-finish-half {

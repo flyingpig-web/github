@@ -11,6 +11,7 @@ $(function () {
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
   const bgmFinish = $("#bgm-finish")[0];
+  const bgmFinish2 = $("#bgm-finish-2")[0];
   const puzzleSuccess = $("#puzzle-success")[0];
 
   $bgmTutorial.play();
@@ -429,6 +430,9 @@ $(function () {
     window.handleTouchEnd = handleTouchEnd;
   }
 
+  setTimeout(() => {
+    showFinishAnimation();
+  }, 2000);
   // 성공 애니메이션 표시 함수
   function showFinishAnimation() {
     $selectCompleted.removeClass("display-none");
@@ -446,6 +450,7 @@ $(function () {
 
     setTimeout(() => {
       $finishBg.removeClass("pointer-none");
+      bgmFinish2.play();
     }, 5000);
   }
 
