@@ -71,7 +71,6 @@ $(function () {
     activatePattern();
     activateCursor();
     setupPatternDrawing();
-    setupDanceControl();
   }
 
   // 춤 시작 함수
@@ -88,17 +87,6 @@ $(function () {
     $(".dan-2").attr("src", "img/select-2/dan.png");
     $(".hong-2").removeClass("dance");
     $(".hong-2").attr("src", "img/select-2/hong.png");
-  }
-
-  // 춤 제어 설정
-  function setupDanceControl() {
-    $select2Bg.on("mousedown touchstart", function () {
-      startDance();
-    });
-
-    $select2Bg.on("mouseup touchend", function () {
-      stopDance();
-    });
   }
 
   // 오디오 재생 관리 함수
@@ -129,8 +117,6 @@ $(function () {
       if (audioQueue.length > 0) {
         const nextAudioData = audioQueue.shift();
         playAudioSafe(nextAudioData.element, nextAudioData.index);
-      } else {
-        stopDance();
       }
     });
   }
@@ -275,6 +261,14 @@ $(function () {
 
     // 시간에 따른 reaction 표시
     showReaction(drawingTime);
+
+    // 패턴 완성 시 춤 시작
+    startDance();
+
+    // 2초 후 춤 중지
+    setTimeout(() => {
+      stopDance();
+    }, 2000);
 
     // 짝수 음원 재생 (받기)
     if (currentBgmIndex + 1 <= 8) {
