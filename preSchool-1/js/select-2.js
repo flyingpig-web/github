@@ -435,6 +435,7 @@ $(function () {
     // pattern 이미지와 active 클래스 지우기
     $selectMain.find(".pattern").remove();
     $wmWrapper.find(".wm").removeClass("active");
+    $("#bgm-select-2-complete")[0].play();
 
     // 애니메이션 완료 후 제거
     setTimeout(() => {
