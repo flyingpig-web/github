@@ -301,17 +301,21 @@ $(function () {
   function showReaction(drawingTime) {
     let reactionClass = "";
     let reactionSrc = "";
+    let bgm = "";
 
     // 시간에 따라 클래스와 이미지 결정
     if (drawingTime <= 1) {
       reactionClass = "slow";
       reactionSrc = "img/select-2/reaction-slow.png";
+      bgm = "bgm-wm-pattern-slow";
     } else if (drawingTime <= 3) {
       reactionClass = "good";
       reactionSrc = "img/select-2/reaction-good.png";
+      bgm = "bgm-wm-pattern-good";
     } else {
       reactionClass = "fast";
       reactionSrc = "img/select-2/reaction-fast.png";
+      bgm = "bgm-wm-pattern-fast";
     }
 
     // reaction 요소 생성 및 추가
@@ -319,6 +323,8 @@ $(function () {
       `<img src="${reactionSrc}" class="reaction ${reactionClass}" />`
     );
     $selectMain.append($reaction);
+    $(`#${bgm}`)[0].currentTime = 0;
+    $(`#${bgm}`)[0].play();
 
     // 0.8초 후 제거
     setTimeout(() => {
