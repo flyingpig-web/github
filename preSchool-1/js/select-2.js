@@ -430,9 +430,6 @@ $(function () {
     window.handleTouchEnd = handleTouchEnd;
   }
 
-  setTimeout(() => {
-    showFinishAnimation();
-  }, 2000);
   // 성공 애니메이션 표시 함수
   function showFinishAnimation() {
     $selectCompleted.removeClass("display-none");
@@ -521,5 +518,18 @@ $(function () {
     $(".finish-bg").fadeIn(500);
     $messageSound.pause();
     $messageSound.currentTime = 0;
+  });
+
+  function downloadPDF() {
+    const link = document.createElement("a");
+    link.href = "files/pdf/yu-1.pdf";
+    link.download = "메기고 받는소리.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  $(".download-btn").on("click", function () {
+    downloadPDF();
   });
 });
