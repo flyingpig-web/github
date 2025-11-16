@@ -237,7 +237,7 @@ $(function () {
   function downloadPDF() {
     const link = document.createElement("a");
     link.href = "files/pdf/ktm-info.pdf";
-    link.download = "ktm-info.pdf";
+    link.download = "나만의 국악카드 앨범.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
