@@ -149,8 +149,8 @@ $(function () {
       e.preventDefault();
       const wmNumber = parseInt($(this).data("wm"));
 
-      // 현재 패턴의 시작점인지 확인
-      if (currentPattern && wmNumber === currentPattern.path[0]) {
+      // 현재 패턴의 시작점인지 확인 (이미 그리기 시작했으면 무시)
+      if (currentPattern && wmNumber === currentPattern.path[0] && !isDrawing) {
         isDrawing = true;
         drawingPath = [wmNumber]; // 드래그 시작 - 경로 초기화
         patternStartTime = Date.now(); // 패턴 그리기 시작 시간 기록
@@ -198,8 +198,8 @@ $(function () {
       e.preventDefault();
       const wmNumber = parseInt($(this).data("wm"));
 
-      // 현재 패턴의 시작점인지 확인
-      if (currentPattern && wmNumber === currentPattern.path[0]) {
+      // 현재 패턴의 시작점인지 확인 (이미 그리기 시작했으면 무시)
+      if (currentPattern && wmNumber === currentPattern.path[0] && !isDrawing) {
         isDrawing = true;
         drawingPath = [wmNumber];
         patternStartTime = Date.now(); // 패턴 그리기 시작 시간 기록
