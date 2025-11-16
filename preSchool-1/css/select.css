@@ -336,6 +336,12 @@ body.game-active:active {
   -webkit-user-drag: none;
   user-drag: none;
   object-fit: scale-down;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.wm.active {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 20px #ffe600) drop-shadow(0 0 40px #ffe600);
 }
 
 .cursor-change {
@@ -345,7 +351,7 @@ body.game-active:active {
 #custom-cursor {
   position: fixed;
   width: 15%;
-  transform: translate(-25%, -25%);
+  transform: translate(-45%, -45%);
   z-index: 9999;
   display: none;
   pointer-events: none;
@@ -375,8 +381,8 @@ body.game-active:active {
   position: absolute;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 23%;
-  top: 60%;
+  width: 29%;
+  top: 55%;
 }
 
 .wm-finish-message {

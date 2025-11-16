@@ -11,6 +11,7 @@ $(function () {
   const $bgmTutorial = $("#bgm-tutorial")[0];
   const $bgmMain = $("#bgm-main")[0];
   const bgmFinish = $("#bgm-finish")[0];
+  const puzzleSuccess = $("#puzzle-success")[0];
 
   $bgmTutorial.play();
 
@@ -154,6 +155,15 @@ $(function () {
         drawingPath = [wmNumber]; // 드래그 시작 - 경로 초기화
         patternStartTime = Date.now(); // 패턴 그리기 시작 시간 기록
 
+        // 시작점 수박 스케일 업 & 글로우 효과
+        $(this).addClass("active");
+
+        // puzzle_success_01 사운드 재생
+        if (puzzleSuccess) {
+          puzzleSuccess.currentTime = 0;
+          puzzleSuccess.play();
+        }
+
         // 홀수 음원 재생 (메기기)
         if (currentBgmIndex <= 8) {
           const bgm = $(`#bgm-pattern-${currentBgmIndex}`)[0];
@@ -171,6 +181,15 @@ $(function () {
       // 다음 경로가 맞는지 확인 (중복 방지)
       if (wmNumber === expectedNext && !drawingPath.includes(wmNumber)) {
         drawingPath.push(wmNumber);
+
+        // 수박 스케일 업 & 글로우 효과
+        $(this).addClass("active");
+
+        // puzzle_success_01 사운드 재생
+        if (puzzleSuccess) {
+          puzzleSuccess.currentTime = 0;
+          puzzleSuccess.play();
+        }
       }
     });
 
@@ -184,6 +203,15 @@ $(function () {
         isDrawing = true;
         drawingPath = [wmNumber];
         patternStartTime = Date.now(); // 패턴 그리기 시작 시간 기록
+
+        // 시작점 수박 스케일 업 & 글로우 효과
+        $(this).addClass("active");
+
+        // puzzle_success_01 사운드 재생
+        if (puzzleSuccess) {
+          puzzleSuccess.currentTime = 0;
+          puzzleSuccess.play();
+        }
 
         // 홀수 음원 재생 (메기기)
         if (currentBgmIndex <= 8) {
@@ -206,6 +234,15 @@ $(function () {
 
         if (wmNumber === expectedNext && !drawingPath.includes(wmNumber)) {
           drawingPath.push(wmNumber);
+
+          // 수박 스케일 업 & 글로우 효과
+          $(element).addClass("active");
+
+          // puzzle_success_01 사운드 재생
+          if (puzzleSuccess) {
+            puzzleSuccess.currentTime = 0;
+            puzzleSuccess.play();
+          }
         }
       }
     });
@@ -257,7 +294,7 @@ $(function () {
     // 다음 패턴 활성화
     setTimeout(() => {
       activatePattern();
-    }, 4600);
+    }, 4300);
   }
 
   // reaction 표시 함수
@@ -303,6 +340,9 @@ $(function () {
       availablePatterns[Math.floor(Math.random() * availablePatterns.length)];
     currentPatternKey = randomKey;
     currentPattern = patternObj[randomKey];
+
+    // 모든 수박의 active 클래스 초기화
+    $(".wm").removeClass("active");
 
     // 패턴 이미지 표시
     $(".pattern").remove(); // 기존 패턴 제거
