@@ -5,6 +5,7 @@
 }
 *[role="button"] {
   cursor: pointer;
+  transform-origin: left;
 }
 *[role="button"]:hover {
   animation: button-scale 1s ease-in-out infinite;
