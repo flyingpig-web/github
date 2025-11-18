@@ -536,25 +536,7 @@ $(function () {
 
       // BGM Stage 3 재생 시 성공 alert
       if (bgmStageIndex === 2) {
-        setTimeout(() => {
-          $mainPlayBgm.pause();
-          $selectMain.addClass("pointer-none");
-          $(".select-completed").removeClass("display-none");
-
-          setTimeout(() => {
-            $(".select-completed .finish-animation").remove();
-          }, 2000);
-
-          setTimeout(() => {
-            $(".select-completed .success-ment").removeClass("display-none");
-            $("#success-ment")[0].play();
-            $(".songpyun-before").removeClass("display-none");
-          }, 2500);
-
-          setTimeout(() => {
-            $("#success-ment-2")[0].play();
-          }, 7500);
-        }, 2000);
+        showFinishAnimation();
       }
 
       // BGM 재생 시간 기록 및 회전량 초기화
@@ -562,6 +544,30 @@ $(function () {
       rotationAfterBgm = 0; // 다음 BGM을 위한 회전량 초기화
       bgmStageIndex++;
     }
+  }
+
+  function showFinishAnimation() {
+    setTimeout(() => {
+      $mainPlayBgm.pause();
+      $selectMain.addClass("pointer-none");
+      $(".select-completed").removeClass("display-none");
+      $("#bgm-finish")[0].play();
+
+      setTimeout(() => {
+        $(".select-completed .finish-animation").remove();
+      }, 2000);
+
+      setTimeout(() => {
+        $(".select-completed .success-ment").removeClass("display-none");
+        $("#success-ment")[0].play();
+        $(".songpyun-before").removeClass("display-none");
+      }, 3500);
+
+      setTimeout(() => {
+        $("#success-ment-2")[0].play();
+        $(".select-2-songpyun").removeClass("pointer-none");
+      }, 7500);
+    }, 2000);
   }
 
   // BGM 시퀀스 중단 (현재 재생 중인 BGM은 유지)
@@ -771,11 +777,18 @@ $(function () {
   }
 
   $(".select-2-songpyun").on("click", function () {
+    $("#bgm-card-open")[0].play();
     $(".select-2-songpyun").fadeOut(500);
 
     setTimeout(() => {
       $(".select-2-songpyun-half").fadeIn(500);
     }, 500);
+
+    setTimeout(() => {
+      $(".select-2-songpyun-half").fadeOut(500);
+      $(".message").fadeIn(500);
+      $(".message").removeClass("pointer-none");
+    }, 1500);
   });
 
   $(".select-2-songpyun-half").on("click", function () {
@@ -799,5 +812,18 @@ $(function () {
     $(".songpyun-before").fadeIn(500);
     $messageSound.pause();
     $messageSound.currentTime = 0;
+  });
+
+  function downloadPDF() {
+    const link = document.createElement("a");
+    link.href = "files/pdf/yu-2.pdf";
+    link.download = "덩실덩실 한가위.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  $(".download-btn").on("click", function () {
+    downloadPDF();
   });
 });
