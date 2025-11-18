@@ -161,11 +161,11 @@
   scale: 1.5;
 }
 
-.filled {
+.filled img {
   animation: wiggle 2s ease-out infinite forwards;
 }
 
-.filled.stopped {
+.filled.stopped img {
   animation: none !important;
 }
 
