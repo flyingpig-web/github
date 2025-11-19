@@ -7,9 +7,10 @@ $(function () {
 
   $bgmTutorial.play();
 
-  // 타원 궤도 설정 (CSS ellipse-track과 일치)
-  const ellipseA = 24; // 장축 반지름 (vw 단위) - 60vw / 2
-  const ellipseB = 11.5; // 단축 반지름 (vw 단위) - 35vw / 2
+  // 타원 궤도 설정 (slider-track.png 이미지의 타원 경로와 일치)
+  // .ellipse-track은 50% x 50% 크기, 이미지 내부 타원 경로를 고려
+  const ellipseA = 22; // 장축 반지름 (% 단위) - 컨테이너 너비 기준
+  const ellipseB = 16; // 단축 반지름 (% 단위) - 약 2:1 비율
 
   let isDragging = false;
   let draggedMoon = null;
@@ -111,8 +112,7 @@ $(function () {
   function initEllipseDrag() {
     // 초기 위치 설정
     $(".moon").each(function () {
-      const angle = parseFloat($(this).data("angle"));
-      updatePersonPosition($(this), angle);
+      updateMoonPosition($(this), 90);
     });
 
     // 드래그 이벤트 설정
@@ -227,12 +227,16 @@ $(function () {
     let closestAngle = 0;
     let minDistance = Infinity;
 
+    // 컨테이너 크기 가져오기
+    const containerRect = $selectMain[0].getBoundingClientRect();
+    const containerWidth = containerRect.width;
+
     // 360도를 1도씩 체크하여 가장 가까운 점 찾기
     for (let angle = 0; angle < 360; angle += 1) {
       const rad = (angle * Math.PI) / 180;
-      // vw 단위를 픽셀로 변환 (둘 다 vw 단위)
-      const x = ellipseA * Math.cos(rad) * (window.innerWidth / 100);
-      const y = ellipseB * Math.sin(rad) * (window.innerWidth / 100);
+      // % 단위를 픽셀로 변환 (컨테이너 너비 기준으로 통일)
+      const x = (ellipseA / 100) * containerWidth * Math.cos(rad);
+      const y = (ellipseB / 100) * containerWidth * Math.sin(rad);
 
       const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
 
@@ -245,26 +249,27 @@ $(function () {
     return closestAngle;
   }
 
-  // 모든 사람 위치 업데이트
+  // 모든 달 위치 업데이트
   function updateMoonPositions(angleDelta) {
     $(".moon").each(function () {
       const currentAngle = parseFloat($(this).data("angle"));
       const newAngle = (currentAngle + angleDelta + 360) % 360;
       $(this).data("angle", newAngle);
-      updatePersonPosition($(this), newAngle);
+      updateMoonPosition($(this), newAngle);
     });
   }
 
   // 개별 달 위치 업데이트
-  function updatePersonPosition($moon, angle) {
+  function updateMoonPosition($moon, angle) {
     const rad = (angle * Math.PI) / 180;
     const x = ellipseA * Math.cos(rad);
     const y = ellipseB * Math.sin(rad);
 
-    // moon 크기의 절반만큼 오프셋 적용 (8vw / 2 = 4vw)
+    // moon img 크기의 절반만큼 오프셋 적용 (50% of moon container)
     $moon.css({
-      left: `calc(50% + ${x}vw - 4vw)`,
-      top: `calc(50% + ${y}vw - 4vw)`,
+      left: `calc(51% + ${x}%)`,
+      top: `calc(51% + ${y}%)`,
+      transform: "translate(-20%, -50%)",
     });
   }
 
@@ -293,14 +298,6 @@ $(function () {
       if (Math.abs(angleDiff) >= minAngleChange) {
         totalRotationForFirstBgm += Math.abs(angleDiff);
         lastValidAngle = currentAngle;
-
-        console.log(
-          `유효한 회전 감지: +${Math.abs(angleDiff).toFixed(
-            1
-          )}도, 총 회전량: ${totalRotationForFirstBgm.toFixed(
-            1
-          )}도/${requiredRotationForFirstBgm}도`
-        );
       }
     }
   }
@@ -759,13 +756,10 @@ $(function () {
       $goodWrapper.removeClass("good-1 good-2 good-3");
       $goodWrapper.addClass(goodClass);
 
-      console.log(`Good class ${goodClass} added for 1 second`);
-
       // 1초 후 클래스 제거
       goodClassTimeout = setTimeout(() => {
         $goodWrapper.removeClass(goodClass);
         goodClassTimeout = null;
-        console.log(`Good class ${goodClass} removed after 1 second`);
       }, 1000);
     }
   }
@@ -773,7 +767,6 @@ $(function () {
   // good-wrapper의 모든 good 클래스 제거
   function resetGoodClasses() {
     $goodWrapper.removeClass("good-1 good-2 good-3");
-    console.log("All good classes reset");
   }
 
   $(".select-2-songpyun").on("click", function () {
