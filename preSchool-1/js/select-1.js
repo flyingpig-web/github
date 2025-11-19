@@ -239,7 +239,6 @@ $(function () {
   }
 
   $(".strawberry-finish").on("click", () => {
-    // bgmFinish2.play();
     $("#bgm-card-open")[0].play();
     $(".strawberry-finish").fadeOut(500);
 

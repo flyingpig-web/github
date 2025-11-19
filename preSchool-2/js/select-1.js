@@ -87,7 +87,7 @@ $(function () {
         playSuccessSound(pieceType);
 
         // 성공 애니메이션 표시
-        showFinishAnimation($dropZone);
+        showCompleteAnimation($dropZone);
 
         // 음표 표시
         showNote(pieceType);
@@ -131,8 +131,8 @@ $(function () {
   }
 
   // 성공 애니메이션 표시 함수
-  function showFinishAnimation($dropZone) {
-    const $animation = $('<div class="finish-animation"></div>');
+  function showCompleteAnimation($dropZone) {
+    const $animation = $('<div class="complete-animation"></div>');
     const dropZonePos = $dropZone.position();
 
     // 애니메이션을 drop zone 중앙에 위치
@@ -215,34 +215,43 @@ $(function () {
     }, 10500);
 
     setTimeout(() => {
-      $(".select-completed").removeClass("display-none");
-
-      setTimeout(() => {
-        $(".select-completed .finish-animation").remove();
-      }, 2000);
-
-      setTimeout(() => {
-        $(".select-completed .success-ment").removeClass("display-none");
-        $("#success-ment")[0].play();
-      }, 2500);
-
-      setTimeout(() => {
-        $("#success-ment-2")[0].play();
-      }, 6500);
+      showFinishAnimation();
     }, 12500);
+  }
+
+  function showFinishAnimation() {
+    $(".select-completed").removeClass("display-none");
+    $("#bgm-finish")[0].play();
+    setTimeout(() => {
+      $(".select-completed .finish-animation").remove();
+    }, 2000);
 
     setTimeout(() => {
+      $(".select-completed .success-ment").removeClass("display-none");
+      $("#success-ment")[0].play();
       $(".select-completed").remove();
       $(".songpyun-before").removeClass("display-none");
-    }, 15000);
+    }, 2500);
+
+    setTimeout(() => {
+      $("#success-ment-2")[0].play();
+      $(".select-1-songpyun").removeClass("pointer-none");
+    }, 6500);
   }
 
   $(".select-1-songpyun").on("click", function () {
+    $("#bgm-card-open")[0].play();
     $(".select-1-songpyun").fadeOut(500);
 
     setTimeout(() => {
       $(".select-1-songpyun-half").fadeIn(500);
     }, 500);
+
+    setTimeout(() => {
+      $(".select-1-songpyun-half").fadeOut(500);
+      $(".message").fadeIn(500);
+      $(".message").removeClass("pointer-none");
+    }, 1500);
   });
 
   $(".select-1-songpyun-half").on("click", function () {

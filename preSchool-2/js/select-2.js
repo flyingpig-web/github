@@ -813,17 +813,4 @@ $(function () {
     $messageSound.pause();
     $messageSound.currentTime = 0;
   });
-
-  function downloadPDF() {
-    const link = document.createElement("a");
-    link.href = "files/pdf/yu-2.pdf";
-    link.download = "덩실덩실 한가위.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  $(".download-btn").on("click", function () {
-    downloadPDF();
-  });
 });

@@ -148,7 +148,7 @@
 }
 
 /* 성공 애니메이션 */
-.finish-animation {
+.complete-animation {
   position: absolute;
   width: 12%;
   height: 26%;
