@@ -18,6 +18,7 @@ $(function () {
   let lastAngle = 0;
   let centerImageInterval = null;
   let currentCenterImage = 1; // 1: center-disc.png, 2: center-disc-2.png
+  let lastImageSwitchTime = 0; // 마지막 이미지 전환 시간
 
   // 올바른 회전 판별을 위한 변수들
   let rotationHistory = []; // 회전 방향 히스토리
@@ -195,7 +196,7 @@ $(function () {
 
     // 중앙 요소 회전 및 이미지 변경
     if (Math.abs(rotationSpeed) > 1) {
-      startCenterImageAnimation();
+      startCenterImageAnimation(Math.abs(rotationSpeed));
     }
   }
 
@@ -303,11 +304,26 @@ $(function () {
   }
 
   // 중앙 이미지 애니메이션 시작
-  function startCenterImageAnimation() {
-    // 이미 실행 중이면 중복 실행 방지
-    if (centerImageInterval) return;
+  function startCenterImageAnimation(speed) {
+    // 회전 속도에 따라 전환 간격 계산
+    let requiredInterval;
+    if (speed < 3) {
+      requiredInterval = 800; // 매우 느림
+    } else if (speed < 5) {
+      requiredInterval = 600; // 느림
+    } else if (speed < 8) {
+      requiredInterval = 400; // 보통
+    } else if (speed < 12) {
+      requiredInterval = 300; // 빠름
+    } else {
+      requiredInterval = 200; // 매우 빠름
+    }
 
-    centerImageInterval = setInterval(() => {
+    const currentTime = Date.now();
+    const timeSinceLastSwitch = currentTime - lastImageSwitchTime;
+
+    // 필요한 간격이 지났으면 이미지 전환
+    if (timeSinceLastSwitch >= requiredInterval) {
       if (currentCenterImage === 1) {
         $centerElement.find("img").attr("src", "img/select/center-disc-2.png");
         currentCenterImage = 2;
@@ -315,15 +331,13 @@ $(function () {
         $centerElement.find("img").attr("src", "img/select/center-disc.png");
         currentCenterImage = 1;
       }
-    }, 1000);
+      lastImageSwitchTime = currentTime;
+    }
   }
 
   // 중앙 이미지 애니메이션 중지
   function stopCenterImageAnimation() {
-    if (centerImageInterval) {
-      clearInterval(centerImageInterval);
-      centerImageInterval = null;
-    }
+    lastImageSwitchTime = 0;
   }
 
   // 올바른 회전 판별 함수
