@@ -328,6 +328,7 @@ $(function () {
       margin: 0,
       visibility: "visible",
       zIndex: 20,
+      pointerEvents: "none", // 클릭 이벤트 통과
     });
 
     // 복제본을 body에 추가하고 애니메이션 시작

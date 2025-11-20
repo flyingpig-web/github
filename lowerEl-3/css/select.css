@@ -176,7 +176,11 @@
   align-items: center;
 }
 .rail.no-moving {
-  transform: translateX(20%);
+  transform: translateX(14%);
+}
+/* 스크롤 애니메이션 */
+.rail.moving {
+  animation: slideLeft 16s forwards linear;
 }
 
 .note {
@@ -229,14 +233,9 @@
   flex-shrink: 0;
 }
 
-/* 스크롤 애니메이션 */
-.rail.moving {
-  animation: slideLeft 16s forwards linear;
-}
-
 @keyframes slideLeft {
   from {
-    transform: translateX(20%);
+    transform: translateX(14%);
   }
   to {
     transform: translateX(-202%);
