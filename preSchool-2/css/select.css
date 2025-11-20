@@ -354,23 +354,30 @@
 .person {
   position: absolute;
   bottom: 0;
+  width: 14%;
+}
+
+.person.active {
   width: 20%;
-  height: 20%;
 }
 
 #person-1 {
-  left: 0%;
+  left: 2%;
 }
 
 #person-2 {
-  right: 5%;
+  right: 6%;
+  width: 19%;
+}
+#person-2.active {
+  width: 25%;
 }
 
 #person-3 {
-  right: -5%;
+  right: -1%;
 }
 
-.lyrics-wrapper {
+.lyrics-wrapper-left {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -381,23 +388,39 @@
   left: 3%;
 }
 
-.lyrics-wrapper.common {
+.lyrics-wrapper-right {
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: 10%;
+  height: 10%;
+  position: absolute;
+  bottom: 35%;
+  right: 3%;
+}
+
+.lyrics-wrapper-left.common,
+.lyrics-wrapper-right.common {
   background-image: url(../img/select/lyrics-common.png);
 }
 
-.lyrics-wrapper.lyrics-1 {
+.lyrics-wrapper-left.lyrics-1,
+.lyrics-wrapper-right.lyrics-1 {
   background-image: url(../img/select/lyrics-1.png);
 }
 
-.lyrics-wrapper.lyrics-2 {
+.lyrics-wrapper-left.lyrics-2,
+.lyrics-wrapper-right.lyrics-2 {
   background-image: url(../img/select/lyrics-2.png);
 }
 
-.lyrics-wrapper.lyrics-3 {
+.lyrics-wrapper-left.lyrics-3,
+.lyrics-wrapper-right.lyrics-3 {
   background-image: url(../img/select/lyrics-3.png);
 }
 
-.lyrics-wrapper.lyrics-4 {
+.lyrics-wrapper-left.lyrics-4,
+.lyrics-wrapper-right.lyrics-4 {
   background-image: url(../img/select/lyrics-4.png);
 }
 

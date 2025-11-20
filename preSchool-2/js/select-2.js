@@ -44,7 +44,8 @@ $(function () {
   const $bgmStage3 = $("#bgm-stage-3")[0];
   const bgmStages = [$bgmStage1, $bgmStage2, $bgmStage3];
   const $mainPlayBgm = $("#select-2-main-play")[0];
-  const $lyricsWrapper = $(".lyrics-wrapper");
+  const $lyricsWrapperLeft = $(".lyrics-wrapper-left");
+  const $lyricsWrapperRight = $(".lyrics-wrapper-right");
   const $goodWrapper = $(".good-wrapper");
 
   // Person 요소들
@@ -67,19 +68,21 @@ $(function () {
     ],
   };
 
-  // 가사 타이밍 설정
+  // 가사 타이밍 설정 (position: 'left' | 'right' | 'both' | 'none')
   const lyricsTimings = [
-    { start: 0, end: 5, className: "" }, // 없음
-    { start: 5, end: 10, className: "common" }, // lyrics-common.png
-    { start: 10, end: 12.5, className: "lyrics-1" }, // lyrics-1.png
-    { start: 12.5, end: 14.5, className: "common" }, // lyrics-common.png
-    { start: 14.5, end: 17, className: "lyrics-2" }, // lyrics-2.png
-    { start: 17, end: 19, className: "common" }, // lyrics-common.png
-    { start: 19, end: 22, className: "lyrics-3" }, // lyrics-3.png
-    { start: 22, end: 24, className: "common" }, // lyrics-common.png
-    { start: 24, end: 27, className: "lyrics-4" }, // lyrics-4.png
-    { start: 27, end: 29, className: "common" }, // lyrics-common.png
-    { start: 30, end: Infinity, className: "" }, // 없음
+    { start: 0, end: 2.5, className: "", position: "none" }, // 없음
+    { start: 2.5, end: 5, className: "lyrics-right", position: "right" }, // lyrics-right.png
+    { start: 5, end: 7.5, className: "common", position: "left" }, // lyrics-common.png
+    { start: 7.5, end: 10, className: "common", position: "right" }, // lyrics-common.png
+    { start: 10, end: 12.5, className: "lyrics-1", position: "left" }, // lyrics-1.png
+    { start: 12.5, end: 14.5, className: "common", position: "right" }, // lyrics-common.png
+    { start: 14.5, end: 17, className: "lyrics-2", position: "left" }, // lyrics-2.png
+    { start: 17, end: 19, className: "common", position: "right" }, // lyrics-common.png
+    { start: 19, end: 22, className: "lyrics-3", position: "left" }, // lyrics-3.png
+    { start: 22, end: 24, className: "common", position: "right" }, // lyrics-common.png
+    { start: 24, end: 27, className: "lyrics-4", position: "left" }, // lyrics-4.png
+    { start: 27, end: 29, className: "common", position: "right" }, // lyrics-common.png
+    { start: 30, end: Infinity, className: "", position: "none" }, // 없음
   ];
 
   let lyricsInterval = null;
@@ -699,11 +702,25 @@ $(function () {
 
     if (currentTiming) {
       // 모든 가사 클래스 제거
-      $lyricsWrapper.removeClass("common lyrics-1 lyrics-2 lyrics-3 lyrics-4");
+      $lyricsWrapperLeft.removeClass(
+        "common lyrics-1 lyrics-2 lyrics-3 lyrics-4"
+      );
+      $lyricsWrapperRight.removeClass(
+        "common lyrics-1 lyrics-2 lyrics-3 lyrics-4"
+      );
 
-      // 현재 시간에 맞는 클래스 추가
-      if (currentTiming.className) {
-        $lyricsWrapper.addClass(currentTiming.className);
+      // 위치에 따라 클래스 추가
+      if (currentTiming.className && currentTiming.position === "left") {
+        $lyricsWrapperLeft.addClass(currentTiming.className);
+      } else if (
+        currentTiming.className &&
+        currentTiming.position === "right"
+      ) {
+        $lyricsWrapperRight.addClass(currentTiming.className);
+      } else if (currentTiming.className && currentTiming.position === "both") {
+        // 양쪽 모두 표시 (필요시)
+        $lyricsWrapperLeft.addClass(currentTiming.className);
+        $lyricsWrapperRight.addClass(currentTiming.className);
       }
     }
   }
@@ -721,7 +738,10 @@ $(function () {
     $mainPlayBgm.removeEventListener("ended", onMainBgmEnded);
 
     // 가사 클래스 모두 제거
-    $lyricsWrapper.removeClass("common lyrics-1 lyrics-2 lyrics-3 lyrics-4");
+    $lyricsWrapperLeft.removeClass(
+      "common lyrics-1 lyrics-2 lyrics-3 lyrics-4"
+    );
+    $lyricsWrapperRight.removeClass("lyrics-right");
   }
 
   // 모든 Person 이미지를 1초간 active 상태로 변경
