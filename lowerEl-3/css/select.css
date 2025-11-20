@@ -198,6 +198,24 @@
   z-index: 11;
 }
 
+/* 클릭된 노트 애니메이션 */
+.note.clicked {
+  position: fixed !important;
+  animation: noteClickEffect 0.5s ease-out forwards;
+  z-index: 20;
+}
+
+@keyframes noteClickEffect {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
 .note img.note-text {
   position: absolute;
   bottom: -75%;
@@ -256,7 +274,7 @@
   background-size: contain;
 }
 .ktm-wrapper .btn-replay:hover {
-  background-image: url(../img/common/replay_active.png);
+  background-image: url(../img/common/replay-2-active.png);
 }
 
 .ktm-wrapper .btn-home {

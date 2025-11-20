@@ -280,21 +280,68 @@ $(function () {
     // 모든 player와 spotlight에서 visible 클래스 제거
     $(".player").removeClass("visible");
     $(".spotlight").removeClass("visible");
+
+    // 숨겨진 note들 복원
+    $(".note.note-hidden")
+      .removeClass("note-hidden")
+      .css("visibility", "visible");
   }
 
   // note 이미지 클릭 이벤트
-  $(document).on("click", ".note img", function () {
+  $(document).on("click", ".note img", function (e) {
     if (!gameStarted) return;
 
-    // target-zone에서 클릭했는지 확인
-    if (checkNoteInTargetZone(this)) {
-      showTargetZoneEffect();
+    const $clickedImg = $(this);
+    const $note = $clickedImg.closest(".note");
 
-      // 효과음 재생
-      if ($("#effect")[0]) {
-        $("#effect")[0].play();
-      }
+    // 이미 클릭된 note는 무시
+    if ($note.hasClass("note-hidden")) return;
+
+    // target-zone에서 클릭했는지 확인
+    const isInTargetZone = checkNoteInTargetZone(this);
+
+    if (isInTargetZone) {
+      showTargetZoneEffect();
     }
+
+    // 효과음 재생
+    if ($("#effect")[0]) {
+      $("#effect")[0].play();
+    }
+
+    // note의 현재 위치 계산
+    const rect = $note[0].getBoundingClientRect();
+
+    // 원본 note는 공간 유지하면서 보이지 않게만 처리
+    $note.css("visibility", "hidden");
+    $note.addClass("note-hidden"); // 중복 클릭 방지용 마커
+
+    // 시각적 효과를 위한 복제본 생성
+    const $clone = $note.clone();
+    $clone.removeClass("note-hidden");
+    $clone.css({
+      position: "fixed",
+      top: rect.top + "px",
+      left: rect.left + "px",
+      width: rect.width + "px",
+      height: rect.height + "px",
+      margin: 0,
+      visibility: "visible",
+      zIndex: 20,
+    });
+
+    // 복제본을 body에 추가하고 애니메이션 시작
+    $("body").append($clone);
+
+    // 애니메이션을 위해 약간의 지연 후 clicked 클래스 추가
+    setTimeout(() => {
+      $clone.addClass("clicked");
+    }, 10);
+
+    // 0.5초 후 복제본 제거
+    setTimeout(() => {
+      $clone.remove();
+    }, 500);
   });
 
   // 초기 콤보 이미지 숨김
