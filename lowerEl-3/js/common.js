@@ -1,4 +1,4 @@
-document.title = "민속음악 알기";
+document.title = "종묘제례악";
 
 $(function () {
   // 모바일 세로 팝업 삽입

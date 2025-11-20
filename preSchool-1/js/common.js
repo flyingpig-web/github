@@ -1,4 +1,4 @@
-document.title = "메기고 받기";
+document.title = "먼저 부르고 따라 부르고";
 
 $(function () {
   // 모바일 세로 팝업 삽입

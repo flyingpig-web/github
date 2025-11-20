@@ -1,4 +1,4 @@
-document.title = "민속음악 알기";
+document.title = "덩실덩실 한가위";
 
 $(function () {
   // 모바일 세로 팝업 삽입
