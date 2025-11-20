@@ -88,6 +88,7 @@ $(function () {
   let lyricsInterval = null;
   let personActivationTimeout = null;
   let goodClassTimeout = null;
+  let isGameCompleted = false; // 게임 완료 여부
 
   setTimeout(() => {
     initEllipseDrag();
@@ -407,15 +408,18 @@ $(function () {
     }
   }
 
-  // 일관된 방향 회전 확인 (왼쪽 방향 - 반시계방향만 허용)
+  // 일관된 방향 회전 확인 (방향 상관없이 일관성만 체크)
   function checkConsistentDirection() {
     const recentRotations = rotationHistory.slice(-5);
+    const clockwiseCount = recentRotations.filter(
+      (r) => r.direction > 0
+    ).length;
     const counterClockwiseCount = recentRotations.filter(
       (r) => r.direction < 0
     ).length;
 
-    // 80% 이상 반시계방향(왼쪽 방향)으로 회전해야만 OK
-    return counterClockwiseCount >= 4;
+    // 한 방향으로 80% 이상 일관성 있게 회전하면 OK (방향은 상관없음)
+    return clockwiseCount >= 4 || counterClockwiseCount >= 4;
   }
 
   // 일정한 속도 확인
@@ -484,15 +488,11 @@ $(function () {
 
   // 다음 BGM 재생 조건 확인
   function checkNextBgmPlayCondition(currentTime) {
-    // 다음 BGM이 있고, 시간과 회전량 조건을 모두 만족하는지 확인
+    // 시간과 회전량 조건을 모두 만족하는지 확인 (무한 순환)
     const timeConditionMet = currentTime - lastBgmPlayTime >= bgmCooldownPeriod;
     const rotationConditionMet = rotationAfterBgm >= requiredRotationForNextBgm;
 
-    if (
-      bgmStageIndex < bgmStages.length &&
-      timeConditionMet &&
-      rotationConditionMet
-    ) {
+    if (timeConditionMet && rotationConditionMet) {
       playCurrentBGM();
     }
   }
@@ -529,35 +529,31 @@ $(function () {
 
   // 현재 BGM 재생
   function playCurrentBGM() {
-    if (bgmStageIndex < bgmStages.length) {
-      // 모든 BGM 정지 (중복 재생 방지)
-      bgmStages.forEach((bgm) => {
-        bgm.pause();
-        bgm.currentTime = 0;
-      });
+    // bgmStageIndex를 0, 1, 2로 순환 (3이 되면 0으로 리셋)
+    const currentIndex = bgmStageIndex % bgmStages.length;
 
-      const currentBGM = bgmStages[bgmStageIndex];
+    // 모든 BGM 정지 (중복 재생 방지)
+    bgmStages.forEach((bgm) => {
+      bgm.pause();
+      bgm.currentTime = 0;
+    });
 
-      // 현재 BGM 재생
-      currentBGM.currentTime = 0;
-      currentBGM.play().catch((error) => {});
+    const currentBGM = bgmStages[currentIndex];
 
-      // 모든 person 이미지를 1초간 active로 변경
-      activatePersonImagesTemporarily();
+    // 현재 BGM 재생
+    currentBGM.currentTime = 0;
+    currentBGM.play().catch((error) => {});
 
-      // good-wrapper에 해당 stage 클래스 추가
-      addGoodClass(bgmStageIndex);
+    // 모든 person 이미지를 1초간 active로 변경
+    activatePersonImagesTemporarily();
 
-      // BGM Stage 3 재생 시 성공 alert
-      if (bgmStageIndex === 2) {
-        showFinishAnimation();
-      }
+    // good-wrapper에 해당 stage 클래스 추가 (0, 1, 2 인덱스 사용)
+    addGoodClass(currentIndex);
 
-      // BGM 재생 시간 기록 및 회전량 초기화
-      lastBgmPlayTime = Date.now();
-      rotationAfterBgm = 0; // 다음 BGM을 위한 회전량 초기화
-      bgmStageIndex++;
-    }
+    // BGM 재생 시간 기록 및 회전량 초기화
+    lastBgmPlayTime = Date.now();
+    rotationAfterBgm = 0; // 다음 BGM을 위한 회전량 초기화
+    bgmStageIndex++;
   }
 
   function showFinishAnimation() {
@@ -694,6 +690,15 @@ $(function () {
     if ($mainPlayBgm.paused) return;
 
     const currentTime = $mainPlayBgm.currentTime;
+
+    // 35초 도달 시 게임 완료 (중복 실행 방지)
+    if (currentTime >= 34 && !isGameCompleted) {
+      setTimeout(() => {
+        isGameCompleted = true;
+        showFinishAnimation();
+      }, 1000);
+      return;
+    }
 
     // 현재 시간에 해당하는 가사 타이밍 찾기
     const currentTiming = lyricsTimings.find(
