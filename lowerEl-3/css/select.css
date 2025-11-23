@@ -546,14 +546,71 @@
 .select-3-note:nth-child(1) {
   bottom: 0;
   left: 23%;
+  animation: noteFloat1 2.5s ease-in-out infinite;
+  animation-delay: 0s;
 }
 .select-3-note:nth-child(2) {
   bottom: -16%;
   right: 6%;
+  animation: noteFloat2 2.5s ease-in-out infinite;
+  animation-delay: 0.5s;
 }
 .select-3-note:nth-child(3) {
   top: 12%;
   right: 10%;
+  animation: noteFloat3 2.5s ease-in-out infinite;
+  animation-delay: 0.9s;
+}
+
+@keyframes noteFloat1 {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateX(30px) rotate(10deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) translateX(0px) rotate(-10deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) translateX(-15px) rotate(10deg);
+  }
+}
+
+@keyframes noteFloat2 {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateX(30px) rotate(10deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) translateX(15px) rotate(-10deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) translateX(30px) rotate(10deg);
+  }
+}
+
+@keyframes noteFloat3 {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateX(-15px) rotate(10deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-10px) translateX(0px) rotate(-10deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) translateX(15px) rotate(10deg);
+  }
 }
 
 #select-3-moktui {
