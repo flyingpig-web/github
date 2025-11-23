@@ -43,6 +43,28 @@ $(function () {
     btnHoverEffect.play();
   });
 
+  // role="button"이면서 data-hover-image 속성을 가진 요소의 hover 이미지 교체
+  $('[role="button"][data-hover-image]').on("mouseenter", function () {
+    const $this = $(this);
+    const hoverImage = $this.attr("data-hover-image");
+    const originalImage = $this.attr("src");
+
+    // 원본 이미지를 data 속성에 저장
+    $this.data("original-image", originalImage);
+    // hover 이미지로 교체
+    $this.attr("src", hoverImage);
+  });
+
+  $('[role="button"][data-hover-image]').on("mouseleave", function () {
+    const $this = $(this);
+    const originalImage = $this.data("original-image");
+
+    // 원본 이미지로 복원
+    if (originalImage) {
+      $this.attr("src", originalImage);
+    }
+  });
+
   // ========== ktm.html에서 뒤로가기 후 ktm-wrapper fadeIn 처리 ==========
   // ktm.html에서 뒤로가기 클릭 시에만 작동하는 특수 처리
   function checkKtmBackReturn() {
