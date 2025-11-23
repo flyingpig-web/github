@@ -620,13 +620,65 @@
   bottom: 32%;
   left: 22.5%;
   z-index: -1;
+  animation: none;
+  transform: rotate(-45deg);
+}
+
+#select-3-moktui.moktui-rotate {
+  animation: moktuiRotate 0.7s forwards;
+}
+
+@keyframes moktuiRotate {
+  0% {
+    transform: rotate(-45deg);
+  }
+  50% {
+    transform: rotate(30deg);
+  }
+  100% {
+    transform: rotate(-45deg);
+  }
 }
 
 #select-3-chae {
   position: absolute;
   width: 12%;
   height: 12%;
-  bottom: 39%;
-  left: 47.5%;
+  bottom: 38%;
+  left: 52.5%;
   z-index: 1;
+}
+
+#select-3-chae.chae-play {
+  animation: chaePlay 1.2s forwards;
+}
+
+@keyframes chaePlay {
+  0% {
+    transform: rotate(30deg);
+    bottom: 38%;
+    left: 52.5%;
+  }
+  15% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(30deg);
+  }
+  40% {
+    transform: rotate(0deg);
+  }
+  55% {
+    transform: rotate(30deg);
+  }
+  62% {
+    transform: rotate(-30deg);
+    bottom: 38%;
+    left: 52.5%;
+  }
+
+  100% {
+    left: 44%;
+    bottom: 38%;
+  }
 }
