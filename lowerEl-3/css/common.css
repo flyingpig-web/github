@@ -382,3 +382,7 @@ img {
     background-image: url(../img/effect/effect_11.png);
   }
 }
+
+.btn-top.disabled {
+  filter: grayscale(100%);
+}

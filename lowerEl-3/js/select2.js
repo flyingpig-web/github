@@ -26,10 +26,14 @@ $(function () {
     $tutorial2.addClass("display-none");
     $selectMain.removeClass("display-none pointer-none");
     $bgmMain.play();
+    $(".btn-top.btn-back").removeClass("disabled");
+    $(".btn-top.btn-home").removeClass("disabled");
   } else {
     $bgmTutorial.play();
     setTimeout(() => {
       $tutorial2.removeClass("pointer-none");
+      $(".btn-top.btn-back").removeClass("disabled");
+      $(".btn-top.btn-home").removeClass("disabled");
     }, 5000);
   }
 
