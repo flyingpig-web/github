@@ -154,6 +154,9 @@ $(function () {
 
   const $select1Success = $(".select-1-success");
   const $successButton = $(".success-button");
+  const $select1ConfirmWrapper = $(".select-1-confirm-wrapper");
+  const $confirmPopupConfirm = $(".confirm-popup-confirm");
+  const $confirmPopupCancel = $(".confirm-popup-cancel");
 
   // paintMap이 모두 채워졌는지 확인하는 함수
   function checkPaintMapComplete() {
@@ -165,23 +168,19 @@ $(function () {
     }
   }
 
-  $successButton.on("mousedown", function () {
-    $successButton.attr("src", "img/select/haegeum/success-active.png");
-  });
-
-  $successButton.on("mouseup", function () {
-    $successButton.attr("src", "img/select/haegeum/success.png");
-  });
-
-  $successButton.on("mouseleave", function () {
-    $successButton.attr("src", "img/select/haegeum/success.png");
-  });
-
   $successButton.on("click", function () {
+    $select1ConfirmWrapper.removeClass("display-none");
+  });
+
+  $confirmPopupConfirm.on("click", function () {
     const queryParams = new URLSearchParams();
     for (const [part, color] of Object.entries(paintMap)) {
       queryParams.append(part, color);
     }
     window.location.href = `select2.html?${queryParams.toString()}`;
+  });
+
+  $confirmPopupCancel.on("click", function () {
+    $select1ConfirmWrapper.addClass("display-none");
   });
 });
