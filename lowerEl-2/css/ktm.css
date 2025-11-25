@@ -1,3 +1,10 @@
+.ktm-download {
+  top: 6%;
+  right: 21%;
+  background: url(../img/ktm/download.png) center no-repeat;
+  background-size: contain;
+}
+
 .ktm-info {
   top: 6%;
   right: 12%;
