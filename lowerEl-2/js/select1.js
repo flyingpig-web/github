@@ -39,7 +39,7 @@ $(function () {
   $(".combo1, .combo2, .combo3").hide();
 
   $(".ktm-card").on("click", function () {
-    const cardExpandEffect = new Audio("sound/sfx/card_expand_01.wav");
+    const cardExpandEffect = new Audio("sound/sfx/card_open_01.wav");
     const $card = $(this);
     const $cardOff = $(".ktm-card-off");
 

@@ -18,7 +18,6 @@ $(function () {
   const finishSound = $("#finish-sound")[0];
 
   let gameStarted = false;
-  let gameEndTimer = null;
   let activatedCombos = new Set(); // 이미 활성화된 콤보들을 추적
   let playerVisibleTimers = {}; // player visible 타이머들을 추적
 
@@ -261,32 +260,6 @@ $(function () {
     }, 100);
   }
 
-  function resetGame() {
-    activatedCombos.clear();
-    $(".combo1, .combo2, .combo3").hide();
-
-    // 게임 종료 타이머가 있다면 정리
-    if (gameEndTimer) {
-      clearTimeout(gameEndTimer);
-      gameEndTimer = null;
-    }
-
-    // player visible 타이머들 정리
-    Object.values(playerVisibleTimers).forEach((timer) => {
-      clearTimeout(timer);
-    });
-    playerVisibleTimers = {};
-
-    // 모든 player와 spotlight에서 visible 클래스 제거
-    $(".player").removeClass("visible");
-    $(".spotlight").removeClass("visible");
-
-    // 숨겨진 note들 복원
-    $(".note.note-hidden")
-      .removeClass("note-hidden")
-      .css("visibility", "visible");
-  }
-
   // note 이미지 클릭 이벤트
   $(document).on("click", ".note img", function (e) {
     if (!gameStarted) return;
@@ -349,7 +322,7 @@ $(function () {
   $(".combo1, .combo2, .combo3").hide();
 
   $(".ktm-card").on("click", function () {
-    const cardExpandEffect = new Audio("sound/sfx/card_expand_01.wav");
+    const cardExpandEffect = new Audio("sound/sfx/card_open_01.wav");
     const $card = $(this);
     const $cardOff = $(".ktm-card-off");
 

@@ -50,13 +50,9 @@ $(function () {
 
   let playIndex = 0;
   let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
   let currentAudio = null;
-  let hasMovedEnough = false;
   let lastDirection = null; // 'left', 'right', null
   let lastPosition = { left: 0, top: 0 };
-  let directionChangeCount = 0; // 방향 변경 횟수 추적
   let totalMoves = 0; // 총 움직임 횟수 (최대 22)
   const maxMoves = 22; // 최대 움직임 횟수
   let activeTimeouts = []; // 활성화된 setTimeout들을 추적
@@ -230,54 +226,6 @@ $(function () {
       }, 300);
     },
   });
-
-  // 다음 노트 재생
-  function playNextNote() {
-    if (playIndex >= plays.length) return;
-
-    // 첫 번째 노트 재생 시 모든 notes 표시
-    if (playIndex === 0) {
-      showAllNotes();
-    }
-
-    // 현재 재생 중인 소리 멈춤
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio.currentTime = 0;
-    }
-
-    // 기존의 모든 setTimeout과 활성화된 카드들 즉시 정리
-    clearAllTimeouts();
-    clearAllActiveCards();
-
-    // playIndex가 범위를 벗어나지 않도록 체크
-    if (playIndex < plays.length) {
-      // 새 소리 재생
-      currentAudio = plays[playIndex];
-      currentAudio.currentTime = 0;
-      currentAudio.play();
-
-      // 해당 sound-card에 active 클래스 추가
-      const $targetCard = $(`.sound-card[data-index="${playIndex}"]`);
-      $targetCard.addClass("active");
-
-      // 활대 움직임 효과
-      const $bow = $(".select-3-bow");
-      const moveX = (Math.random() - 0.5) * 20; // -10px ~ 10px
-      const moveY = (Math.random() - 0.5) * 20;
-      $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
-
-      // 1000ms 후 카드 제거
-      const timeoutId = setTimeout(() => {
-        removeCardImmediately($targetCard);
-      }, 1000);
-
-      activeTimeouts.push(timeoutId);
-    }
-
-    // playIndex 증가 (progress와 동기화)
-    playIndex++;
-  }
 
   // 기존 클릭 이벤트는 제거하고 드래그 기능으로 대체
   $(".select-3-bow-wrapper").on("click", function () {

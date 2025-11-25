@@ -4,9 +4,11 @@ $(function () {
   const $finishBtn = $(".finish-btn");
   const $successBoard = $(".select-2-success");
   const $ktmWrapper = $(".ktm-wrapper");
+  const $selectMain = $(".select-main-2");
 
   const bgmTutorial = $("#bgm-tutorial")[0];
-  const $selectMain = $(".select-main-2");
+  const bgmSuccess = $("#bgm-success")[0];
+
   bgmTutorial.play();
   setTimeout(() => {
     $selectMain.removeClass("pointer-none");
@@ -24,10 +26,11 @@ $(function () {
     console.log("finish");
     $successBoard.removeClass("display-none");
     $selectMain.addClass("pointer-none");
+    bgmSuccess.play();
 
     setTimeout(() => {
       $successBoard.hide();
       $ktmWrapper.removeClass("display-none");
-    }, 2000);
+    }, 3000);
   });
 });
