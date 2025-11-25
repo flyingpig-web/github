@@ -76,10 +76,10 @@ $(function () {
 
   // targetSound
   const soundMap = {
-    neck: { src: "ch2_07", isPlayed: false },
-    body: { src: "ch2_08", isPlayed: false },
-    jua: { src: "ch2_09", isPlayed: false },
-    bow: { src: "ch2_10", isPlayed: false },
+    neck: { src: "ch2_07" },
+    body: { src: "ch2_08" },
+    jua: { src: "ch2_09" },
+    bow: { src: "ch2_10" },
   };
   const effect = $("#effect")[0];
 
@@ -93,34 +93,22 @@ $(function () {
   $targetNeck.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-neck.png");
     currentTarget = "neck";
-    if (!soundMap[currentTarget].isPlayed) {
-      $(`#${soundMap[currentTarget].src}`)[0].play();
-      soundMap[currentTarget].isPlayed = true;
-    }
+    $(`#${soundMap[currentTarget].src}`)[0].play();
   });
   $targetBody.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-body.png");
     currentTarget = "body";
-    if (!soundMap[currentTarget].isPlayed) {
-      $(`#${soundMap[currentTarget].src}`)[0].play();
-      soundMap[currentTarget].isPlayed = true;
-    }
+    $(`#${soundMap[currentTarget].src}`)[0].play();
   });
   $targetJua.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-jua.png");
     currentTarget = "jua";
-    if (!soundMap[currentTarget].isPlayed) {
-      $(`#${soundMap[currentTarget].src}`)[0].play();
-      soundMap[currentTarget].isPlayed = true;
-    }
+    $(`#${soundMap[currentTarget].src}`)[0].play();
   });
   $targetBow.on("click", function () {
     $targetMenu.attr("src", "img/select/haegeum/menu-bow.png");
     currentTarget = "bow";
-    if (!soundMap[currentTarget].isPlayed) {
-      $(`#${soundMap[currentTarget].src}`)[0].play();
-      soundMap[currentTarget].isPlayed = true;
-    }
+    $(`#${soundMap[currentTarget].src}`)[0].play();
   });
 
   $paintBlue.on("click", function () {
