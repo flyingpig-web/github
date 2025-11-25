@@ -17,6 +17,10 @@
   height: 100%;
   position: relative;
 }
+.select-main.pointer-none .btn-top,
+.select-main-2.pointer-none .btn-top {
+  filter: grayscale(100%);
+}
 
 .play-wrap {
   width: 100%;
