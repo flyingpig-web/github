@@ -286,14 +286,7 @@ img {
   left: 50%;
   bottom: 18%;
   transform: translateX(-50%);
-  width: 29.44%;
-  height: 18.19%;
-  background: url(../img/common/title_start.png) no-repeat;
-  background-size: 100% !important;
-}
-
-.home .btn-start:hover {
-  background: url(../img/common/title_start_active.png) no-repeat;
+  width: 28%;
 }
 
 /* main */

@@ -293,11 +293,7 @@ img {
   left: 50%;
   bottom: 18%;
   transform: translateX(-50%);
-  width: 29.44%;
-  height: 18.19%;
-  background: url(../img/common/start.png) no-repeat;
-  background-size: contain;
-  background-position: center;
+  width: 28%;
 }
 
 /* main */
