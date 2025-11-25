@@ -130,16 +130,14 @@
 }
 
 .select-1-success {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 55%;
+  left: 7%;
 }
 
 .select-1-success .success-button {
-  width: 40%;
+  width: 30%;
 }
 
 /* select-2 */
