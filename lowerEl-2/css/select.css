@@ -66,6 +66,7 @@
 
 .select-1 .left-box img {
   width: 100%;
+  mix-blend-mode: hard-light;
 }
 
 .select-1 .left-box #haegeum-body {
