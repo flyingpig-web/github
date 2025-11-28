@@ -12,7 +12,7 @@ $(function () {
   bgmTutorial.play();
   setTimeout(() => {
     $tutorial.removeClass("pointer-none");
-  }, 7000);
+  }, 5000);
 
   $close.on("click", function () {
     $tutorial.fadeOut(200);
