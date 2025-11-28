@@ -117,6 +117,11 @@ $(function () {
       hasMovedEnough = false;
       lastDirection = null;
       lastPosition = { left: ui.position.left, top: ui.position.top };
+
+      // 드래그 시작 시 note 애니메이션 시작
+      $("#note-1").addClass("animate-out");
+      $("#note-2").addClass("animate-out");
+      $("#note-3").addClass("animate-out");
     },
     drag: function (event, ui) {
       if (!isDragging) return;
@@ -197,6 +202,11 @@ $(function () {
       isDragging = false;
       hasMovedEnough = false;
       lastDirection = null;
+
+      // 드래그 종료 시 note 애니메이션 정지
+      $("#note-1").removeClass("animate-out");
+      $("#note-2").removeClass("animate-out");
+      $("#note-3").removeClass("animate-out");
 
       // 현재 재생 중인 소리 멈춤
       if (currentAudio) {

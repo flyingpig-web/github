@@ -400,6 +400,10 @@
   z-index: 1;
 }
 
+#note-1.animate-out {
+  animation: moveBottomLeft 1s ease-out infinite;
+}
+
 #note-2 {
   position: absolute;
   top: 36%;
@@ -407,11 +411,55 @@
   width: 5%;
 }
 
+#note-2.animate-out {
+  animation: moveTopLeft 1s ease-out infinite;
+}
+
 #note-3 {
   position: absolute;
   top: 34%;
   left: 60%;
   width: 8%;
+}
+
+#note-3.animate-out {
+  animation: moveTopRight 1s ease-out infinite;
+}
+
+/* 좌하단으로 이동하면서 fadeOut */
+@keyframes moveBottomLeft {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100px, 100px);
+    opacity: 0;
+  }
+}
+
+/* 좌상단으로 이동하면서 fadeOut */
+@keyframes moveTopLeft {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-100px, -100px);
+    opacity: 0;
+  }
+}
+
+/* 우상단으로 이동하면서 fadeOut */
+@keyframes moveTopRight {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100px, -100px);
+    opacity: 0;
+  }
 }
 
 .select-1-confirm {
@@ -456,4 +504,8 @@
 .select-2-haegeum-wrapper img {
   position: absolute;
   mix-blend-mode: hard-light;
+}
+
+.select-main-3 .pointer-none .btn-top {
+  filter: grayscale(100%);
 }
