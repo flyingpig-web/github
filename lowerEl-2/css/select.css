@@ -64,28 +64,27 @@
   z-index: 999;
 }
 
-.select-1 .left-box #haegeum-body {
+.select-1 .left-box img {
   width: 100%;
+}
+
+.select-1 .left-box #haegeum-body {
   z-index: 3;
 }
 
 .select-1 .left-box #haegeum-neck {
-  width: 100%;
   z-index: 2;
 }
 
 .select-1 .left-box #haegeum-bow {
-  width: 100%;
   z-index: 1;
 }
 
 .select-1 .left-box #haegeum-jua {
-  width: 100%;
   z-index: 1;
 }
 
 .select-1 .left-box #haegeum-line {
-  width: 100%;
   z-index: 1;
 }
 
@@ -141,14 +140,10 @@
 }
 
 .select-1-success {
-  width: 100%;
+  width: 30%;
   position: absolute;
   top: 55%;
   left: 9%;
-}
-
-.select-1-success .success-button {
-  width: 30%;
 }
 
 /* select-2 */
