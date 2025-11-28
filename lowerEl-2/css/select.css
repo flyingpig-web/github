@@ -318,35 +318,15 @@
 }
 
 .sound-card {
-  width: 22%;
-  height: 90%;
+  width: fit-content;
+  height: 97%;
   flex-shrink: 0;
+  object-fit: contain;
 }
 .sound-card.active {
-  height: 100%;
-  box-shadow: 0 0 20px #ffe600, 0 0 40px #ffe600;
-  border: 2px solid #ffe600;
-  border-radius: 8px;
-}
-
-.sound-card.mi {
-  background: url(../img/select/3/mi.png) center/contain no-repeat;
-}
-
-.sound-card.ra {
-  background: url(../img/select/3/ra.png) center/contain no-repeat;
-}
-
-.sound-card.high-do {
-  background: url(../img/select/3/high-do.png) center/contain no-repeat;
-}
-
-.sound-card.si {
-  background: url(../img/select/3/si.png) center/contain no-repeat;
-}
-
-.sound-card.high-mi {
-  background: url(../img/select/3/high-mi.png) center/contain no-repeat;
+  box-shadow: 0 0 5px #ffe600, 0 0 6px #ffe600;
+  border: 1px solid #ffe600;
+  border-radius: 12px;
 }
 
 .select-3-bow-wrapper {
