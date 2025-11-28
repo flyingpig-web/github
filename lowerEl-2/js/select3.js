@@ -9,7 +9,6 @@ $(function () {
   const bgmMain = $("#bgm-main")[0];
   const successBgm = $("#success-bgm")[0];
 
-  bgmTutorial.play();
   setTimeout(() => {
     $tutorial.removeClass("pointer-none");
   }, 5000);
