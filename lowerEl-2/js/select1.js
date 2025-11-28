@@ -83,6 +83,7 @@ $(function () {
   };
   const effect = $("#effect")[0];
 
+  // paintMap: 페인트 색상 저장, 다음페이지로 넘어가기 전에 모든 페인트가 채워져 있는지 확인, 다음페이지에 전달할 색상 데이터
   const paintMap = {
     neck: "",
     body: "",
@@ -111,44 +112,50 @@ $(function () {
     $(`#${soundMap[currentTarget].src}`)[0].play();
   });
 
+  const filterPalette = {
+    blue: "brightness(2) sepia(1) saturate(500%) hue-rotate(175deg)", // #6ec9ff - 밝은 청록색
+    pink: "brightness(2.5) sepia(1) saturate(284%) hue-rotate(284deg)", // #ff9eb5 - 연한 분홍
+    green: "brightness(2) sepia(1) saturate(300%) hue-rotate(40deg)", // #b9f26d - 밝은 연두
+    yellow: "brightness(2) sepia(1) saturate(520%) hue-rotate(10deg)", // #ffd76d - 밝은 노랑
+  };
+
+  function toggleLeftBoxEffect() {
+    $(".left-box-effect").toggleClass("display-none");
+    setTimeout(() => {
+      $(".left-box-effect").toggleClass("display-none");
+    }, 1000);
+  }
+
   $paintBlue.on("click", function () {
     effect.currentTime = 0;
     effect.play();
+    toggleLeftBoxEffect();
     paintMap[currentTarget] = "blue";
-    $(`#haegeum-${currentTarget}`).attr(
-      "src",
-      `img/select/haegeum/${currentTarget}-blue.png`
-    );
+    $(`#haegeum-${currentTarget}`).css("filter", filterPalette.blue);
     checkPaintMapComplete();
   });
   $paintPink.on("click", function () {
     effect.currentTime = 0;
     effect.play();
+    toggleLeftBoxEffect();
     paintMap[currentTarget] = "pink";
-    $(`#haegeum-${currentTarget}`).attr(
-      "src",
-      `img/select/haegeum/${currentTarget}-pink.png`
-    );
+    $(`#haegeum-${currentTarget}`).css("filter", filterPalette.pink);
     checkPaintMapComplete();
   });
   $paintGreen.on("click", function () {
     effect.currentTime = 0;
     effect.play();
+    toggleLeftBoxEffect();
     paintMap[currentTarget] = "green";
-    $(`#haegeum-${currentTarget}`).attr(
-      "src",
-      `img/select/haegeum/${currentTarget}-green.png`
-    );
+    $(`#haegeum-${currentTarget}`).css("filter", filterPalette.green);
     checkPaintMapComplete();
   });
   $paintYellow.on("click", function () {
     effect.currentTime = 0;
     effect.play();
+    toggleLeftBoxEffect();
     paintMap[currentTarget] = "yellow";
-    $(`#haegeum-${currentTarget}`).attr(
-      "src",
-      `img/select/haegeum/${currentTarget}-yellow.png`
-    );
+    $(`#haegeum-${currentTarget}`).css("filter", filterPalette.yellow);
     checkPaintMapComplete();
   });
 
