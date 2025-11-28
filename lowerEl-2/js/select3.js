@@ -55,6 +55,7 @@ $(function () {
   let totalMoves = 0; // 총 움직임 횟수 (최대 22)
   const maxMoves = 22; // 최대 움직임 횟수
   let activeTimeouts = []; // 활성화된 setTimeout들을 추적
+  let isMiPaused = false; // mi 카드 재생 중 2초 대기 상태
 
   // 진행도 업데이트 함수
   function updateProgress() {
@@ -107,7 +108,7 @@ $(function () {
         $(".select-3-success").addClass("display-none");
         $ktmWrapper.removeClass("display-none");
       }, 3000);
-    }, 500);
+    }, 1500);
   }
 
   // jQuery UI 드래그 기능 사용
@@ -125,6 +126,10 @@ $(function () {
     },
     drag: function (event, ui) {
       if (!isDragging) return;
+
+      // mi 카드 재생 중이면 드래그 불가
+      if (isMiPaused) return;
+
       $(".select-3-arrow").hide();
 
       // 마우스 위치가 .select-3-bow-wrapper 영역 안에 있는지 확인
@@ -196,16 +201,30 @@ $(function () {
             const $targetCard = $(`.sound-card[data-index="${playIndex}"]`);
             $targetCard.addClass("active");
 
+            // mi 카드인지 확인
+            const isMiCard = $targetCard.hasClass("mi");
+
             // 활대 움직임 효과
             const $bow = $(".select-3-bow");
             const moveX = (Math.random() - 0.5) * 20; // -10px ~ 10px
             const moveY = (Math.random() - 0.5) * 20;
             $bow.css("transform", `translate(${moveX}px, ${moveY}px)`);
 
-            // 200ms 후 카드 제거
+            // mi 카드면 1초 대기, 일반 카드는 400ms 후 제거
+            const removeDelay = isMiCard ? 1000 : 400;
+
+            if (isMiCard) {
+              // mi 카드 재생 중 드래그 비활성화
+              isMiPaused = true;
+            }
+
             const timeoutId = setTimeout(() => {
               removeCardImmediately($targetCard);
-            }, 200);
+              // mi 카드 대기 종료
+              if (isMiCard) {
+                isMiPaused = false;
+              }
+            }, removeDelay);
 
             activeTimeouts.push(timeoutId);
           }
@@ -223,6 +242,7 @@ $(function () {
       isDragging = false;
       hasMovedEnough = false;
       lastDirection = null;
+      isMiPaused = false; // mi 카드 대기 상태 초기화
 
       // 드래그 종료 시 note 애니메이션 정지
       $("#note-1").removeClass("animate-out");
