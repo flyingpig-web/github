@@ -14,6 +14,41 @@ $(function () {
     $selectMain.removeClass("pointer-none");
   }, 5000);
 
+  const filterPalette = {
+    blue: "brightness(2) sepia(1) saturate(500%) hue-rotate(175deg)", // #6ec9ff - 밝은 청록색
+    pink: "brightness(2.5) sepia(1) saturate(284%) hue-rotate(284deg)", // #ff9eb5 - 연한 분홍
+    green: "brightness(2) sepia(1) saturate(300%) hue-rotate(40deg)", // #b9f26d - 밝은 연두
+    yellow: "brightness(2) sepia(1) saturate(520%) hue-rotate(10deg)", // #ffd76d - 밝은 노랑
+  };
+
+  // URL 쿼리 파라미터에서 색상 정보 가져오기
+  const urlParams = new URLSearchParams(window.location.search);
+  const paintMap = {
+    neck: urlParams.get("neck"),
+    body: urlParams.get("body"),
+    jua: urlParams.get("jua"),
+    bow: urlParams.get("bow"),
+  };
+
+  // 초기 색상 필터 적용
+  function applyInitialFilters() {
+    if (paintMap.neck && filterPalette[paintMap.neck]) {
+      $("#haegeum-neck").css("filter", filterPalette[paintMap.neck]);
+    }
+    if (paintMap.body && filterPalette[paintMap.body]) {
+      $("#haegeum-body").css("filter", filterPalette[paintMap.body]);
+    }
+    if (paintMap.jua && filterPalette[paintMap.jua]) {
+      $("#haegeum-jua").css("filter", filterPalette[paintMap.jua]);
+    }
+    if (paintMap.bow && filterPalette[paintMap.bow]) {
+      $("#haegeum-bow").css("filter", filterPalette[paintMap.bow]);
+    }
+  }
+
+  // 페이지 로드 시 필터 적용
+  applyInitialFilters();
+
   let haegeumAngle = 0;
 
   // 해금 이미지 업데이트 함수
@@ -27,6 +62,9 @@ $(function () {
     $("#haegeum-bow").attr("src", `img/select/2/bow/bow-${angle}-deg.png`);
     $("#haegeum-jua").attr("src", `img/select/2/jua/jua-${angle}-deg.png`);
     $("#haegeum-line").attr("src", `img/select/2/line/line-${angle}-deg.png`);
+
+    // 이미지 변경 후 필터 다시 적용 (이미지 src 변경 시 필터가 유지되도록)
+    applyInitialFilters();
   }
 
   // 왼쪽 버튼: 각도 감소 (반시계 방향)
