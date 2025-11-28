@@ -34,12 +34,33 @@
             </a>
 
             <!-- Play -->
-            <!-- 3d로 구현될지, 2d로 구현될지 결정후에 작업하는게좋음 -->
             <div class="play-wrap">
-              <div class="up-btn" role="button"></div>
+              <img
+                class="btn-left"
+                role="button"
+                src="img/select/2/btn-left.png"
+                data-hover-image="img/select/2/btn-left-active.png"
+              />
+              <img
+                class="btn-right"
+                role="button"
+                src="img/select/2/btn-right.png"
+                data-hover-image="img/select/2/btn-right-active.png"
+              />
 
-              <div class="down-btn" role="button"></div>
               <div class="finish-btn" role="button"></div>
+
+              <div class="select-2-haegeum-wrapper">
+                <img
+                  src="img/select/2/outline/outline-0-deg.png"
+                  id="haegeum-outline"
+                />
+                <img src="img/select/2/body/body-0-deg.png" id="haegeum-body" />
+                <img src="img/select/2/neck/neck-0-deg.png" id="haegeum-neck" />
+                <img src="img/select/2/bow/bow-0-deg.png" id="haegeum-bow" />
+                <img src="img/select/2/jua/jua-0-deg.png" id="haegeum-jua" />
+                <img src="img/select/2/line/line-0-deg.png" id="haegeum-line" />
+              </div>
             </div>
           </div>
         </div>
@@ -69,6 +90,66 @@
 
       <audio id="bgm-tutorial" src="sound/dubs/ch2_11.mp3"></audio>
       <audio id="bgm-success" src="sound/sfx/card_expand_01.wav"></audio>
+
+      <!-- 이미지 프리로드 -->
+      <div id="preload-images" style="display: none">
+        <!-- 0도 -->
+        <img src="img/select/2/outline/outline-0-deg.png" />
+        <img src="img/select/2/body/body-0-deg.png" />
+        <img src="img/select/2/neck/neck-0-deg.png" />
+        <img src="img/select/2/bow/bow-0-deg.png" />
+        <img src="img/select/2/jua/jua-0-deg.png" />
+        <img src="img/select/2/line/line-0-deg.png" />
+        <!-- 45도 -->
+        <img src="img/select/2/outline/outline-45-deg.png" />
+        <img src="img/select/2/body/body-45-deg.png" />
+        <img src="img/select/2/neck/neck-45-deg.png" />
+        <img src="img/select/2/bow/bow-45-deg.png" />
+        <img src="img/select/2/jua/jua-45-deg.png" />
+        <img src="img/select/2/line/line-45-deg.png" />
+        <!-- 90도 -->
+        <img src="img/select/2/outline/outline-90-deg.png" />
+        <img src="img/select/2/body/body-90-deg.png" />
+        <img src="img/select/2/neck/neck-90-deg.png" />
+        <img src="img/select/2/bow/bow-90-deg.png" />
+        <img src="img/select/2/jua/jua-90-deg.png" />
+        <img src="img/select/2/line/line-90-deg.png" />
+        <!-- 135도 -->
+        <img src="img/select/2/outline/outline-135-deg.png" />
+        <img src="img/select/2/body/body-135-deg.png" />
+        <img src="img/select/2/neck/neck-135-deg.png" />
+        <img src="img/select/2/bow/bow-135-deg.png" />
+        <img src="img/select/2/jua/jua-135-deg.png" />
+        <img src="img/select/2/line/line-135-deg.png" />
+        <!-- 180도 -->
+        <img src="img/select/2/outline/outline-180-deg.png" />
+        <img src="img/select/2/body/body-180-deg.png" />
+        <img src="img/select/2/neck/neck-180-deg.png" />
+        <img src="img/select/2/bow/bow-180-deg.png" />
+        <img src="img/select/2/jua/jua-180-deg.png" />
+        <img src="img/select/2/line/line-180-deg.png" />
+        <!-- 225도 -->
+        <img src="img/select/2/outline/outline-225-deg.png" />
+        <img src="img/select/2/body/body-225-deg.png" />
+        <img src="img/select/2/neck/neck-225-deg.png" />
+        <img src="img/select/2/bow/bow-225-deg.png" />
+        <img src="img/select/2/jua/jua-225-deg.png" />
+        <img src="img/select/2/line/line-225-deg.png" />
+        <!-- 270도 -->
+        <img src="img/select/2/outline/outline-270-deg.png" />
+        <img src="img/select/2/body/body-270-deg.png" />
+        <img src="img/select/2/neck/neck-270-deg.png" />
+        <img src="img/select/2/bow/bow-270-deg.png" />
+        <img src="img/select/2/jua/jua-270-deg.png" />
+        <img src="img/select/2/line/line-270-deg.png" />
+        <!-- 315도 -->
+        <img src="img/select/2/outline/outline-315-deg.png" />
+        <img src="img/select/2/body/body-315-deg.png" />
+        <img src="img/select/2/neck/neck-315-deg.png" />
+        <img src="img/select/2/bow/bow-315-deg.png" />
+        <img src="img/select/2/jua/jua-315-deg.png" />
+        <img src="img/select/2/line/line-315-deg.png" />
+      </div>
     </main>
 
     <!-- Scripts loaded after DOM is ready -->

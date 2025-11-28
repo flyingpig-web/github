@@ -155,13 +155,20 @@
   position: relative;
 }
 
-.up-btn {
-  background: url(../img/select/detail/up.png) center/contain no-repeat;
-  width: 10%;
-  height: 20%;
+.select-main-2 .btn-left {
   position: absolute;
-  bottom: 5%;
-  left: 37%;
+  width: 10%;
+  bottom: 6%;
+  left: 4%;
+  z-index: 1;
+}
+
+.select-main-2 .btn-right {
+  position: absolute;
+  width: 10%;
+  bottom: 6%;
+  left: 18%;
+  z-index: 1;
 }
 
 .down-btn {
@@ -427,4 +434,15 @@
 .select-1-confirm .confirm-popup-content img:last-child {
   right: 16%;
   bottom: 20%;
+}
+
+.select-2-haegeum-wrapper {
+  position: absolute;
+  top: 14%;
+  left: 23%;
+  width: 52%;
+}
+.select-2-haegeum-wrapper img {
+  position: absolute;
+  mix-blend-mode: hard-light;
 }
