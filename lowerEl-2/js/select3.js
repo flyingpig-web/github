@@ -126,6 +126,27 @@ $(function () {
     drag: function (event, ui) {
       if (!isDragging) return;
       $(".select-3-arrow").hide();
+
+      // 마우스 위치가 .select-3-bow-wrapper 영역 안에 있는지 확인
+      const $wrapper = $(".select-3-bow-wrapper");
+      const wrapperOffset = $wrapper.offset();
+      const wrapperWidth = $wrapper.outerWidth();
+      const wrapperHeight = $wrapper.outerHeight();
+
+      const mouseX = event.pageX;
+      const mouseY = event.pageY;
+
+      const isInWrapper =
+        mouseX >= wrapperOffset.left &&
+        mouseX <= wrapperOffset.left + wrapperWidth &&
+        mouseY >= wrapperOffset.top &&
+        mouseY <= wrapperOffset.top + wrapperHeight;
+
+      // wrapper 영역 밖이면 진행하지 않음
+      if (!isInWrapper) {
+        return;
+      }
+
       const currentX = ui.position.left;
       const lastX = lastPosition.left;
       const deltaX = currentX - lastX;

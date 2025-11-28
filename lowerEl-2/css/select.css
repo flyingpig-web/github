@@ -509,3 +509,7 @@
 .select-main-3 .pointer-none .btn-top {
   filter: grayscale(100%);
 }
+
+.select-main-3.pointer-none .btn-top {
+  filter: grayscale(100%);
+}
