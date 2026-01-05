@@ -37,9 +37,12 @@ $(function () {
     img.setAttribute("alt", "");
   });
 
-  // 버튼 호버 효과음
+  // 버튼 호버 효과음 (사운드 겹침 방지)
   var btnHoverEffect = new Audio("sound/sfx/ui_hover_01.wav");
   $(".btn-effect").on("mouseover", function () {
-    btnHoverEffect.play();
+    if (btnHoverEffect.paused || btnHoverEffect.ended) {
+      btnHoverEffect.currentTime = 0;
+      btnHoverEffect.play();
+    }
   });
 });

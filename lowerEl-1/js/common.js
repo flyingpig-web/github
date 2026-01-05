@@ -139,6 +139,8 @@ $(function () {
   });
 
   // role="button" 속성을 가진 요소에 hover 사운드 추가
+  const hoverSound = new Audio("sound/sfx/ui_hover_01.wav");
+
   document.addEventListener("mouseover", (event) => {
     const target = event.target;
     const isRoleButton =
@@ -147,8 +149,11 @@ $(function () {
       target.closest('[role="button"]');
 
     if (isRoleButton) {
-      const hoverSound = new Audio("sound/sfx/ui_hover_01.wav");
-      hoverSound.play();
+      // 재생 중이 아닐 때만 play (사운드 겹침 방지)
+      if (hoverSound.paused || hoverSound.ended) {
+        hoverSound.currentTime = 0;
+        hoverSound.play();
+      }
     }
   });
 
