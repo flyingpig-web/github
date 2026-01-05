@@ -51,7 +51,7 @@ $(function () {
   let audioQueue = []; // 재생 대기 중인 오디오 큐
   let patternStartTime = null; // 패턴 그리기 시작 시간
 
-  $(".close").on("click", function () {
+  $tutorialBg.on("click", function () {
     $bgmTutorial.pause();
     $tutorialBg.fadeOut(500);
 

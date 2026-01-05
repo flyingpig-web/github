@@ -13,7 +13,7 @@ $(function () {
     $tutorial.removeClass("pointer-none");
   }, 5000);
 
-  $close.on("click", function () {
+  $tutorial.on("click", function () {
     $tutorial.fadeOut(200);
     bgmTutorial.pause();
     bgmMain.play();

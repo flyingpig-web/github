@@ -4,7 +4,7 @@ $(function () {
   const dropSound = new Audio("sound/sfx/puzzle_wrong_01.wav");
 
   select01Narration.play();
-  $(".close").on("click", function () {
+  $(".dimmed.tutorial-1").on("click", function () {
     select01Narration.pause();
     $(".dimmed.tutorial-1").remove();
     $(".select-main").show();

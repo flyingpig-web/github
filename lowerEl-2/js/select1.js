@@ -7,7 +7,7 @@ $(function () {
 
   bgmTutorial.play();
 
-  $(".close").on("click", function () {
+  $tutorial.on("click", function () {
     bgmTutorial.pause();
     $tutorial.fadeOut(500);
     setTimeout(() => {
