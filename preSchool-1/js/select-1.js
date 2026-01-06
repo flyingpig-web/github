@@ -77,7 +77,7 @@ $(function () {
     setTimeout(() => activateStrawberry(1), 5000);
     setTimeout(() => activateStrawberry(2), 10000);
     setTimeout(() => activateStrawberry(3), 14500);
-    setTimeout(() => activateStrawberry(4), 17000);
+    setTimeout(() => activateStrawberry(4), 20000);
 
     // bgmAR timeupdate 이벤트로 mute 제어
     bgmAR.addEventListener("timeupdate", handleBgmARMute);
@@ -105,16 +105,16 @@ $(function () {
     const currentTime = bgmAR.currentTime;
 
     // time은 변경되면안됨 (AR 의 구간임)
-    if (currentTime >= 7.2 && currentTime < 9.48) {
+    if (currentTime >= 7.1 && currentTime < 9.4) {
       bgmAR.volume = roundSuccess[0] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[0] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    } else if (currentTime >= 11.7 && currentTime < 14.2) {
+    } else if (currentTime >= 11.755 && currentTime < 14.2) {
       bgmAR.volume = roundSuccess[1] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[1] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    } else if (currentTime >= 16.7 && currentTime < 19) {
+    } else if (currentTime >= 16.58 && currentTime < 19) {
       bgmAR.volume = roundSuccess[2] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[2] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
-    } else if (currentTime >= 19 && currentTime < 21.5) {
+    } else if (currentTime >= 21.3 && currentTime < 23.9) {
       bgmAR.volume = roundSuccess[3] ? NORMAL_VOLUME : 0;
       bgmMR.volume = roundSuccess[3] ? NORMAL_VOLUME : MR_ACTIVE_VOLUME;
     } else {
@@ -301,4 +301,8 @@ $(function () {
     $messageSound.pause();
     $messageSound.currentTime = 0;
   });
+
+  setTimeout(() => {
+    startGame();
+  }, 1000);
 });
