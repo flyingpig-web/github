@@ -4,6 +4,9 @@ $(function () {
   const $selectMain = $(".select-main-2");
   const $progressBarFill = $(".progress-bar-fill");
   const $successScreen = $(".select-2-success");
+  const $statusBak = $(".status-bak");
+  const $statusUh = $(".status-uh");
+  const $statusJulgo = $(".status-julgo");
 
   // Audio Elements
   const $bgmTutorial = $("#bgm-tutorial")[0];
@@ -153,7 +156,13 @@ $(function () {
   $(document).on("click", "[class*='click-point-']", function () {
     const $clickPoint = $(this);
     const soundId = $clickPoint.attr("data-sound");
-
+    const status = $clickPoint.attr("data-status");
+    if (status) {
+      $(`.status-${status}`).attr(
+        "src",
+        `img/select2/status-${status}-active.png`
+      );
+    }
     if (clickedTargets.has(soundId)) {
       return;
     }

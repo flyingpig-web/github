@@ -87,6 +87,23 @@
               <div class="progress-bar">
                 <div class="progress-bar-fill"></div>
               </div>
+
+              <img
+                src="img/select2/status-bak.png"
+                alt="박 상태"
+                class="status-bak"
+              />
+              <img
+                src="img/select2/status-uh.png"
+                alt="어 상태"
+                class="status-uh"
+              />
+              <img
+                src="img/select2/status-julgo.png"
+                alt="절고 상태"
+                class="status-julgo"
+              />
+
               <img src="img/select2/clock.png" alt="시계" class="clock" />
 
               <!-- targets -->
@@ -94,6 +111,7 @@
               <div
                 class="target click-point-1"
                 data-sound="target-1"
+                data-status="uh"
                 role="button"
               >
                 <img
@@ -108,10 +126,11 @@
                 class="target target-1 display-none"
               />
 
-              <!-- 절고 -->
+              <!-- 박 -->
               <div
                 class="target click-point-2"
                 data-sound="target-2"
+                data-status="bak"
                 role="button"
               >
                 <img
@@ -126,10 +145,11 @@
                 class="target target-2 display-none"
               />
 
-              <!-- 박 -->
+              <!-- 절고 -->
               <div
                 class="target click-point-3"
                 data-sound="target-3"
+                data-status="julgo"
                 role="button"
               >
                 <img
