@@ -77,7 +77,7 @@ $(function () {
     setTimeout(() => activateStrawberry(1), 5000);
     setTimeout(() => activateStrawberry(2), 10000);
     setTimeout(() => activateStrawberry(3), 14500);
-    setTimeout(() => activateStrawberry(4), 20000);
+    setTimeout(() => activateStrawberry(4), 19500);
 
     // bgmAR timeupdate 이벤트로 mute 제어
     bgmAR.addEventListener("timeupdate", handleBgmARMute);
