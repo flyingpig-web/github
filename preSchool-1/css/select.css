@@ -260,8 +260,8 @@ body.game-active:active {
   width: 33%;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  animation: size-up 1s ease-in-out 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: size-up 1s ease-in-out 1, pulse 1s ease-in-out infinite 1s;
   cursor: pointer;
 }
 .strawberry-finish-half {
@@ -307,6 +307,16 @@ body.game-active:active {
   }
   100% {
     width: 30%;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
   }
 }
 

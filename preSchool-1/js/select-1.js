@@ -301,8 +301,4 @@ $(function () {
     $messageSound.pause();
     $messageSound.currentTime = 0;
   });
-
-  setTimeout(() => {
-    startGame();
-  }, 1000);
 });
