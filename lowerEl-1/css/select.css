@@ -97,6 +97,39 @@
   filter: drop-shadow(2px 4px 12px antiquewhite) brightness(1.05);
 }
 
+.select-01-completed-img .notes,
+.select-02-completed-img .notes {
+  position: absolute;
+  width: 18%;
+  height: 18%;
+  animation: noteWobble 4s ease-in-out infinite;
+}
+
+@keyframes noteWobble {
+  0%,
+  100% {
+    transform: rotate(-15deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
+}
+
+#note-1 {
+  top: -7%;
+  right: -20%;
+}
+
+#note-2 {
+  top: 75%;
+  right: -18%;
+}
+
+#note-3 {
+  top: 30%;
+  left: -22%;
+}
+
 .select-02-completed-img {
   display: none;
   background: url(../img/select_02/select-2-puzzle-success.png) center no-repeat;
