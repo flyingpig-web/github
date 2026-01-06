@@ -12,6 +12,7 @@ $(function () {
   const $selectCompleted = $(".select-completed");
   const $finishBg = $(".finish-bg");
   const $countDown = $(".count-down");
+  const $touchPoint = $(".touch-point");
 
   // sounds
   let bgmAR = $("#bgm-ar")[0];
@@ -148,8 +149,15 @@ $(function () {
     }, intervalTime);
   }
 
+  $touchPoint.on("mouseenter", function () {
+    $touchPoint.attr("src", $(this).data("hover-src"));
+  });
+  $touchPoint.on("mouseleave", function () {
+    $touchPoint.attr("src", $(this).data("src"));
+  });
+
   // touch-point 클릭 이벤트 (성공 처리)
-  $(".touch-point").on("click", function () {
+  $touchPoint.on("click", function () {
     $miyo.addClass("active");
 
     // glow 효과 실행
@@ -185,9 +193,9 @@ $(function () {
           $currentStrawberry.attr("src", "img/select-1/strawberry-success.png");
 
           // touch-point opacity 효과
-          $(".touch-point").css("opacity", "0");
+          $touchPoint.css("opacity", "0");
           setTimeout(() => {
-            $(".touch-point").css("opacity", "1");
+            $touchPoint.css("opacity", "1");
           }, 1000);
 
           // dan, hong 성공 애니메이션
