@@ -20,6 +20,7 @@ $(function () {
   let gameStarted = false;
   let activatedCombos = new Set(); // 이미 활성화된 콤보들을 추적
   let playerVisibleTimers = {}; // player visible 타이머들을 추적
+  let chookPlayCount = 0; // chook 연주 횟수 추적
 
   $bgmTutorial.play();
 
@@ -87,7 +88,7 @@ $(function () {
           imageRect.top < targetRect.bottom &&
           imageRect.bottom > targetRect.top
         ) {
-          activatePlayerByImage(imageSrc);
+          activatePlayerByImage(imageSrc, this);
         }
       });
 
@@ -139,7 +140,7 @@ $(function () {
     return null;
   }
 
-  function activatePlayerByImage(imageSrc) {
+  function activatePlayerByImage(imageSrc, noteElement) {
     const instrumental = getInstrumentalFromImage(imageSrc);
 
     if (!instrumental) return;
@@ -275,6 +276,13 @@ $(function () {
 
     if (isInTargetZone) {
       showTargetZoneEffect();
+
+      // chook 클릭 시 combo 이미지 업데이트
+      const imageSrc = $clickedImg.attr("src");
+      if (imageSrc && imageSrc.includes("chook")) {
+        chookPlayCount++;
+        $("#combo").attr("src", `img/select/combo${chookPlayCount}.png`);
+      }
     }
 
     // 효과음 재생

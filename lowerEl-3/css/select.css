@@ -24,26 +24,16 @@
   position: relative;
 }
 
-.combo1 {
+.combo {
   position: absolute;
-  top: 38.6%;
-  left: -1.2%;
-  width: 11.8%;
-  height: 11.8%;
+  top: 36.8%;
+  left: 4.55%;
+  width: 10.6%;
 }
-.combo2 {
-  position: absolute;
-  top: 38.6%;
-  left: 4.04%;
-  width: 11.8%;
-  height: 11.8%;
-}
-.combo3 {
-  position: absolute;
-  top: 38.6%;
-  left: 9.3%;
-  width: 11.8%;
-  height: 11.8%;
+
+.combo:not([src]),
+.combo[src=""] {
+  visibility: hidden;
 }
 
 .player {
