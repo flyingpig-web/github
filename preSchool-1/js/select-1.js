@@ -11,6 +11,7 @@ $(function () {
   const $select1Glow = $(".select-1-glow");
   const $selectCompleted = $(".select-completed");
   const $finishBg = $(".finish-bg");
+  const $countDown = $(".count-down");
 
   // sounds
   let bgmAR = $("#bgm-ar")[0];
@@ -38,10 +39,27 @@ $(function () {
     }, 500);
 
     setTimeout(() => {
+      showTimer();
+    }, 7000);
+
+    setTimeout(() => {
       $container.removeClass("pointer-none");
       startGame();
-    }, 6000);
+    }, 10000);
   });
+
+  function showTimer() {
+    $countDown.show();
+    setTimeout(() => {
+      $countDown.attr("src", "img/select-1/count-down-2.png");
+    }, 1000);
+    setTimeout(() => {
+      $countDown.attr("src", "img/select-1/count-down-1.png");
+    }, 2000);
+    setTimeout(() => {
+      $countDown.hide();
+    }, 3000);
+  }
 
   function startGame() {
     $(".miyo").removeClass("stop");
