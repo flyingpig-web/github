@@ -45,9 +45,9 @@
   height: 100%;
   position: relative;
   isolation: isolate;
-  top: -6%;
+  top: -5%;
   left: -2.5%;
-  scale: 1.3;
+  scale: 1.2;
 }
 .select-1 .left-box img {
   position: absolute;
