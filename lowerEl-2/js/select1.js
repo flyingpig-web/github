@@ -73,6 +73,8 @@ $(function () {
   const $paintPink = $("#paint-pink");
   const $paintGreen = $("#paint-green");
   const $paintYellow = $("#paint-yellow");
+  const $paintLavander = $("#paint-lavander");
+  const $paintNone = $("#paint-none");
 
   // targetSound
   const soundMap = {
@@ -117,6 +119,8 @@ $(function () {
     pink: "brightness(2.5) sepia(1) saturate(284%) hue-rotate(284deg)", // #ff9eb5 - 연한 분홍
     green: "brightness(2) sepia(1) saturate(300%) hue-rotate(40deg)", // #b9f26d - 밝은 연두
     yellow: "brightness(2) sepia(1) saturate(520%) hue-rotate(10deg)", // #ffd76d - 밝은 노랑
+    lavander: "brightness(1.5) sepia(1) saturate(300%) hue-rotate(250deg)", // #d59fff - 연한 보라색
+    none: "none",
   };
 
   function toggleLeftBoxEffect() {
@@ -156,6 +160,23 @@ $(function () {
     toggleLeftBoxEffect();
     paintMap[currentTarget] = "yellow";
     $(`#haegeum-${currentTarget}`).css("filter", filterPalette.yellow);
+    checkPaintMapComplete();
+  });
+  $paintLavander.on("click", function () {
+    effect.currentTime = 0;
+    effect.play();
+    toggleLeftBoxEffect();
+    paintMap[currentTarget] = "lavander";
+    $(`#haegeum-${currentTarget}`).css("filter", filterPalette.lavander);
+    checkPaintMapComplete();
+  });
+
+  $paintNone.on("click", function () {
+    effect.currentTime = 0;
+    effect.play();
+    toggleLeftBoxEffect();
+    paintMap[currentTarget] = "none";
+    $(`#haegeum-${currentTarget}`).css("filter", filterPalette.none);
     checkPaintMapComplete();
   });
 

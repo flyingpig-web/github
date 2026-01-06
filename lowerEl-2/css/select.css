@@ -107,22 +107,30 @@
 }
 
 .select-1 .right-box .menu .paint {
-  width: 30%;
+  width: 24%;
 }
 #paint-blue {
   top: 12%;
-  left: 28%;
+  left: 25%;
 }
 #paint-pink {
   top: 12%;
-  right: 7%;
+  left: 48%;
 }
 #paint-green {
-  bottom: 18%;
-  left: 28%;
+  top: 12%;
+  right: 5%;
 }
 #paint-yellow {
-  right: 7%;
+  left: 25%;
+  bottom: 18%;
+}
+#paint-lavander {
+  left: 48%;
+  bottom: 18%;
+}
+#paint-none {
+  right: 5%;
   bottom: 18%;
 }
 
