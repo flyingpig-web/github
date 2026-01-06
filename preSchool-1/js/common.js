@@ -45,4 +45,17 @@ $(function () {
       btnHoverEffect.play();
     }
   });
+
+  function downloadPDF() {
+    const link = document.createElement("a");
+    link.href = "files/pdf/yu-1.pdf";
+    link.download = "메기는 소리와 받는 소리.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  $(".download-btn").on("click", function () {
+    downloadPDF();
+  });
 });

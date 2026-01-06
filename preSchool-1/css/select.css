@@ -458,7 +458,7 @@ body.game-active:active {
 .download-btn {
   position: absolute;
   width: 20%;
-  bottom: 4%;
+  bottom: 1%;
   left: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
