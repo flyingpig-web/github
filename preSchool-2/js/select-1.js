@@ -101,9 +101,20 @@ $(function () {
     });
   }
 
+  let currentInfiniteAudio = null; // 현재 재생 중인 infinite 오디오 추적
+
   function playInfiniteSound(pieceType) {
     const audioId = `success-infinite-${pieceType}`;
     const audio = $("#" + audioId)[0];
+
+    // 이전 오디오가 재생 중이면 멈춤
+    if (currentInfiniteAudio && currentInfiniteAudio !== audio) {
+      currentInfiniteAudio.pause();
+      currentInfiniteAudio.currentTime = 0;
+      currentInfiniteAudio.loop = false;
+    }
+
+    currentInfiniteAudio = audio;
     audio.loop = true;
     audio.currentTime = 0;
     audio.play();
@@ -164,7 +175,7 @@ $(function () {
       setTimeout(() => {
         stopAllInfiniteSounds();
         onPuzzleCompleted();
-      }, 1000);
+      }, 2000);
     }
   }
 
