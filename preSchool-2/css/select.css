@@ -401,25 +401,30 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  width: 10%;
-  height: 10%;
+  width: 22%;
+  height: 20%;
   position: absolute;
-  bottom: 35%;
-  left: 3%;
+  bottom: 10%;
+  left: 19%;
+  z-index: 99;
 }
 
 .lyrics-wrapper-right {
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  width: 10%;
-  height: 10%;
+  width: 22%;
+  height: 20%;
   position: absolute;
-  bottom: 35%;
-  right: 3%;
+  bottom: 10%;
+  right: 21%;
+  z-index: 99;
 }
 
-.lyrics-wrapper-left.common,
+.lyrics-wrapper-left.common {
+  background-image: url(../img/select/lyrics-common-reverse.png);
+}
+
 .lyrics-wrapper-right.common {
   background-image: url(../img/select/lyrics-common.png);
 }
