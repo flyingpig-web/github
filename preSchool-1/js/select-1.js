@@ -40,13 +40,13 @@ $(function () {
     }, 500);
 
     setTimeout(() => {
-      showTimer();
+      $container.removeClass("pointer-none");
+      startGame();
     }, 7000);
 
     setTimeout(() => {
-      $container.removeClass("pointer-none");
-      startGame();
-    }, 10000);
+      showTimer();
+    }, 9000);
   });
 
   function showTimer() {
