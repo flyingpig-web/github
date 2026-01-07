@@ -255,6 +255,11 @@ body.game-active:active {
   position: absolute;
 }
 
+.finish-bg.type-2 {
+  background: url(../img/select-2/finish-bg.png) center/contain no-repeat;
+  position: absolute;
+}
+
 .strawberry-finish {
   position: absolute;
   width: 33%;
