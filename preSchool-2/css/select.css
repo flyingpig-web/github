@@ -262,6 +262,10 @@
   background: url(../img/select/songpyun-before.png) center/contain no-repeat;
 }
 
+.songpyun-before.type-2 {
+  background: url(../img/select/songpyun-before-2.png) center/contain no-repeat;
+}
+
 .songpyun-before img {
   width: 32%;
   position: absolute;
