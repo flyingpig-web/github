@@ -349,6 +349,10 @@ body.game-active:active {
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
+.wm:hover {
+  transform: scale(1.1);
+}
+
 .wm.active {
   transform: scale(1.1);
   filter: drop-shadow(0 0 20px #ffe600) drop-shadow(0 0 40px #ffe600);
