@@ -32,8 +32,8 @@
 
 .droppable {
   position: absolute;
-  width: 16vh;
-  height: 16vh;
+  width: 11%;
+  height: 25%;
 }
 
 .droppable::after {
