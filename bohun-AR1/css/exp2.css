@@ -1,0 +1,117 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   EXP② 모스부호 리듬게임
+   - 방 배경 + 교신창(우→좌 신호) + 좌측 판정선 + 하단 전신기.
+   ========================================================================= */
+
+.exp2-room {
+  background-image: url(../img/4_EXP2/exp2_bg.png);
+}
+
+/* ===== 교신창(미션 윈도우) ===== */
+.morse-window {
+  position: absolute;
+  top: 7%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82%;
+  z-index: 12;
+}
+.morse-window .window-img {
+  width: 100%;
+  display: block;
+}
+
+/* 현재 교신 글자(교신 내용 : ?) */
+.morse-window .morse-letter {
+  position: absolute;
+  top: 11%;
+  left: 28%;
+  height: 9%;
+}
+.morse-window .morse-letter img {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
+/* 신호가 흐르는 트랙(검은 띠) — 이 위에 canvas 를 채운다 */
+.morse-track {
+  position: absolute;
+  left: 4.5%;
+  top: 33%;
+  width: 91%;
+  height: 38%;
+  overflow: hidden;
+}
+.morse-track canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 판정선(트랙 좌측) */
+.morse-hit-line {
+  position: absolute;
+  left: 9%;
+  top: 28%;
+  height: 48%;
+  z-index: 13;
+  pointer-events: none;
+}
+.morse-hit-line img {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+.morse-hit-line.hit {
+  animation: neon 0.35s ease;
+}
+@keyframes neon {
+  0% { filter: drop-shadow(0 0 0 #6cf); }
+  50% { filter: drop-shadow(0 0 14px #6cf) brightness(1.6); }
+  100% { filter: drop-shadow(0 0 0 #6cf); }
+}
+
+/* 판정 결과 텍스트(Good!/Bad!) */
+.morse-judge {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font);
+  font-size: 4rem;
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+}
+.morse-judge.good { color: #5ad16b; }
+.morse-judge.bad { color: #e05656; }
+.morse-judge.show {
+  animation: judgePop 0.5s ease;
+}
+@keyframes judgePop {
+  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.6); }
+  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  100% { opacity: 0; transform: translate(-50%, -70%) scale(1); }
+}
+
+/* ===== 전신기(하단 중앙, 터치 대상) ===== */
+.morse-key {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  transform: translateX(-50%);
+  width: 34%;
+  z-index: 15;
+  cursor: pointer;
+}
+.morse-key img {
+  width: 100%;
+  display: block;
+}
+.morse-key:active {
+  filter: var(--btn-active-effect);
+}

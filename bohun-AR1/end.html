@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>수료증 — 한국광복군 제2지대 OSS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <div class="cut-bg end-bg"></div>
+
+          <div class="end-title"><img src="img/7_END/end_title.png" alt="수료를 축하합니다!" /></div>
+
+          <!-- 좌측: 이름 입력 -->
+          <div class="end-form">
+            <div class="form-box">
+              <img class="box-img" src="img/7_END/end_text_box.png" alt="" />
+              <input
+                type="text"
+                class="name-input"
+                id="nameInput"
+                maxlength="6"
+                placeholder="이름"
+                aria-label="이름 입력"
+              />
+            </div>
+          </div>
+
+          <!-- 우측: 수료증 -->
+          <div class="end-cert" id="cert">
+            <img class="cert-img" src="img/7_END/end_image.png" alt="수료증" />
+            <span class="cert-no" id="certNo"></span>
+            <span class="cert-name" id="certName"></span>
+          </div>
+
+          <!-- 하단 버튼 -->
+          <div class="end-btns">
+            <button id="btnScrap"><img src="img/7_END/end_scrap.png" alt="수료증 스크랩" /></button>
+            <button id="btnHome"><img src="img/7_END/end_home.png" alt="처음으로" /></button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/end.js"></script>
+  </body>
+</html>

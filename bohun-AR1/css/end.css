@@ -1,0 +1,116 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   7_END 수료증
+   - 배경(딤드 막사) + 축하 타이틀 + 좌측 이름입력/임명문구 + 우측 수료증.
+   - 수료증 이미지 위에 이름/번호를 absolute 로 올리고, [스크랩] 시 캔버스 합성 캡처.
+   ========================================================================= */
+
+.end-bg {
+  background-image: url(../img/7_END/end_bg.png);
+}
+.end-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.end-title {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34%;
+  z-index: 3;
+}
+.end-title img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 좌측 입력 영역 ===== */
+.end-form {
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40%;
+  z-index: 3;
+}
+.end-form .form-box {
+  position: relative;
+  width: 100%;
+}
+.end-form .form-box .box-img {
+  width: 100%;
+  display: block;
+}
+.end-form .name-input {
+  position: absolute;
+  left: 8%;
+  top: 17%;
+  width: 46%;
+  height: 30%;
+  font-family: var(--font);
+  font-size: 2.6rem;
+  color: #2a1c0c;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 6px;
+  outline: none;
+}
+.end-form .name-input::placeholder {
+  color: #b0a48f;
+}
+
+/* ===== 우측 수료증 ===== */
+.end-cert {
+  position: absolute;
+  right: 3.5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 47%;
+  z-index: 3;
+}
+.end-cert .cert-img {
+  width: 100%;
+  display: block;
+}
+/* 수료증 위 이름/번호 오버레이 (tunable) */
+.end-cert .cert-name {
+  position: absolute;
+  left: 20%;
+  top: 40.5%;
+  font-family: var(--font);
+  font-size: 2.2rem;
+  color: #1c1208;
+}
+.end-cert .cert-no {
+  position: absolute;
+  left: 12%;
+  top: 9%;
+  font-family: var(--font);
+  font-size: 1.3rem;
+  color: #5a4327;
+}
+
+/* ===== 하단 버튼 ===== */
+.end-btns {
+  position: absolute;
+  left: 4%;
+  bottom: 6%;
+  display: flex;
+  gap: 4%;
+  width: 40%;
+  z-index: 4;
+}
+.end-btns button {
+  width: 47%;
+  cursor: pointer;
+}
+.end-btns img {
+  width: 100%;
+  display: block;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>EXP① AR 순찰 (유니티)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/common.js"></script>
+    <style>
+      /* EXP① 은 유니티(다른 개발자) 담당. 여기는 웹↔유니티 연계용 셸. */
+      .unity-shell {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4%;
+        background: #111;
+        color: #f4e9c9;
+        font-family: var(--font);
+        text-align: center;
+        padding: 0 8%;
+      }
+      .unity-shell h1 { font-size: 3.2rem; }
+      .unity-shell p { font-size: 1.8rem; line-height: 1.6; color: #cbbf9f; }
+      .unity-shell .btn-continue {
+        font-size: 2.2rem;
+        color: #fff;
+        background: linear-gradient(#7a5c2e, #5a3f1c);
+        border: 2px solid #d8b87a;
+        border-radius: 8px;
+        padding: 1.6% 6%;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <!-- ⚠️ EXP①(AR 순찰)은 유니티 빌드로 대체됩니다.
+                유니티 진입/복귀 규약(URL 파라미터·상태 전달)은 협의 필요(Open Item).
+                아래는 웹 플로우 테스트용 임시 셸 — 유니티 연동 시 이 페이지를 교체/리다이렉트. -->
+          <div class="unity-shell">
+            <h1>EXP① · AR 순찰 임무</h1>
+            <p>
+              이 구간은 유니티 AR 콘텐츠로 진행됩니다.<br />
+              순찰을 마치면 총사령부 보고 임무로 이어집니다.
+            </p>
+            <button class="btn-continue btn-effect" id="btnContinue">순찰 완료 · 다음으로</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      $(function () {
+        // 유니티 복귀 지점 = 3_Bridge①
+        $("#btnContinue").on("click", function () {
+          AR.go("bridge1.html");
+        });
+      });
+    </script>
+  </body>
+</html>

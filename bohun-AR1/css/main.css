@@ -1,0 +1,176 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   화면별(섹션별) 스타일 — TITLE / INTRO / Bridge 공통(컷 전환 시퀀스)
+   - 모든 위치/크기는 % + absolute. 디자인 기준 953×537.
+   ========================================================================= */
+
+/* ===== 컷 배경(도입/연결 공통) ===== */
+.cut-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* ===== 0_TITLE ===== */
+.title-bg {
+  background-image: url(../img/0_TITLE/title_bg.png);
+}
+.btn-touch-start {
+  position: absolute;
+  left: 50%;
+  bottom: 9%;
+  transform: translateX(-50%);
+  width: 27.5%;
+  height: auto;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.btn-touch-start img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 자막 바(도입/연결 공통) ===== */
+.subtitle {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 22%; /* 고정높이 (text_bg.png 229/1080 ≈ 21% 비율과 일치) */
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start; /* 좌측정렬 */
+  background: url(../img/1_INTRO/text_bg.png) center / 100% 100% no-repeat;
+  z-index: 5;
+  padding: 3% 13% 2% 2%;
+}
+.subtitle p {
+  color: #fff;
+  font-family: var(--font);
+  font-weight: 400;
+  font-size: 3.8rem; /* 기준(최대). 길면 common.js 가 한 줄에 맞게 자동 축소 */
+  line-height: 1.4;
+  text-align: left;
+  white-space: nowrap; /* 한 줄 강제(개행 무시) */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== 핫스팟(터치 대상 위치의 glow + 손 포인터, 세트) =====
+   - 컷별 터치 대상 좌표에 JS(left/top %)로 배치. transform 으로 중앙 정렬.
+   - glow: 은은한 펄스(scale 1→1.1) 반복.
+   - 손: glow 와 세트로, 45° 대각(우상향 ↔ 좌하향) 왕복 이동. */
+.hotspot {
+  position: absolute;
+  width: 21%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  z-index: 8;
+  cursor: pointer;
+}
+.hotspot .hot-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  animation: glowPulse 1.7s ease-in-out infinite;
+}
+.hotspot .hot-hand {
+  position: absolute;
+  left: 42%;
+  top: 42%;
+  width: 46%;
+  transform-origin: top left;
+  animation: handDiag 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes glowPulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+}
+@keyframes handDiag {
+  /* 좌하향 ↔ 우상향(45° 대각) */
+  0%,
+  100% {
+    transform: translate(-9%, 9%);
+  }
+  50% {
+    transform: translate(9%, -9%);
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
+/* ===== 컷 컨트롤 버튼(스킵 / 다음) ===== */
+.btn-skip {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  width: 13%;
+  z-index: 7;
+}
+.btn-next {
+  position: absolute;
+  right: 3.5%;
+  bottom: 1.4%;
+  width: 9%;
+  z-index: 7;
+}
+.btn-skip img,
+.btn-next img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 목표 팝업(도입/연결 공통) — 이미지 + 하단 확인 영역 ===== */
+.dialog.objective {
+  width: 62%;
+  flex-direction: column;
+  align-items: center;
+}
+.dialog.objective .obj-img {
+  width: 100%;
+  display: block;
+}
+.dialog.objective .btn-obj-confirm {
+  margin-top: 3%;
+  width: 30%;
+  font-family: var(--font);
+  font-size: 3.8rem;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(#7a5c2e, #5a3f1c);
+  border: 2px solid #d8b87a;
+  border-radius: 8px;
+  padding: 1.4% 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  animation: pulse2 1.4s ease-in-out infinite;
+}
+@keyframes pulse2 {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}

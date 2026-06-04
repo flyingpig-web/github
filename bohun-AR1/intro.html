@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>도입 — 긴급 임무</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <!-- 컷 배경 -->
+          <div class="cut-bg" id="cutBg"></div>
+
+          <!-- 자막 -->
+          <div class="subtitle" id="subtitle">
+            <p id="subtitleText"></p>
+          </div>
+
+          <!-- 핫스팟(터치 대상 glow + 손) — 위치는 intro.js 가 컷별로 지정 -->
+          <div class="hotspot display-none" id="hotspot">
+            <img class="hot-glow" src="img/common/icon_touch_effect.png" alt="" />
+            <img class="hot-hand" src="img/1_INTRO/icon_touch.png" alt="" />
+          </div>
+
+          <!-- 컷 컨트롤 -->
+          <button class="btn-skip btn-effect" id="btnSkip">
+            <img src="img/1_INTRO/skip_btn.png" alt="건너뛰기" />
+          </button>
+          <button class="btn-next btn-effect" id="btnNext">
+            <img src="img/1_INTRO/story_next_btn.png" alt="다음" />
+          </button>
+
+          <!-- 목표① 팝업 -->
+          <div class="dimmed" id="objectiveDim">
+            <div class="dialog objective">
+              <img class="obj-img" src="img/1_INTRO/intro_popup_objective.png" alt="목표" />
+              <button class="btn-obj-confirm btn-effect" id="btnObjConfirm">임무 확인</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/intro.js"></script>
+  </body>
+</html>

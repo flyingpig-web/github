@@ -1,0 +1,171 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   게임 공통 UI (EXP② 모스 / EXP③ 운전 공용)
+   - 상단 버튼(설정/튜토리얼/홈), 진행 게이지, 시작 메시지,
+     설정·튜토리얼·완료 팝업. 위치는 % + absolute.
+   ========================================================================= */
+
+/* ===== 상단 우측 버튼 그룹 ===== */
+.game-top {
+  position: absolute;
+  top: 4%;
+  right: 3%;
+  display: flex;
+  gap: 1.2%;
+  z-index: 20;
+}
+.game-top .btn-top {
+  position: static;
+  width: 4.6vh;
+  max-width: 46px;
+  height: auto;
+  cursor: pointer;
+}
+.game-top .btn-top img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 진행 게이지(성공률 n/20, 서신 n/3 등) ===== */
+.game-gage {
+  position: absolute;
+  top: 4%;
+  left: 3%;
+  width: 22%;
+  z-index: 20;
+}
+.game-gage .gage-bg {
+  width: 100%;
+  display: block;
+}
+.game-gage .gage-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font);
+  font-size: 2rem;
+  color: #f4e9c9;
+  white-space: nowrap;
+}
+
+/* ===== 시작 메시지(미션 안내 띠) + 터치하여 시작 ===== */
+.game-start {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 40;
+  cursor: pointer;
+}
+.game-start .start-msg {
+  width: 64%;
+  display: block;
+}
+.game-start .start-touch {
+  position: relative;
+  width: 7%;
+  margin-top: 2%;
+  animation: touchTap 1.6s ease-in-out infinite;
+}
+
+/* ===== 캔버스(게임 렌더 영역) ===== */
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+/* =========================================================================
+   팝업 공통 (설정 / 튜토리얼 / 완료)
+   ========================================================================= */
+.dialog.popup-img {
+  width: 50%;
+}
+.dialog.popup-img > .popup-base {
+  width: 100%;
+  display: block;
+}
+
+/* ----- 설정 팝업 ----- */
+.dialog.setting {
+  width: 44%;
+}
+.dialog.setting .btn-close {
+  position: absolute;
+  top: 4%;
+  right: 4%;
+  width: 8%;
+  cursor: pointer;
+}
+.dialog.setting .btn-close img {
+  width: 100%;
+  display: block;
+}
+.dialog.setting .toggle {
+  position: absolute;
+  right: 13%;
+  width: 11%;
+  cursor: pointer;
+}
+.dialog.setting .toggle img {
+  width: 100%;
+  display: block;
+}
+.dialog.setting .toggle-bgm {
+  top: 41%;
+}
+.dialog.setting .toggle-sfx {
+  top: 66%;
+}
+
+/* ----- 튜토리얼(정보) 팝업 ----- */
+.dialog.tutorial {
+  width: 62%;
+}
+.dialog.tutorial .btn-close {
+  position: absolute;
+  top: 2%;
+  right: 2%;
+  width: 6%;
+  cursor: pointer;
+}
+.dialog.tutorial .btn-close img {
+  width: 100%;
+  display: block;
+}
+
+/* ----- 완료(체험 종료) 팝업 ----- */
+.dialog.finish {
+  width: 56%;
+  flex-direction: column;
+  align-items: center;
+}
+.dialog.finish .finish-base {
+  width: 100%;
+  display: block;
+}
+.dialog.finish .finish-btns {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6%;
+  width: 70%;
+  justify-content: center;
+}
+.dialog.finish .finish-btns button {
+  width: 42%;
+  cursor: pointer;
+}
+.dialog.finish .finish-btns img {
+  width: 100%;
+  display: block;
+}
