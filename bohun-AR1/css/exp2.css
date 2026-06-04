@@ -9,10 +9,42 @@
   background-image: url(../img/4_EXP2/exp2_bg.png);
 }
 
+/* EXP② 전용 배치(exp.css 기본값 덮어쓰기, exp3 영향 없음) */
+/* 상단 버튼: 화면 중앙 (설정-튜토리얼-나가기) */
+.exp2-room ~ .game-top {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  gap: 2.5%;
+}
+/* 성공률 게이지: 좌하단 */
+.exp2-room ~ .game-gage {
+  top: auto;
+  bottom: 5%;
+  left: 3%;
+  width: 17%;
+}
+/* 성공률 progress fill(프레임 안쪽 영역에서 좌→우로 차오름) */
+.game-gage .gage-fill {
+  position: absolute;
+  left: 6%;
+  top: 19%;
+  height: 62%;
+  width: 0;
+  max-width: 88%;
+  background: linear-gradient(180deg, #8fe07a, #4ea63f);
+  border-radius: 3px;
+  z-index: 1;
+  transition: width 0.3s ease;
+}
+.game-gage .gage-text {
+  z-index: 2;
+}
+
 /* ===== 교신창(미션 윈도우) ===== */
 .morse-window {
   position: absolute;
-  top: 7%;
+  top: 11%;
   left: 50%;
   transform: translateX(-50%);
   width: 82%;
@@ -24,15 +56,25 @@
 }
 
 /* 현재 교신 글자(교신 내용 : ?) */
+/* 교신 내용 칸: 성공한 글자(EAGLESEND)가 좌→우로 채워짐 */
 .morse-window .morse-letter {
   position: absolute;
-  top: 11%;
-  left: 28%;
-  height: 9%;
+  top: 18%;
+  left: 37%;
+  height: 6%;
+  display: flex;
+  align-items: center;
+  gap: 5%;
 }
 .morse-window .morse-letter img {
   height: 100%;
   width: auto;
+  display: block;
+}
+/* 실패한 글자 자리: 글자 폭만큼 빈 칸(투명) */
+.morse-window .morse-letter .letter-blank {
+  height: 100%;
+  aspect-ratio: 0.8 / 1;
   display: block;
 }
 
@@ -55,9 +97,9 @@
 /* 판정선(트랙 좌측) */
 .morse-hit-line {
   position: absolute;
-  left: 9%;
-  top: 28%;
-  height: 48%;
+  left: 7.8%;
+  top: 37%;
+  height: 33%;
   z-index: 13;
   pointer-events: none;
 }
@@ -70,9 +112,15 @@
   animation: neon 0.35s ease;
 }
 @keyframes neon {
-  0% { filter: drop-shadow(0 0 0 #6cf); }
-  50% { filter: drop-shadow(0 0 14px #6cf) brightness(1.6); }
-  100% { filter: drop-shadow(0 0 0 #6cf); }
+  0% {
+    filter: drop-shadow(0 0 0 #6cf);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px #6cf) brightness(1.6);
+  }
+  100% {
+    filter: drop-shadow(0 0 0 #6cf);
+  }
 }
 
 /* 판정 결과 텍스트(Good!/Bad!) */
@@ -87,24 +135,36 @@
   opacity: 0;
   pointer-events: none;
 }
-.morse-judge.good { color: #5ad16b; }
-.morse-judge.bad { color: #e05656; }
+.morse-judge.good {
+  color: #5ad16b;
+}
+.morse-judge.bad {
+  color: #e05656;
+}
 .morse-judge.show {
   animation: judgePop 0.5s ease;
 }
 @keyframes judgePop {
-  0% { opacity: 0; transform: translate(-50%, -30%) scale(0.6); }
-  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-  100% { opacity: 0; transform: translate(-50%, -70%) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30%) scale(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -70%) scale(1);
+  }
 }
 
 /* ===== 전신기(하단 중앙, 터치 대상) ===== */
 .morse-key {
   position: absolute;
-  left: 50%;
-  bottom: 2%;
-  transform: translateX(-50%);
-  width: 34%;
+  right: 2%;
+  bottom: 1%;
+  width: 30%;
   z-index: 15;
   cursor: pointer;
 }

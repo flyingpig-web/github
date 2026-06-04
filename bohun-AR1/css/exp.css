@@ -12,13 +12,12 @@
   top: 4%;
   right: 3%;
   display: flex;
-  gap: 1.2%;
+  gap: 10%;
   z-index: 20;
 }
 .game-top .btn-top {
   position: static;
-  width: 4.6vh;
-  max-width: 46px;
+  width: 20%;
   height: auto;
   cursor: pointer;
 }

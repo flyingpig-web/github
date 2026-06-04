@@ -69,7 +69,7 @@ $(function () {
       skipBtn: "#btnSkip",
       cuts,
       onEnd: showObjective, // 마지막 컷 [다음] → 목표① 팝업 → [임무 확인] → exp1
-      onSkip: () => AR.go("exp1.html"), // 스킵 → 바로 EXP①(유니티)
+      onSkip: showObjective, // 스킵 → 목표①까지만(exp1 바로 전)
     }).start();
   });
 

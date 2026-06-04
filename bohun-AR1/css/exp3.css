@@ -10,6 +10,24 @@
   background-image: url(../img/6_EXP3/exp3_bg.png);
 }
 
+/* 상단 버튼: 화면 중앙(exp2 와 동일). 크기는 exp.css .game-top .btn-top 공통값 사용 */
+.exp3-map ~ .game-top {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  gap: 2.5%;
+}
+
+/* 서신 게이지: 중앙 하단 */
+.exp3-map ~ .game-gage {
+  top: auto;
+  bottom: 5%;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 25%;
+}
+
 /* 게임 캔버스는 exp.css .game-canvas 사용 (맵 위 오버레이) */
 
 /* ===== 가상 조이스틱 ===== */

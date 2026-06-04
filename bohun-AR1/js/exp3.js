@@ -98,9 +98,10 @@ $(function () {
     updateGage();
   }
 
-  // 프로토타입 표기: 수신 전 "서신 0/0", 수신 후 "3/3" → 전달마다 2/3·1/3·0/3
+  // 서신 전달 카운트: 0/3 → 3/3 (총사령부 수신은 카운트 제외). progress fill 동기화.
   function updateGage() {
-    $gage.text(hasLetters ? `서신 ${3 - delivered} / 3` : "서신 0 / 0");
+    $gage.text(`서신 ${delivered}/3`);
+    $("#gageFill").css("width", (delivered / 3) * 88 + "%");
   }
 
   function toast(msg) {
@@ -150,7 +151,7 @@ $(function () {
     // 총사령부에서 서신 수신
     if (!hasLetters && Math.hypot(jeep.x - MAP.hq.x, jeep.y - MAP.hq.y) < MAP.reach) {
       hasLetters = true;
-      toast("총사령부 서신 수신! (3/3)");
+      toast("총사령부에서 서신을 받았다! 각 지대에 전달하라");
       AR.Sound.sfx(SFX.pickup);
     }
     // 각 지대 전달

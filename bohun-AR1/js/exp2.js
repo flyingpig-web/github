@@ -10,18 +10,27 @@ document.title = "EXP② — 모스부호 교신";
 $(function () {
   /* ----- 튜닝 상수(가변) ----- */
   const CONFIG = {
-    total: 20, // 총 신호 수
+    total: 20, // 총 신호 수(= MESSAGE 심볼 합)
     needSuccess: 10, // 교신 완료 기준
     firstAt: 1800, // 첫 신호가 판정선에 닿는 시각(ms)
-    interval: 850, // 신호 간격(ms)
     travel: 2000, // 우측 진입 → 판정선 도달까지 이동 시간(ms)
     goodWindow: 150, // ±판정 허용(ms) ≈ 프로토타입 "±5%"
-    hitFrac: 0.06, // 트랙 폭 대비 판정선 x 위치(좌측)
+    hitFrac: 0.046, // 트랙 폭 대비 판정선 x 위치(좌측, .morse-hit-line 과 맞춤)
   };
 
-  // EAGLE / SEND — 플레이버용 글자 라벨(신호 그룹 표시에 사용)
-  const LETTERS = ["E", "A", "G", "L", "E", "S", "E", "N", "D"];
-  const letterImg = (c) => `img/4_EXP2/exp2_text_${c}.png`;
+  // 교신 메시지: 글자별 모스 그룹(고정). 간격: 심볼 < 글자 < 단어(EAGLE|SEND).
+  const MESSAGE = [
+    { ch: "E", code: "." },
+    { ch: "A", code: ".-" },
+    { ch: "G", code: "--." },
+    { ch: "L", code: ".-.." },
+    { ch: "E", code: "." },
+    { ch: "S", code: "...", word: true }, // EAGLE 다음 단어 간격
+    { ch: "E", code: "." },
+    { ch: "N", code: "-." },
+    { ch: "D", code: "-.." },
+  ];
+  const GAP = { symbol: 470, letter: 920, word: 1500 };
 
   const assets = [
     "img/4_EXP2/exp2_bg.png",
@@ -36,7 +45,7 @@ $(function () {
     "img/common/exp_setting.png",
     "img/common/exp_popup_btn_next.png",
     "img/common/exp_popup_btn_retry.png",
-  ].concat(LETTERS.map((c) => letterImg(c)));
+  ].concat(["E", "A", "G", "L", "S", "N", "D"].map((c) => `img/4_EXP2/exp2_text_${c}.png`));
 
   const canvas = document.getElementById("morseCanvas");
   const ctx = canvas.getContext("2d");
@@ -46,7 +55,8 @@ $(function () {
   const $judge = $("#morseJudge");
   const $gage = $("#gageText");
 
-  let beats = []; // { t, judged, ok }
+  let beats = []; // { t, judged, ok, dash, ch, group }
+  let groups = []; // { ch, beats:[], shown }
   let started = false;
   let paused = false;
   let raf = null;
@@ -54,6 +64,8 @@ $(function () {
   let lastTs = 0;
   let success = 0;
   let done = 0;
+  let finishing = false;
+  let finishTimer = null;
 
   function sizeCanvas() {
     const track = document.getElementById("morseTrack");
@@ -66,10 +78,42 @@ $(function () {
     canvas._h = r.height;
   }
 
+  // MESSAGE → 신호 비트 + 글자 그룹. 심볼 도달 시각을 그룹/단어 간격으로 누적.
   function buildBeats() {
     beats = [];
-    for (let i = 0; i < CONFIG.total; i++) {
-      beats.push({ t: CONFIG.firstAt + i * CONFIG.interval, judged: false, ok: false });
+    groups = [];
+    let t = CONFIG.firstAt;
+    MESSAGE.forEach((m, li) => {
+      if (li > 0) t += m.word ? GAP.word : GAP.letter;
+      const g = { ch: m.ch, beats: [], shown: false };
+      m.code.split("").forEach((s, si) => {
+        if (si > 0) t += GAP.symbol;
+        const b = { t, judged: false, ok: false, dash: s === "-", ch: m.ch, group: g };
+        beats.push(b);
+        g.beats.push(b);
+      });
+      groups.push(g);
+    });
+  }
+
+  // 그룹이 모두 판정되면, 전부 성공한 글자만 "교신 내용"에 추가.
+  function tryLetter(g) {
+    if (!g || g.shown) return;
+    if (!g.beats.every((b) => b.judged)) return;
+    g.shown = true;
+    const box = document.getElementById("morseLetter");
+    if (!box) return;
+    if (g.beats.every((b) => b.ok)) {
+      // 성공: 글자 이미지
+      const img = document.createElement("img");
+      img.src = `img/4_EXP2/exp2_text_${g.ch}.png`;
+      img.alt = g.ch;
+      box.appendChild(img);
+    } else {
+      // 실패: 폭을 가진 빈 칸(자리 유지 → 틀린 위치가 공백으로 보임)
+      const blank = document.createElement("span");
+      blank.className = "letter-blank";
+      box.appendChild(blank);
     }
   }
 
@@ -77,26 +121,47 @@ $(function () {
     return (canvas._w || 0) * CONFIG.hitFrac;
   }
 
+  function roundRect(g, x, y, w, h, r) {
+    r = Math.min(r, h / 2, w / 2);
+    g.beginPath();
+    g.moveTo(x + r, y);
+    g.arcTo(x + w, y, x + w, y + h, r);
+    g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r);
+    g.arcTo(x, y, x + w, y, r);
+    g.closePath();
+  }
+
+  function xAt(dt) {
+    const w = canvas._w || 0;
+    const hx = hitX();
+    return hx + (dt / CONFIG.travel) * (w - hx);
+  }
+
   function draw() {
     const w = canvas._w || 0;
     const h = canvas._h || 0;
     ctx.clearRect(0, 0, w, h);
-    const hx = hitX();
-    const cy = h / 2;
-    const r = Math.max(6, h * 0.16);
+    const cy = h * 0.5; // 모스 심볼 행(스트립 중앙)
+    const dotR = Math.max(3, h * 0.12); // 점(작은 원)
+    const dashLen = dotR * 4.2; // 선(긴 막대) 길이
+    const barH = dotR * 1.05;
 
     for (const b of beats) {
-      if (b.judged && clock - b.t > 200) continue;
       const dt = b.t - clock; // +면 아직 도달 전
-      if (dt > CONFIG.travel) continue; // 아직 진입 전
-      // x: 판정선(hx) ~ 우측 끝(w). dt=0 → hx, dt=travel → w
-      const x = hx + (dt / CONFIG.travel) * (w - hx);
-      if (x < -r) continue;
-      ctx.beginPath();
-      ctx.arc(x, cy, r, 0, Math.PI * 2);
+      if (dt > CONFIG.travel) continue;
+      const x = xAt(dt);
+      if (x < -dashLen) continue;
       if (b.judged) ctx.fillStyle = b.ok ? "#5ad16b" : "#e05656";
-      else ctx.fillStyle = Math.abs(dt) <= CONFIG.goodWindow ? "#ffe98a" : "#f4e9c9";
-      ctx.fill();
+      else ctx.fillStyle = Math.abs(dt) <= CONFIG.goodWindow ? "#ffe98a" : "#f0ece0";
+      if (b.dash) {
+        roundRect(ctx, x - dashLen / 2, cy - barH / 2, dashLen, barH, barH / 2);
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.arc(x, cy, dotR, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
   }
 
@@ -113,16 +178,23 @@ $(function () {
           b.ok = false;
           done++;
           updateGage();
+          tryLetter(b.group);
         }
       }
       draw();
-      if (done >= beats.length) return finish();
+      // 모든 신호 판정 후 바로 끝내지 않고 잠깐 여유(마지막 dot 결과·연출 노출)
+      if (done >= beats.length && !finishing) {
+        finishing = true;
+        finishTimer = setTimeout(finish, 1100);
+      }
     }
     raf = requestAnimationFrame(loop);
   }
 
   function updateGage() {
-    $gage.text(`${success} / ${CONFIG.total}`);
+    $gage.text(`성공률 ${success}/${CONFIG.total}`);
+    // 프레임 안쪽(좌6%~우94%, 폭 88%) 기준으로 좌→우 채움
+    $("#gageFill").css("width", (success / CONFIG.total) * 88 + "%");
   }
 
   function tap() {
@@ -162,7 +234,7 @@ $(function () {
       AR.Sound.sfx(SFX.bad);
     }
     updateGage();
-    if (done >= beats.length) finish();
+    tryLetter(target.group);
   }
 
   const SFX = {
@@ -185,17 +257,23 @@ $(function () {
     if (started) return;
     started = true;
     $("#gameStart").addClass("display-none");
+    document.getElementById("morseLetter").innerHTML = "";
     sizeCanvas();
     buildBeats();
     clock = 0;
     lastTs = 0;
     success = 0;
     done = 0;
+    finishing = false;
     updateGage();
     raf = requestAnimationFrame(loop);
   }
 
   function finish() {
+    if (finishTimer) {
+      clearTimeout(finishTimer);
+      finishTimer = null;
+    }
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     started = false;
@@ -204,11 +282,17 @@ $(function () {
   }
 
   function resetGame() {
+    if (finishTimer) {
+      clearTimeout(finishTimer);
+      finishTimer = null;
+    }
     AR.closePopup("#finishDim");
     $("#gameStart").removeClass("display-none");
+    document.getElementById("morseLetter").innerHTML = "";
     ctx.clearRect(0, 0, canvas._w || 0, canvas._h || 0);
     started = false;
     paused = false;
+    finishing = false;
     updateGage();
   }
 

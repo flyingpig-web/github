@@ -9,18 +9,8 @@
 document.title = "수료증 — 한국광복군 제2지대 OSS";
 
 $(function () {
-  // 수료증 natural 좌표(0~1) — CSS 오버레이와 동일하게 유지
-  const POS = {
-    nameX: 0.2,
-    nameY: 0.435,
-    nameFont: 0.03, // 글자 높이 / 수료증 높이
-    noX: 0.12,
-    noY: 0.105,
-    noFont: 0.018,
-    color: "#1c1208",
-    noColor: "#5a4327",
-  };
-
+  // 이름/번호 위치·크기·색은 CSS(.cert-name/.cert-no) 가 단일 기준.
+  // 스크랩 시 화면의 해당 요소 위치를 측정해 그대로 캔버스에 그림 → 화면=스크랩 일치.
   const $name = $("#nameInput");
   const $certName = $("#certName");
   const $certNo = $("#certNo");
@@ -41,6 +31,28 @@ $(function () {
     $certName.text($name.val().trim());
   });
 
+  // 화면의 텍스트 요소(el)를 수료증 이미지(imgRect) 기준으로 캔버스(c)에 동일 위치/크기로 그림
+  function drawDomText(g, el, imgRect, c) {
+    const text = (el.textContent || "").trim();
+    if (!text || !imgRect.width) return;
+    const r = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    const sx = c.width / imgRect.width;
+    const sy = c.height / imgRect.height;
+    g.fillStyle = cs.color;
+    g.font = `${cs.fontStyle} ${cs.fontWeight} ${parseFloat(cs.fontSize) * sy}px ${cs.fontFamily}`;
+    g.textBaseline = "top";
+    g.textAlign = "left";
+    // 자간(letter-spacing): canvas fillText 는 자간을 무시하므로 글자별로 그림
+    const ls = (parseFloat(cs.letterSpacing) || 0) * sy;
+    let x = (r.left - imgRect.left) * sx;
+    const y = (r.top - imgRect.top) * sy;
+    for (const chr of text) {
+      g.fillText(chr, x, y);
+      x += g.measureText(chr).width + ls;
+    }
+  }
+
   /* ----- 스크랩(캔버스 합성 다운로드) ----- */
   $("#btnScrap").on("click", function () {
     const name = $name.val().trim();
@@ -49,6 +61,8 @@ $(function () {
       alert("이름을 입력해 주세요.");
       return;
     }
+    $certName.text(name); // 화면 동기화(측정 기준)
+
     const base = new Image();
     base.crossOrigin = "anonymous";
     base.onload = function () {
@@ -57,23 +71,12 @@ $(function () {
       c.height = base.naturalHeight;
       const g = c.getContext("2d");
 
-      const noPx = Math.round(c.height * POS.noFont);
-      const namePx = Math.round(c.height * POS.nameFont);
-      const FAM = '"Pretendard Variable", Pretendard, sans-serif';
-      const noFont = `${noPx}px ${FAM}`;
-      const nameFont = `600 ${namePx}px ${FAM}`;
-
       function render() {
         g.drawImage(base, 0, 0);
-        // 번호
-        g.fillStyle = POS.noColor;
-        g.font = noFont;
-        g.textBaseline = "alphabetic";
-        g.fillText(`제 ${certNumber} 호`, c.width * POS.noX, c.height * POS.noY);
-        // 이름
-        g.fillStyle = POS.color;
-        g.font = nameFont;
-        g.fillText(name, c.width * POS.nameX, c.height * POS.nameY);
+        const certImg = document.querySelector(".end-cert .cert-img");
+        const imgRect = certImg.getBoundingClientRect();
+        drawDomText(g, $certNo[0], imgRect, c); // 번호
+        drawDomText(g, $certName[0], imgRect, c); // 이름
 
         try {
           const url = c.toDataURL("image/png");
@@ -88,14 +91,9 @@ $(function () {
         }
       }
 
-      // 캔버스 fillText 는 폰트 선로딩이 필요 — Pretendard 로드 후 렌더(미지원 시 즉시)
-      if (document.fonts && document.fonts.load) {
-        Promise.all([
-          document.fonts.load(noFont, `제 ${certNumber} 호`),
-          document.fonts.load(nameFont, name),
-        ])
-          .then(render)
-          .catch(render);
+      // 폰트(Pretendard) 로드 완료 후 렌더 → 글자폭/위치 정확
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(render).catch(render);
       } else {
         render();
       }

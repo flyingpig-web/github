@@ -18,10 +18,9 @@
 
 .end-title {
   position: absolute;
-  top: 4%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 34%;
+  top: 15%;
+  left: 9%;
+  width: 32%;
   z-index: 3;
 }
 .end-title img {
@@ -33,9 +32,8 @@
 .end-form {
   position: absolute;
   left: 4%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40%;
+  top: 37%;
+  width: 42%;
   z-index: 3;
 }
 .end-form .form-box {
@@ -81,11 +79,14 @@
 /* 수료증 위 이름/번호 오버레이 (tunable) */
 .end-cert .cert-name {
   position: absolute;
-  left: 20%;
-  top: 40.5%;
+  left: 45%;
+  top: 47%;
   font-family: var(--font);
   font-size: 2.2rem;
+  line-height: 1; /* 스크랩 캡처가 top 기준으로 정확히 맞도록 */
+  white-space: nowrap;
   color: #1c1208;
+  letter-spacing: 0.5em; /* 글자 크기의 50% 자간 */
 }
 .end-cert .cert-no {
   position: absolute;
@@ -93,17 +94,19 @@
   top: 9%;
   font-family: var(--font);
   font-size: 1.3rem;
+  line-height: 1;
+  white-space: nowrap;
   color: #5a4327;
 }
 
 /* ===== 하단 버튼 ===== */
 .end-btns {
   position: absolute;
-  left: 4%;
-  bottom: 6%;
+  left: 7%;
+  top: 60%;
   display: flex;
   gap: 4%;
-  width: 40%;
+  width: 38%;
   z-index: 4;
 }
 .end-btns button {

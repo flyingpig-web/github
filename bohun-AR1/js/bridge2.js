@@ -8,21 +8,19 @@ $(function () {
   const cuts = [
     // 1-1 메모지 터치
     { img: B + "bridge2_bg1-1.png", hot: { x: 0.48, y: 0.6 } },
-    // 1-2 [다음] (자막, 스킵 없음)
+    // 1-2 [다음] (자막)
     {
       img: B + "bridge2_bg1-2.png",
       text: "“현시간부터 각 지대는 즉시 보안 태세에 돌입하라”는 총사령부의 명령이 떨어졌다.",
       next: true,
-      skip: false,
     },
     // 2-1 짚차 터치
     { img: B + "bridge2_bg2-1.png", hot: { x: 0.62, y: 0.55 } },
-    // 2-2 [다음] → 목표③ (자막, 스킵 없음)
+    // 2-2 [다음] → 목표③ (자막)
     {
       img: B + "bridge2_bg2-2.png",
       text: "총사령부에서 서신을 받아, 각 지대에 직접 전달해야 한다!",
       next: true,
-      skip: false,
     },
   ];
 
