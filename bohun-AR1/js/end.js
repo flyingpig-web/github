@@ -58,47 +58,78 @@ $(function () {
     const name = $name.val().trim();
     if (!name) {
       $name.focus();
-      alert("이름을 입력해 주세요.");
+      console.warn("이름을 입력해 주세요.");
       return;
     }
     $certName.text(name); // 화면 동기화(측정 기준)
 
-    const base = new Image();
-    base.crossOrigin = "anonymous";
-    base.onload = function () {
-      const c = document.createElement("canvas");
-      c.width = base.naturalWidth;
-      c.height = base.naturalHeight;
-      const g = c.getContext("2d");
+    const certImg = document.querySelector(".end-cert .cert-img");
+    if (!certImg || !certImg.complete || !certImg.naturalWidth) {
+      console.warn("수료증 이미지를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.");
+      return;
+    }
+    const filename = `한국광복군_OSS_수료증_${name}.png`;
 
-      function render() {
-        g.drawImage(base, 0, 0);
-        const certImg = document.querySelector(".end-cert .cert-img");
-        const imgRect = certImg.getBoundingClientRect();
+    function triggerDownload(href, revoke) {
+      const a = document.createElement("a");
+      a.href = href;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      if (revoke) setTimeout(() => URL.revokeObjectURL(href), 4000);
+    }
+
+    // imgEl 을 수료증 바탕으로, 이름/번호를 합성한 캔버스 → PNG 다운로드.
+    // 성공 false 반환 시(보안 예외 등) 폴백 시도 가능.
+    function exportWith(imgEl) {
+      try {
+        const c = document.createElement("canvas");
+        c.width = imgEl.naturalWidth;
+        c.height = imgEl.naturalHeight;
+        const g = c.getContext("2d");
+        g.drawImage(imgEl, 0, 0);
+        const imgRect = certImg.getBoundingClientRect(); // 화면 수료증 기준 좌표
         drawDomText(g, $certNo[0], imgRect, c); // 번호
         drawDomText(g, $certName[0], imgRect, c); // 이름
+        // toDataURL 은 tainted 캔버스에서 동기 예외 → 여기서 잡혀 폴백으로
+        triggerDownload(c.toDataURL("image/png"));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
 
-        try {
-          const url = c.toDataURL("image/png");
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `한국광복군_OSS_수료증_${name}.png`;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-        } catch (e) {
-          alert("이미지 저장에 실패했습니다. 화면을 캡처해 주세요.");
+    // file:// 등에서 캔버스가 tainted 면 내장 base64(같은 출처) 이미지로 재시도
+    function fallbackBase64() {
+      if (!window.CERT_IMAGE_DATAURL) {
+        console.warn("이미지 저장에 실패했습니다. 로컬 서버로 실행하거나 화면을 캡처해 주세요.");
+        return;
+      }
+      const img = new Image();
+      img.onload = function () {
+        if (!exportWith(img)) {
+          console.warn("이미지 저장에 실패했습니다. 화면을 캡처해 주세요.");
         }
-      }
+      };
+      img.onerror = function () {
+        console.warn("이미지 저장에 실패했습니다. 화면을 캡처해 주세요.");
+      };
+      img.src = window.CERT_IMAGE_DATAURL;
+    }
 
-      // 폰트(Pretendard) 로드 완료 후 렌더 → 글자폭/위치 정확
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(render).catch(render);
-      } else {
-        render();
-      }
-    };
-    base.src = "img/7_END/end_image.png";
+    function run() {
+      // 1차: 화면에 로드된 이미지로(웹 서버에서 정상 동작)
+      // 실패(tainted=file://) → 2차: 내장 base64 로 재시도
+      if (!exportWith(certImg)) fallbackBase64();
+    }
+
+    // 폰트(Pretendard) 로드 완료 후 합성 → 글자폭/위치 정확
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(run).catch(run);
+    } else {
+      run();
+    }
   });
 
   // 처음으로
