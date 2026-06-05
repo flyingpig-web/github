@@ -15,7 +15,6 @@
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  gap: 2.5%;
 }
 
 /* 서신 게이지: 중앙 하단 */
@@ -61,7 +60,7 @@
 .exp3-toast {
   position: absolute;
   left: 50%;
-  top: 20%;
+  top: 50%; /* 화면 정 가운데 */
   transform: translate(-50%, -50%);
   font-family: var(--font);
   font-size: 2.6rem;
@@ -72,5 +71,67 @@
   pointer-events: none;
 }
 .exp3-toast.show {
-  animation: judgePop 1s ease;
+  animation: exp3ToastPop 2s ease; /* 1초 → 2초, 중앙 고정 */
+}
+/* 서신 수신 안내(이미지 배너, 화면 중앙) */
+.exp3-msg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 72%;
+  z-index: 27;
+  opacity: 0;
+  pointer-events: none;
+}
+.exp3-msg img {
+  width: 100%;
+  display: block;
+}
+.exp3-msg.show {
+  animation: exp3MsgPop 2.6s ease;
+}
+@keyframes exp3MsgPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+  18% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* 중앙 고정 페이드(위로 드리프트하지 않음) */
+@keyframes exp3ToastPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+  22% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  82% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

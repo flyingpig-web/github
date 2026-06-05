@@ -40,13 +40,12 @@ $(function () {
       next: true,
     },
     // 4-1 해 터치
-    { img: B + "intro_bg4-1.png", hot: { x: 0.78, y: 0.4 } },
-    // 4-2 [다음] → 목표① (자막, 스킵 없음)
+    { img: B + "intro_bg4-1.png", hot: { x: 0.806, y: 0.385 } },
+    // 4-2 [다음] → 목표① (자막)
     {
       img: B + "intro_bg4-2.png",
       text: "하지만 작전 준비가 진행될수록 훈련소 경비와 보안 유지도 광복군의 주요 임무가 됐다.",
       next: true,
-      skip: false,
     },
   ];
 

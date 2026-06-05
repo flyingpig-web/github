@@ -14,25 +14,96 @@ $(function () {
   const MAP = {
     start: { x: 0.23, y: 0.76 }, // 시작점: 조이스틱(좌하단) 우측
     startAngle: 0, // 스프라이트가 오른쪽을 향함 → 0 = 우측
-    hq: { x: 0.75, y: 0.73 }, // 충칭 한국광복군 총사령부(태극기 옆) = 서신 수신
+    hq: { x: 0.71, y: 0.65 }, // 충칭 한국광복군 총사령부(도로 위 지점) = 서신 수신
     depots: [
-      { x: 0.21, y: 0.23, name: "라오허카우 1지대 1구대" }, // 좌상단
-      { x: 0.38, y: 0.37, name: "푸양 3지대" }, // 중앙
-      { x: 0.8, y: 0.3, name: "진화 1지대 2구대" }, // 우상단
+      // drop = 전달 완료 서신이 안착할 위치(각 건물 이미지의 왼쪽)
+      {
+        x: 0.21,
+        y: 0.23,
+        name: "라오허카우 1지대 1구대",
+        drop: { x: 0.13, y: 0.11 },
+      }, // 좌상단
+      { x: 0.41, y: 0.44, name: "푸양 3지대", drop: { x: 0.4, y: 0.22 } }, // 중앙(도로 dip 바닥)
+      { x: 0.8, y: 0.3, name: "진화 1지대 2구대", drop: { x: 0.73, y: 0.13 } }, // 우상단
     ],
-    // 도로망(여러 폴리라인). 차량 위치와 모든 폴리라인 최소거리로 이탈 판정.
+    // 경로: exp3-agent2 의 노란선(닫힌 루프, 차도 따라). 폴리라인 최소거리로 이탈 판정.
     roads: [
-      [[0.17, 0.82], [0.18, 0.6], [0.19, 0.4], [0.21, 0.25]], // 좌측 세로 → 1지대1구대
-      [[0.21, 0.25], [0.3, 0.3], [0.38, 0.37]], // 1지대1구대 → 3지대
-      [[0.38, 0.37], [0.45, 0.5], [0.5, 0.63], [0.55, 0.71]], // 3지대 → 하단 합류
-      [[0.17, 0.82], [0.32, 0.76], [0.45, 0.73], [0.55, 0.71], [0.66, 0.72], [0.76, 0.73]], // 하단 가로 → HQ
-      [[0.55, 0.71], [0.63, 0.58], [0.71, 0.45], [0.78, 0.34], [0.8, 0.3]], // 우측 분기 → 1지대2구대
+      [
+        [0.22, 0.24],
+        [0.28, 0.22],
+        [0.33, 0.24],
+        [0.38, 0.33],
+        [0.42, 0.42],
+        [0.47, 0.43],
+        [0.52, 0.43],
+        [0.57, 0.35],
+        [0.62, 0.25],
+        [0.68, 0.22],
+        [0.74, 0.25], // 10번 점
+        [0.79, 0.31],
+        [0.79, 0.35],
+        [0.79, 0.44],
+        [0.77, 0.51],
+        [0.74, 0.55], // 15번 점
+        [0.74, 0.7],
+        [0.69, 0.62],
+        [0.62, 0.58],
+        [0.56, 0.55],
+        [0.47, 0.67], // 20번 점
+        [0.37, 0.76],
+        [0.27, 0.78],
+        [0.18, 0.8],
+        [0.12, 0.64],
+        [0.13, 0.55],
+        [0.15, 0.45],
+        [0.2, 0.35],
+        [0.23, 0.28],
+        [0.22, 0.24],
+      ],
     ],
     reach: 0.07, // 체크포인트 도달 반경(정규화)
-    devThreshold: 0.07, // 경로 이탈 임계(정규화 거리)
-    speed: 0.22, // 기본 속도(정규화/초)
+    dustThreshold: 0.1, // 경로 10% 이탈 → 흙먼지 + 감속
+    blockThreshold: 0.2, // 경로 20% 이상 이탈 → 더 멀어지는 이동 차단
+    speed: 0.22, // 이동 속도(정규화/초)
     offPenalty: 0.5, // 이탈 시 속도 배율
   };
+  const clamp = (v) => Math.max(0.03, Math.min(0.97, v));
+
+  // 제어점(닫힌 루프) → Catmull-Rom 스플라인으로 부드러운 곡선화
+  function smoothClosed(pts, segPer) {
+    const p = pts.slice();
+    if (p.length > 1 && p[0][0] === p.at(-1)[0] && p[0][1] === p.at(-1)[1])
+      p.pop();
+    const n = p.length;
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const p0 = p[(i - 1 + n) % n],
+        p1 = p[i],
+        p2 = p[(i + 1) % n],
+        p3 = p[(i + 2) % n];
+      for (let t = 0; t < segPer; t++) {
+        const s = t / segPer,
+          s2 = s * s,
+          s3 = s2 * s;
+        out.push([
+          0.5 *
+            (2 * p1[0] +
+              (-p0[0] + p2[0]) * s +
+              (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * s2 +
+              (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * s3),
+          0.5 *
+            (2 * p1[1] +
+              (-p0[1] + p2[1]) * s +
+              (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * s2 +
+              (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * s3),
+        ]);
+      }
+    }
+    out.push(out[0]); // 닫기
+    return out;
+  }
+  // 화면 렌더 + 이탈 판정에 쓰는 부드러운 경로(제어점 = MAP.roads[0])
+  const roadCurve = smoothClosed(MAP.roads[0], 10);
 
   const canvas = document.getElementById("exp3Canvas");
   const ctx = canvas.getContext("2d");
@@ -59,6 +130,7 @@ $(function () {
     "img/6_EXP3/exp_joystick.png",
     "img/6_EXP3/exp_joystick_bg.png",
     "img/6_EXP3/exp3_msg_start.png",
+    "img/6_EXP3/exp3_msg_text.png",
     "img/6_EXP3/exp3_info.png",
     "img/6_EXP3/exp3_popup_finish.png",
     "img/common/exp_gage_bg.png",
@@ -74,7 +146,15 @@ $(function () {
     paused = false,
     raf = null,
     lastTs = 0;
-  let jeep, input, hasLetters, delivered, particles;
+  let jeep, input, hasLetters, delivered, particles, pickupAnim;
+  // localStorage 에 키가 있으면 경로(도로망) 표시 (개발/가이드용)
+  const showPath = (() => {
+    try {
+      return localStorage.getItem("bohun_show_path") === "1";
+    } catch (e) {
+      return false;
+    }
+  })();
 
   function sizeCanvas() {
     const r = canvas.getBoundingClientRect();
@@ -94,7 +174,12 @@ $(function () {
     hasLetters = false;
     delivered = 0;
     particles = [];
-    MAP.depots.forEach((d) => (d.done = false));
+    pickupAnim = 1;
+    MAP.depots.forEach((d) => {
+      d.done = false;
+      d.anim = 1; // 전달 비행 애니 진행도(0→1)
+      d.from = null; // 비행 시작 위치(차량)
+    });
     updateGage();
   }
 
@@ -110,23 +195,32 @@ $(function () {
     $toast.addClass("show");
   }
 
-  /* ----- 경로 이탈 거리(정규화) — 도로망(여러 폴리라인) 최소거리 ----- */
+  // 서신 수신 안내 이미지(중앙) 표시
+  let msgTimer = null;
+  function showMsg() {
+    const $m = $("#exp3Msg");
+    $m.removeClass("show");
+    void $m[0].offsetWidth;
+    $m.addClass("show");
+    if (msgTimer) clearTimeout(msgTimer);
+    msgTimer = setTimeout(() => $m.removeClass("show"), 2600);
+  }
+
+  /* ----- 경로 이탈 거리(정규화) — 부드러운 경로(roadCurve) 최소거리 ----- */
   function distToPath(px, py) {
     let min = Infinity;
-    for (const road of MAP.roads) {
-      for (let i = 0; i < road.length - 1; i++) {
-        const [ax, ay] = road[i];
-        const [bx, by] = road[i + 1];
-        const dx = bx - ax,
-          dy = by - ay;
-        const len2 = dx * dx + dy * dy || 1e-6;
-        let t = ((px - ax) * dx + (py - ay) * dy) / len2;
-        t = Math.max(0, Math.min(1, t));
-        const cx = ax + t * dx,
-          cy = ay + t * dy;
-        const d = Math.hypot(px - cx, py - cy);
-        if (d < min) min = d;
-      }
+    for (let i = 0; i < roadCurve.length - 1; i++) {
+      const [ax, ay] = roadCurve[i];
+      const [bx, by] = roadCurve[i + 1];
+      const dx = bx - ax,
+        dy = by - ay;
+      const len2 = dx * dx + dy * dy || 1e-6;
+      let t = ((px - ax) * dx + (py - ay) * dy) / len2;
+      t = Math.max(0, Math.min(1, t));
+      const cx = ax + t * dx,
+        cy = ay + t * dy;
+      const d = Math.hypot(px - cx, py - cy);
+      if (d < min) min = d;
     }
     return min;
   }
@@ -148,10 +242,14 @@ $(function () {
   }
 
   function checkpoints() {
-    // 총사령부에서 서신 수신
-    if (!hasLetters && Math.hypot(jeep.x - MAP.hq.x, jeep.y - MAP.hq.y) < MAP.reach) {
+    // 총사령부에서 서신 수신 → 이미지 메시지(중앙) + 차량 적재 애니
+    if (
+      !hasLetters &&
+      Math.hypot(jeep.x - MAP.hq.x, jeep.y - MAP.hq.y) < MAP.reach
+    ) {
       hasLetters = true;
-      toast("총사령부에서 서신을 받았다! 각 지대에 전달하라");
+      pickupAnim = 0; // 적재 애니 시작
+      showMsg();
       AR.Sound.sfx(SFX.pickup);
     }
     // 각 지대 전달
@@ -159,6 +257,8 @@ $(function () {
       for (const d of MAP.depots) {
         if (!d.done && Math.hypot(jeep.x - d.x, jeep.y - d.y) < MAP.reach) {
           d.done = true;
+          d.from = { x: jeep.x, y: jeep.y }; // 차량에서 출발
+          d.anim = 0; // 건물 왼쪽으로 날아가는 애니 시작
           delivered++;
           updateGage();
           toast(`${d.name} 전달 완료! (${delivered}/3)`);
@@ -172,15 +272,23 @@ $(function () {
   const SFX = { pickup: "", deliver: "", dust: "" }; // ⚠️ 사운드 경로 미확정(Open Item)
 
   function update(dt) {
-    // 이동
+    // 전방향 이동(횡스크롤 탑다운): 머리 = 조이스틱 방향, 그 방향으로 이동.
     const mag = Math.hypot(input.x, input.y);
-    const off = distToPath(jeep.x, jeep.y) > MAP.devThreshold;
+    const dev = distToPath(jeep.x, jeep.y);
+    const off = dev > MAP.dustThreshold; // 10% 이탈 → 흙먼지 + 감속
     if (mag > 0.05) {
-      jeep.angle = Math.atan2(input.y, input.x);
-      let sp = MAP.speed * (off ? MAP.offPenalty : 1) * Math.min(1, mag);
-      jeep.x = Math.max(0.03, Math.min(0.97, jeep.x + Math.cos(jeep.angle) * sp * dt));
-      jeep.y = Math.max(0.03, Math.min(0.97, jeep.y + Math.sin(jeep.angle) * sp * dt));
-      if (off) spawnDust();
+      const ang = Math.atan2(input.y, input.x);
+      jeep.angle = ang; // 머리 = 이동 방향
+      const sp = MAP.speed * (off ? MAP.offPenalty : 1) * Math.min(1, mag);
+      const nx = clamp(jeep.x + Math.cos(ang) * sp * dt);
+      const ny = clamp(jeep.y + Math.sin(ang) * sp * dt);
+      // 20% 이상 이탈 시: 경로에서 더 멀어지는 이동은 차단(복귀 방향만 허용)
+      const allow = !(dev > MAP.blockThreshold && distToPath(nx, ny) > dev);
+      if (allow) {
+        jeep.x = nx;
+        jeep.y = ny;
+        if (off) spawnDust();
+      }
     }
     // 파티클
     for (const p of particles) {
@@ -189,6 +297,10 @@ $(function () {
       p.y += p.vy * dt;
     }
     particles = particles.filter((p) => p.life < p.max);
+    if (pickupAnim < 1) pickupAnim = Math.min(1, pickupAnim + dt / 0.6); // 적재 애니
+    MAP.depots.forEach((d) => {
+      if (d.done && d.anim < 1) d.anim = Math.min(1, d.anim + dt / 0.7); // 전달 비행 애니
+    });
     checkpoints();
   }
 
@@ -203,9 +315,72 @@ $(function () {
   function render() {
     ctx.clearRect(0, 0, W, H);
 
+    // 경로 디버그 표시 — localStorage "bohun_show_path"="1" 일 때만
+    if (showPath) {
+      // 1) 부드러운 경로 라인
+      ctx.lineWidth = Math.max(2, W * 0.004);
+      ctx.strokeStyle = "rgba(80,180,255,0.9)";
+      ctx.setLineDash([W * 0.012, W * 0.01]);
+      ctx.beginPath();
+      roadCurve.forEach(([x, y], i) =>
+        i ? ctx.lineTo(PX(x), PY(y)) : ctx.moveTo(PX(x), PY(y)),
+      );
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const fs = Math.max(10, W * 0.015);
+      ctx.font = `bold ${fs}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // 2) 제어점(번호) — 좌표 조정 참고용. "N번 점" 으로 지칭 가능.
+      const cps = MAP.roads[0];
+      for (let i = 0; i < cps.length - 1; i++) {
+        const [x, y] = cps[i];
+        ctx.fillStyle = "rgba(255,70,70,0.95)";
+        ctx.beginPath();
+        ctx.arc(PX(x), PY(y), W * 0.009, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#fff";
+        ctx.fillText(String(i), PX(x), PY(y));
+      }
+
+      // 3) 체크포인트(HQ / 지대) 위치 + 라벨
+      const cks = [["HQ", MAP.hq.x, MAP.hq.y]].concat(
+        MAP.depots.map((d, i) => ["지대" + (i + 1), d.x, d.y]),
+      );
+      for (const [lab, x, y] of cks) {
+        ctx.fillStyle = "rgba(60,230,110,0.95)";
+        ctx.beginPath();
+        ctx.arc(PX(x), PY(y), W * 0.012, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#063";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = "#fff";
+        ctx.fillText(lab, PX(x), PY(y) - W * 0.025);
+      }
+    }
+
     // 체크포인트 마커(총사령부 + 미전달 지대)
     drawSpot(MAP.hq, hasLetters);
     MAP.depots.forEach((d) => drawSpot(d, d.done));
+
+    // 전달된 서신: 차량 → 건물 왼쪽으로 날아가 안착(비행 중엔 호를 그림)
+    if (imgs.susin && imgs.susin.complete) {
+      const dw = W * 0.035; // +10% 확대
+      const dh = dw * (70 / 92);
+      MAP.depots.forEach((d) => {
+        if (!d.done) return;
+        const t = d.anim == null ? 1 : Math.min(1, d.anim);
+        const e = 1 - (1 - t) * (1 - t); // easeOut
+        const fx = d.from ? d.from.x : d.drop.x;
+        const fy = d.from ? d.from.y : d.drop.y;
+        const x = fx + (d.drop.x - fx) * e;
+        const y = fy + (d.drop.y - fy) * e - Math.sin(Math.PI * t) * 0.06; // 살짝 떠오르는 호
+        ctx.drawImage(imgs.susin, PX(x) - dw / 2, PY(y) - dh / 2, dw, dh);
+      });
+    }
 
     // 흙먼지
     for (const p of particles) {
@@ -222,15 +397,22 @@ $(function () {
       const jh = jw * (106 / 178);
       ctx.save();
       ctx.translate(PX(jeep.x), PY(jeep.y));
-      ctx.rotate(jeep.angle); // 스프라이트 기본 방향 = 오른쪽(+x)
+      ctx.rotate(jeep.angle); // 스프라이트 기본 방향 = 오른쪽(+x), 후진해도 고정
       ctx.drawImage(imgs.jeep, -jw / 2, -jh / 2, jw, jh);
       ctx.restore();
 
-      // 서신 적재 표시
-      if (hasLetters && delivered < 3 && imgs.susin && imgs.susin.complete) {
-        const sw = W * 0.035;
+      // 차량 적재 서신(남은 개수만큼 위로 쌓임) + 수신 시 위에서 내려오는 애니
+      if (hasLetters && imgs.susin && imgs.susin.complete) {
+        const remaining = 3 - delivered;
+        const sw = W * 0.033; // +10% 확대
         const sh = sw * (70 / 92);
-        ctx.drawImage(imgs.susin, PX(jeep.x) - sw / 2, PY(jeep.y) - jh - sh, sw, sh);
+        const drop = (1 - pickupAnim) * H * 0.25;
+        ctx.globalAlpha = pickupAnim < 1 ? pickupAnim : 1;
+        for (let i = 0; i < remaining; i++) {
+          const y = PY(jeep.y) - jh * 0.55 - i * sh * 0.55 - drop;
+          ctx.drawImage(imgs.susin, PX(jeep.x) - sw / 2, y, sw, sh);
+        }
+        ctx.globalAlpha = 1;
       }
     }
   }
@@ -307,7 +489,10 @@ $(function () {
       }
       input.x = dx / radius;
       input.y = dy / radius;
-      $stick.css("transform", `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`);
+      $stick.css(
+        "transform",
+        `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`,
+      );
     }
     function end() {
       active = false;
@@ -324,7 +509,11 @@ $(function () {
   })();
 
   /* ----- 이벤트 ----- */
-  $("#gameStart").on("click", startGame);
+  // 시작: 시작 오버레이(화면 전체) 아무 곳이나 터치/클릭
+  $("#gameStart").on("click touchstart", function (e) {
+    e.preventDefault();
+    startGame();
+  });
   $("#btnHome").on("click", () => AR.go("index.html"));
   AR.bindSettings({
     popup: "#settingDim",
