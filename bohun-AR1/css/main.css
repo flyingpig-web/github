@@ -46,7 +46,7 @@
   justify-content: flex-start; /* 좌측정렬 */
   background: url(../img/1_INTRO/text_bg.png) center / 100% 100% no-repeat;
   z-index: 5;
-  padding: 3% 13% 2% 2%;
+  padding: 3% 13% 2% 1%;
 }
 .subtitle p {
   color: #fff;

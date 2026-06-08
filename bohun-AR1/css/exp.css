@@ -7,18 +7,22 @@
    ========================================================================= */
 
 /* ===== 상단 우측 버튼 그룹 ===== */
+/* 버튼 원본 62×65px, gap 35px (1920 기준). 컨테이너 100%=1920px 이므로
+   game-top 폭 = 62*3 + 35*2 = 256px = 256/1920 = 13.3333%.
+   버튼/gap 은 game-top 폭 기준 % (62/256, 35/256) → 1920 에서 정확히 62/65/35px. */
 .game-top {
   position: absolute;
   top: 4%;
   right: 3%;
   display: flex;
-  gap: 10%;
+  width: 13.3333%;
+  gap: 13.671875%; /* 35/256 */
   z-index: 20;
 }
 .game-top .btn-top {
   position: static;
-  width: 20%;
-  height: auto;
+  width: 24.21875%; /* 62/256 → 62px @1920 */
+  height: auto; /* 이미지 62:65 → 자동으로 65px */
   cursor: pointer;
 }
 .game-top .btn-top img {

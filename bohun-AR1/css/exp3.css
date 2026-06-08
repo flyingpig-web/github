@@ -34,7 +34,7 @@
   position: absolute;
   left: 6%;
   bottom: 8%;
-  width: 17%;
+  width: 15%; /* 1920 기준 ≈ 280×280 */
   aspect-ratio: 1 / 1;
   z-index: 25;
   touch-action: none;
@@ -50,8 +50,9 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 40%;
-  height: 40%;
+  /* 80×80 @1920. .joystick=15%(1920에서 288px) 대비 80/288 = 27.7778% → 실제 80px */
+  width: 27.7778%;
+  height: 27.7778%;
   transform: translate(-50%, -50%);
   will-change: transform;
 }
