@@ -69,7 +69,17 @@
   position: relative;
   width: 7%;
   margin-top: 2%;
-  animation: touchTap 1.6s ease-in-out infinite;
+  animation: handDiag 1.4s ease-in-out infinite;
+}
+/* 전신기(.morse-key: right 2% / bottom 1% / width 30%) 위에 시작 핫스팟 */
+.game-start .key-hotspot {
+  left: 92%;
+  top: 74%;
+  width: 18%;
+}
+/* 핫스팟 노출 단계에서는 dim 제거(전신기가 그대로 보이도록) */
+.game-start.armed {
+  background: transparent;
 }
 
 /* ===== 캔버스(게임 렌더 영역) ===== */
@@ -98,14 +108,18 @@
 }
 .dialog.setting .btn-close {
   position: absolute;
-  top: 4%;
-  right: 4%;
+  top: 11%;
+  right: 9%;
   width: 8%;
   cursor: pointer;
 }
 .dialog.setting .btn-close img {
   width: 100%;
   display: block;
+  transition: transform 0.15s ease;
+}
+.dialog.setting .btn-close:hover img {
+  transform: scale(1.1);
 }
 .dialog.setting .toggle {
   position: absolute;
@@ -130,14 +144,18 @@
 }
 .dialog.tutorial .btn-close {
   position: absolute;
-  top: 2%;
-  right: 2%;
+  top: 15%;
+  right: 13%;
   width: 6%;
   cursor: pointer;
 }
 .dialog.tutorial .btn-close img {
   width: 100%;
   display: block;
+  transition: transform 0.15s ease;
+}
+.dialog.tutorial .btn-close:hover img {
+  transform: scale(1.1);
 }
 
 /* ----- 완료(체험 종료) 팝업 ----- */

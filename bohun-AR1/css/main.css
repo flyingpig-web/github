@@ -101,13 +101,13 @@
   }
 }
 @keyframes handDiag {
-  /* 좌하향 ↔ 우상향(45° 대각) */
+  /* 좌상향 ↔ 우하향(45° 대각) */
   0%,
   100% {
-    transform: translate(-9%, 9%);
+    transform: translate(-9%, -9%);
   }
   50% {
-    transform: translate(9%, -9%);
+    transform: translate(9%, 9%);
   }
 }
 @keyframes pulse {
@@ -139,6 +139,11 @@
 .btn-next img {
   width: 100%;
   display: block;
+  transition: transform 0.15s ease;
+}
+.btn-skip:hover img,
+.btn-next:hover img {
+  transform: scale(1.1);
 }
 
 /* ===== 목표 팝업(도입/연결 공통) — 이미지 + 하단 확인 영역 ===== */

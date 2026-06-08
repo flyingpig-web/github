@@ -55,6 +55,12 @@
   transform: translate(-50%, -50%);
   will-change: transform;
 }
+/* PC(1025px↑) = 방향키 조작 → 조이스틱 숨김. 모바일은 조이스틱 노출. */
+@media (min-width: 1025px) {
+  .joystick {
+    display: none;
+  }
+}
 
 /* 서신 전달 안내 토스트 */
 .exp3-toast {

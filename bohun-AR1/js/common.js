@@ -236,6 +236,15 @@
     }
 
     function skip() {
+      // 스킵 시 배경을 스토리 마지막 컷 이미지로 교체(목표 팝업 뒤에 마지막 장면이 보이도록)
+      const last = cuts[cuts.length - 1];
+      if (last) {
+        const $bg = $(cfg.bg);
+        $bg.css("background-image", `url("${last.img}")`);
+        $bg.removeClass("fade-in");
+        void $bg[0]?.offsetWidth;
+        $bg.addClass("fade-in");
+      }
       if (typeof cfg.onSkip === "function") cfg.onSkip();
       else end();
     }

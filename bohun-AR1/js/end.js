@@ -14,6 +14,7 @@ $(function () {
   const $name = $("#nameInput");
   const $certName = $("#certName");
   const $certNo = $("#certNo");
+  const $certDate = $("#certDate");
 
   // 수료증 번호: YYMMDD
   function todayNo() {
@@ -25,6 +26,12 @@ $(function () {
   }
   const certNumber = todayNo();
   $certNo.text(`제 ${certNumber} 호`);
+
+  // 플레이 날짜: YYYY.M.D (예: 2026.6.8)
+  (function () {
+    const d = new Date();
+    $certDate.text(`${d.getFullYear()}.${d.getMonth() + 1}.${d.getDate()}`);
+  })();
 
   // 이름 동기화
   $name.on("input", function () {
@@ -91,6 +98,7 @@ $(function () {
         g.drawImage(imgEl, 0, 0);
         const imgRect = certImg.getBoundingClientRect(); // 화면 수료증 기준 좌표
         drawDomText(g, $certNo[0], imgRect, c); // 번호
+        drawDomText(g, $certDate[0], imgRect, c); // 날짜
         drawDomText(g, $certName[0], imgRect, c); // 이름
         // toDataURL 은 tainted 캔버스에서 동기 예외 → 여기서 잡혀 폴백으로
         triggerDownload(c.toDataURL("image/png"));

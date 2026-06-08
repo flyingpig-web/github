@@ -98,6 +98,17 @@
   white-space: nowrap;
   color: #5a4327;
 }
+/* 플레이 날짜(예: 2026.6.8) — 위치는 대략값, 추후 조정 */
+.end-cert .cert-date {
+  position: absolute;
+  left: 52%;
+  top: 25%;
+  font-family: var(--font);
+  font-size: 2.2rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #1c1208;
+}
 
 /* ===== 하단 버튼 ===== */
 .end-btns {

@@ -12,13 +12,15 @@ $(function () {
   const CONFIG = {
     total: 20, // 총 신호 수(= MESSAGE 심볼 합)
     needSuccess: 10, // 교신 완료 기준
-    firstAt: 1800, // 첫 신호가 판정선에 닿는 시각(ms)
-    travel: 2000, // 우측 진입 → 판정선 도달까지 이동 시간(ms)
-    goodWindow: 150, // ±판정 허용(ms) ≈ 프로토타입 "±5%"
+    firstAt: 3600, // 첫 신호가 판정선에 닿는 시각(ms)
+    travel: 4000, // 우측 진입 → 판정선 도달까지 이동 시간(ms) — 0.5배속
+    goodWindow: 300, // ±판정 허용(ms) ≈ 프로토타입 "±5%" (0.5배속에 맞춰 2배)
     hitFrac: 0.046, // 트랙 폭 대비 판정선 x 위치(좌측, .morse-hit-line 과 맞춤)
   };
 
   // 교신 메시지: 글자별 모스 그룹(고정). 간격: 심볼 < 글자 < 단어(EAGLE|SEND).
+  // ※ 이동 속도를 0.5배로 낮추면서 화면상 부호 간격은 동일하게 유지하기 위해
+  //    시간 도메인 값(firstAt/travel/goodWindow/GAP)을 모두 2배로 스케일했다.
   const MESSAGE = [
     { ch: "E", code: "." },
     { ch: "A", code: ".-" },
@@ -30,7 +32,7 @@ $(function () {
     { ch: "N", code: "-." },
     { ch: "D", code: "-.." },
   ];
-  const GAP = { symbol: 470, letter: 920, word: 1500 };
+  const GAP = { symbol: 940, letter: 1840, word: 3000 };
 
   const assets = [
     "img/4_EXP2/exp2_bg.png",
@@ -199,10 +201,6 @@ $(function () {
 
   function tap() {
     if (!started || paused || done >= beats.length) return;
-    // 전신기 눌림 연출
-    $keyImg.attr("src", "img/4_EXP2/exp2_morse_on.png");
-    setTimeout(() => $keyImg.attr("src", "img/4_EXP2/exp2_morse_off.png"), 110);
-
     // 아직 판정 안된 가장 가까운 신호
     let target = null;
     let best = Infinity;
@@ -287,7 +285,10 @@ $(function () {
       finishTimer = null;
     }
     AR.closePopup("#finishDim");
-    $("#gameStart").removeClass("display-none");
+    // 시작 화면 초기 상태로(안내 보이고 핫스팟 숨김 → 다시 1단계부터)
+    $("#gameStart").removeClass("display-none armed");
+    $("#gameStart .start-msg, #gameStart .start-touch").removeClass("display-none");
+    $("#startHotspot").addClass("display-none");
     document.getElementById("morseLetter").innerHTML = "";
     ctx.clearRect(0, 0, canvas._w || 0, canvas._h || 0);
     started = false;
@@ -297,11 +298,32 @@ $(function () {
   }
 
   /* ----- 이벤트 ----- */
-  $("#gameStart").on("click", startGame);
-  $key.on("mousedown touchstart", function (e) {
-    e.preventDefault();
-    tap();
+  // 1단계: "터치하여 시작" 클릭 → 안내 숨기고 전신기 핫스팟 노출(아직 게임 시작 X)
+  $("#gameStart").on("click", function () {
+    if (started) return;
+    if ($("#startHotspot").hasClass("display-none")) {
+      $("#gameStart").addClass("armed"); // dim 제거
+      $("#gameStart .start-msg, #gameStart .start-touch").addClass("display-none");
+      $("#startHotspot").removeClass("display-none");
+    }
   });
+  // 2단계: 전신기 핫스팟 클릭 → 게임 시작. startGame 이 #gameStart 를 숨김.
+  $("#startHotspot").on("click touchstart", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    startGame();
+  });
+  // 누르고 있는 동안 ON 이미지 유지, 떼면 OFF 로 복귀
+  function keyDown(e) {
+    e.preventDefault();
+    $keyImg.attr("src", "img/4_EXP2/exp2_morse_on.png");
+    tap();
+  }
+  function keyUp() {
+    $keyImg.attr("src", "img/4_EXP2/exp2_morse_off.png");
+  }
+  $key.on("mousedown touchstart", keyDown);
+  $key.on("mouseup mouseleave touchend touchcancel", keyUp);
 
   // 상단 버튼
   $("#btnHome").on("click", () => AR.go("index.html"));

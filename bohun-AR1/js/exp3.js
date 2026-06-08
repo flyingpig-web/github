@@ -146,7 +146,11 @@ $(function () {
     paused = false,
     raf = null,
     lastTs = 0;
-  let jeep, input, hasLetters, delivered, particles, pickupAnim;
+  let jeep, input, hasLetters, delivered, particles, stack;
+  // 서신 획득 연출 타이밍(초): step=한 장씩 쌓이는 간격, popIn=등장, hold=쌓인 뒤 유지, fade=사라짐
+  const STACK = { step: 0.3, popIn: 0.25, hold: 1.0, fade: 0.5 };
+  const STACK_FADE_START = STACK.step * 3 + STACK.hold; // 1초 유지 후 fade 시작
+  const STACK_TOTAL = STACK_FADE_START + STACK.fade;
   // localStorage 에 키가 있으면 경로(도로망) 표시 (개발/가이드용)
   const showPath = (() => {
     try {
@@ -174,9 +178,10 @@ $(function () {
     hasLetters = false;
     delivered = 0;
     particles = [];
-    pickupAnim = 1;
+    stack = null; // 서신 획득 연출 상태(없음)
     MAP.depots.forEach((d) => {
       d.done = false;
+      d.fadeIn = 0; // 지프에서 서신이 나타나는 fade in 진행도(0→1)
       d.anim = 1; // 전달 비행 애니 진행도(0→1)
       d.from = null; // 비행 시작 위치(차량)
     });
@@ -248,7 +253,7 @@ $(function () {
       Math.hypot(jeep.x - MAP.hq.x, jeep.y - MAP.hq.y) < MAP.reach
     ) {
       hasLetters = true;
-      pickupAnim = 0; // 적재 애니 시작
+      stack = { t: 0 }; // 차량에 붙어 딸려오며 쌓이는 연출(위치는 매 프레임 지프 기준)
       showMsg();
       AR.Sound.sfx(SFX.pickup);
     }
@@ -258,7 +263,8 @@ $(function () {
         if (!d.done && Math.hypot(jeep.x - d.x, jeep.y - d.y) < MAP.reach) {
           d.done = true;
           d.from = { x: jeep.x, y: jeep.y }; // 차량에서 출발
-          d.anim = 0; // 건물 왼쪽으로 날아가는 애니 시작
+          d.fadeIn = 0; // 지프에서 서신이 fade in 으로 등장
+          d.anim = 0; // (fade in 후) 건물 왼쪽으로 날아가는 애니 시작
           delivered++;
           updateGage();
           toast(`${d.name} 전달 완료! (${delivered}/3)`);
@@ -297,9 +303,18 @@ $(function () {
       p.y += p.vy * dt;
     }
     particles = particles.filter((p) => p.life < p.max);
-    if (pickupAnim < 1) pickupAnim = Math.min(1, pickupAnim + dt / 0.6); // 적재 애니
+    if (stack) {
+      stack.t += dt; // 서신 획득 연출 진행(쌓임 → 1초 유지 → fade)
+      if (stack.t > STACK_TOTAL) stack = null;
+    }
     MAP.depots.forEach((d) => {
-      if (d.done && d.anim < 1) d.anim = Math.min(1, d.anim + dt / 0.7); // 전달 비행 애니
+      if (!d.done) return;
+      // 1) 지프에서 서신 fade in → 2) 완료 후 건물로 비행
+      if (d.fadeIn < 1) {
+        d.fadeIn = Math.min(1, d.fadeIn + dt / 0.2); // 좀 더 빨리 튀어나오게
+      } else if (d.anim < 1) {
+        d.anim = Math.min(1, d.anim + dt / 0.7);
+      }
     });
     checkpoints();
   }
@@ -372,6 +387,17 @@ $(function () {
       const dh = dw * (70 / 92);
       MAP.depots.forEach((d) => {
         if (!d.done) return;
+        const fadeIn = d.fadeIn == null ? 1 : d.fadeIn;
+        // 1단계: 지프 위치에서 서신이 fade in 되어 등장(아직 비행 X)
+        if (fadeIn < 1) {
+          ctx.globalAlpha = fadeIn;
+          const fx = d.from ? d.from.x : d.drop.x;
+          const fy = d.from ? d.from.y : d.drop.y;
+          ctx.drawImage(imgs.susin, PX(fx) - dw / 2, PY(fy) - dh / 2, dw, dh);
+          ctx.globalAlpha = 1;
+          return;
+        }
+        // 2단계: 건물 왼쪽으로 날아가 안착(호를 그림)
         const t = d.anim == null ? 1 : Math.min(1, d.anim);
         const e = 1 - (1 - t) * (1 - t); // easeOut
         const fx = d.from ? d.from.x : d.drop.x;
@@ -400,20 +426,28 @@ $(function () {
       ctx.rotate(jeep.angle); // 스프라이트 기본 방향 = 오른쪽(+x), 후진해도 고정
       ctx.drawImage(imgs.jeep, -jw / 2, -jh / 2, jw, jh);
       ctx.restore();
+    }
 
-      // 차량 적재 서신(남은 개수만큼 위로 쌓임) + 수신 시 위에서 내려오는 애니
-      if (hasLetters && imgs.susin && imgs.susin.complete) {
-        const remaining = 3 - delivered;
-        const sw = W * 0.033; // +10% 확대
-        const sh = sw * (70 / 92);
-        const drop = (1 - pickupAnim) * H * 0.25;
-        ctx.globalAlpha = pickupAnim < 1 ? pickupAnim : 1;
-        for (let i = 0; i < remaining; i++) {
-          const y = PY(jeep.y) - jh * 0.55 - i * sh * 0.55 - drop;
-          ctx.drawImage(imgs.susin, PX(jeep.x) - sw / 2, y, sw, sh);
-        }
-        ctx.globalAlpha = 1;
+    // 서신 획득 연출: 차량에 3장이 한 장씩 붙어 딸려오며 쌓인 뒤 1초 후 fade out
+    if (stack && imgs.susin && imgs.susin.complete) {
+      const sw = W * 0.033;
+      const sh = sw * (70 / 92);
+      const jh = W * 0.075 * (106 / 178);
+      const baseX = PX(jeep.x); // 매 프레임 지프 위치 기준 → 차량을 따라 이동
+      const baseY = PY(jeep.y) - jh * 0.55; // 차량 위에서 쌓임
+      const gFade =
+        stack.t > STACK_FADE_START
+          ? Math.max(0, 1 - (stack.t - STACK_FADE_START) / STACK.fade)
+          : 1;
+      for (let i = 0; i < 3; i++) {
+        const pop = Math.min(1, (stack.t - i * STACK.step) / STACK.popIn);
+        if (pop <= 0) continue; // 아직 등장 전
+        ctx.globalAlpha = pop * gFade;
+        const rise = (1 - pop) * sh * 0.5; // 아래에서 살짝 솟아오르며 등장
+        const y = baseY - i * sh * 0.6 + rise;
+        ctx.drawImage(imgs.susin, baseX - sw / 2, y, sw, sh);
       }
+      ctx.globalAlpha = 1;
     }
   }
 
@@ -455,7 +489,44 @@ $(function () {
     resetState();
   }
 
-  /* ----- 조이스틱 ----- */
+  // PC(뷰포트 1025px↑) = 방향키 조작 / 모바일 = 조이스틱
+  const isPC = () => window.innerWidth >= 1025;
+
+  /* ----- PC: 방향키 입력 ----- */
+  (function bindKeys() {
+    const keys = { up: false, down: false, left: false, right: false };
+    const map = {
+      ArrowUp: "up",
+      ArrowDown: "down",
+      ArrowLeft: "left",
+      ArrowRight: "right",
+    };
+    function apply() {
+      if (!input) return; // 게임 시작 전(resetState 이전)엔 무시
+      if (!isPC()) {
+        input.x = 0;
+        input.y = 0;
+        return;
+      }
+      input.x = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+      input.y = (keys.down ? 1 : 0) - (keys.up ? 1 : 0);
+    }
+    window.addEventListener("keydown", (e) => {
+      const k = map[e.key];
+      if (!k) return;
+      e.preventDefault();
+      keys[k] = true;
+      apply();
+    });
+    window.addEventListener("keyup", (e) => {
+      const k = map[e.key];
+      if (!k) return;
+      keys[k] = false;
+      apply();
+    });
+  })();
+
+  /* ----- 모바일: 조이스틱 ----- */
   (function bindJoystick() {
     const joy = document.getElementById("joystick");
     const $stick = $("#joyStick");
@@ -469,6 +540,7 @@ $(function () {
       return { x: t.clientX, y: t.clientY };
     }
     function start(e) {
+      if (isPC()) return; // PC 에서는 조이스틱 비활성(방향키 사용)
       const r = joy.getBoundingClientRect();
       cx = r.left + r.width / 2;
       cy = r.top + r.height / 2;
@@ -537,6 +609,11 @@ $(function () {
 
   window.addEventListener("resize", () => {
     if (started) sizeCanvas();
+    // PC↔모바일 경계 전환 시 직전 입력이 남아 차가 계속 움직이는 것 방지
+    if (input) {
+      input.x = 0;
+      input.y = 0;
+    }
   });
 
   AR.preload(assets).then(() => sizeCanvas());
