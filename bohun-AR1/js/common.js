@@ -105,12 +105,40 @@
       localStorage.setItem(KEY_SFX, on ? "on" : "off");
     }
 
+    /* 내레이션(V.O) — bgm/sfx 와 독립된 1채널.
+       화면(컷)에 도달하면 자동 재생. 새 내레이션 재생 시 이전 것은 정지.
+       재사용: AR.Sound.playNarration("audio/narrations/intro_1-2.wav") */
+    let voice = null;
+    function playNarration(src, { volume = 1 } = {}) {
+      if (!src) return;
+      try {
+        stopNarration();
+        voice = load(src);
+        if (!voice) return;
+        voice.loop = false;
+        voice.volume = volume;
+        voice.currentTime = 0;
+        const p = voice.play();
+        if (p && p.catch) p.catch(() => {}); // 자동재생 차단/누락 시 무음 진행
+      } catch (e) {}
+    }
+    function stopNarration() {
+      try {
+        if (voice) {
+          voice.pause();
+          voice.currentTime = 0;
+        }
+      } catch (e) {}
+    }
+
     return {
       sfx,
       playBgm,
       stopBgm,
       setBgm,
       setSfx,
+      playNarration,
+      stopNarration,
       isBgmOn: () => bgmOn,
       isSfxOn: () => sfxOn,
     };
@@ -149,7 +177,7 @@
      --------------------------------------------------------------------- */
   function CutRunner(config) {
     const cfg = Object.assign(
-      { stage: ".container", bg: ".cut-bg", textEl: null, subtitle: null },
+      { stage: ".container", bg: ".cut-bg", textEl: null, subtitle: null, voDir: "" },
       config
     );
     const cuts = cfg.cuts || [];
@@ -197,8 +225,9 @@
         fitSubtitle();
       }
 
-      // 내레이션(V.O)
-      if (cut.vo) Sound.playBgm(cut.vo, { loop: false, volume: 1 });
+      // 내레이션(V.O) — 해당 컷 도달 시 자동재생(voDir + 파일명). 컷 전환 시 이전 것은 정지.
+      Sound.stopNarration();
+      if (cut.vo) Sound.playNarration(cfg.voDir + cut.vo);
 
       // 스킵 버튼(cut.skip === false 면 숨김)
       if (cfg.skipBtn)
@@ -231,11 +260,13 @@
       if (ended) return;
       ended = true;
       Sound.stopBgm();
+      Sound.stopNarration();
       $hot.addClass("display-none");
       if (typeof cfg.onEnd === "function") cfg.onEnd();
     }
 
     function skip() {
+      Sound.stopNarration(); // 스킵 시 진행 중 내레이션 정지
       // 스킵 시 배경을 스토리 마지막 컷 이미지로 교체(목표 팝업 뒤에 마지막 장면이 보이도록)
       const last = cuts[cuts.length - 1];
       if (last) {

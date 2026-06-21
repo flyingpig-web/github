@@ -78,7 +78,8 @@
   width: 100%;
   transform: translate(-50%, -50%);
   transform-origin: center;
-  animation: glowPulse 1.7s ease-in-out infinite;
+  /* hot-hand(handDiag)와 주기·이징 동일 → glow 작아질 때 손은 좌상향, 커질 때 우하향으로 동기화 */
+  animation: glowPulse 1.4s ease-in-out infinite;
 }
 .hotspot .hot-hand {
   position: absolute;

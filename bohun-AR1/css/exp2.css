@@ -15,7 +15,7 @@
   left: 50%;
   right: auto;
   transform: translateX(-50%);
-  gap: 2.5%;
+  /* gap 은 공통 .game-top 값(35px@1920) 사용 → exp3 와 동일 */
 }
 /* 성공률 게이지: 좌하단 */
 .exp2-room ~ .game-gage {

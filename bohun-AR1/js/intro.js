@@ -15,6 +15,7 @@ $(function () {
     {
       img: B + "intro_bg1-2.png",
       text: "1940년 9월 17일, 대한민국 임시정부는 충칭에서 정규군인 한국광복군을 창설했다.",
+      vo: "intro_1-2.wav",
       next: true,
     },
     // 2-1 광복군 훈련 이미지 터치
@@ -23,6 +24,7 @@ $(function () {
     {
       img: B + "intro_bg2-2.png",
       text: "이후 한국광복군은 인도·미얀마 전선 등에서 연합군과 협력하며 항일 작전을 이어 갔다.",
+      vo: "intro_2-2.wav",
       next: true,
     },
     // 3-1 장교 막사 건물 터치
@@ -31,12 +33,14 @@ $(function () {
     {
       img: B + "intro_bg3-2.png",
       text: "1944년, 한국광복군은 미국 전략 정보국 즉, OSS와 함께 조국으로 향하기 위한 국내 진공작전을 추진했다.",
+      vo: "intro_3-2.wav",
       hot: { x: 0.42, y: 0.62 },
     },
     // 3-3 [다음] (자막)
     {
       img: B + "intro_bg3-3.png",
       text: "1945년 봄, 한국광복군 제2지대는 무전, 정보수집, 폭파, 침투 등 OSS 특수훈련에 들어갔다.",
+      vo: "intro_3-3.wav",
       next: true,
     },
     // 4-1 해 터치
@@ -45,6 +49,7 @@ $(function () {
     {
       img: B + "intro_bg4-2.png",
       text: "하지만 작전 준비가 진행될수록 훈련소 경비와 보안 유지도 광복군의 주요 임무가 됐다.",
+      vo: "intro_4-2.wav",
       next: true,
     },
   ];
@@ -66,6 +71,7 @@ $(function () {
       hotspot: "#hotspot",
       nextBtn: "#btnNext",
       skipBtn: "#btnSkip",
+      voDir: "audio/narrations/", // 컷 도달 시 vo 파일 자동재생
       cuts,
       onEnd: showObjective, // 마지막 컷 [다음] → 목표① 팝업 → [임무 확인] → exp1
       onSkip: showObjective, // 스킵 → 목표①까지만(exp1 바로 전)
