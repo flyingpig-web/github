@@ -1,0 +1,263 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   bohun-AR1 공통 레이아웃/컨벤션
+   - 디자인 기준 해상도: 953 × 537 (≈ 16:9)
+   - 모든 UI는 16:9 레터박스 컨테이너 안에서 % 단위 + absolute 로 배치한다.
+   - 기존 lowerEl-* / preSchool-* 컨벤션을 그대로 따른다.
+   ========================================================================= */
+
+:root {
+  /* 디자인 기준 해상도(참고용) */
+  --base-w: 953;
+  --base-h: 537;
+  /* 버튼 active 효과 */
+  --btn-active-effect: brightness(80%) contrast(120%);
+}
+
+*[role="button"] {
+  cursor: pointer;
+}
+
+*[role="button"]:active {
+  filter: var(--btn-active-effect);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+main {
+  background: #000;
+}
+
+img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ===== 헬퍼 ===== */
+.flex {
+  display: flex !important;
+}
+
+.pointer-none {
+  pointer-events: none !important;
+}
+
+.display-none {
+  display: none !important;
+}
+
+/* =========================================================================
+   레이아웃: wrap > container (16:9 레터박스, 화면 중앙 정렬)
+   - container 가 좌표 기준(부모). 내부 요소는 % + absolute.
+   ========================================================================= */
+.wrap {
+  position: relative;
+  max-width: 100%;
+  height: 100dvh;
+}
+
+.wrap .bg {
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.container {
+  position: relative;
+  max-width: 100%;
+  height: 100%;
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  aspect-ratio: 953 / 537;
+  max-width: calc(100dvh / 9 * 16);
+  max-height: calc(100dvw / 16 * 9);
+  transform: translateY(-50%);
+  top: 50%;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 952px) {
+  .container,
+  .dialog {
+    height: auto;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 950px) {
+  .container {
+    height: 100dvh;
+  }
+}
+
+/* =========================================================================
+   이미지 버튼 컨벤션  ★중요
+   - 너비/높이는 % 단위, 위치는 position:absolute + %(left/top/right/bottom).
+   - 이미지는 background 또는 <img>. background-size:100% 100% 로 컨테이너에 맞춤.
+   - .btn-effect : 호버/클릭 사운드 대상(common.js).
+   - data-hover-image 속성으로 hover 시 이미지 교체(common.js).
+
+   예시) 화면 하단 중앙 시작 버튼:
+     .btn-start { position:absolute; left:50%; bottom:18%;
+                  transform:translateX(-50%); width:28%; }
+
+   예시) 상단 우측 아이콘 버튼(설정/튜토리얼/홈 등):
+     .btn-top.btn-home { position:absolute; top:5.8%; right:3.9%;
+                         width:6.67%; height:12.41%;
+                         background:url(../img/common/home.png) center/100% 100% no-repeat; }
+   ========================================================================= */
+.btn {
+  position: absolute;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  cursor: pointer;
+}
+
+.btn:active {
+  filter: var(--btn-active-effect);
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* 상단 공통 버튼 그룹 (설정/튜토리얼/홈 등) — 위치/이미지는 화면별 main.css에서 지정 */
+.btn-top {
+  position: absolute;
+  z-index: 10;
+  background-size: 100% 100% !important;
+  background-repeat: no-repeat;
+}
+
+.btn-top:hover {
+  transform: scale(1.1);
+}
+
+/* =========================================================================
+   팝업 / 딤드 (설정·튜토리얼·종료 메시지 등)
+   ========================================================================= */
+.dimmed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.dimmed.flex {
+  display: flex !important;
+}
+
+.dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 110;
+  display: none;
+}
+
+.dialog.flex {
+  display: flex !important;
+}
+
+.dialog img {
+  width: 100%;
+}
+
+/* =========================================================================
+   공통 애니메이션 (bounce: 등장, shake: 흔들기)
+   ========================================================================= */
+.bounce {
+  display: inline-block;
+  animation: bounce 1s ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(0) translateY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) translateY(-20px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.shake {
+  animation: shake 0.8s;
+  transform-origin: bottom;
+}
+
+@keyframes shake {
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+/* 페이드 (섹션 내부 컷 전환용 보조) */
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* =========================================================================
+   모바일 안내 (세로모드 → 가로모드 유도)
+   ========================================================================= */
+.mobile-pop {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.mobile-pop p {
+  /* 세로모드에서 뜨므로 rem(레터박스 기준) 대신 뷰포트 기준으로 가독성 확보 */
+  font-size: clamp(16px, 4.5vw, 30px);
+  color: #fff;
+  font-family: var(--font);
+  padding: 0 5%;
+  text-align: center;
+}
+
+@media (orientation: portrait) and (max-width: 1280px) {
+  .mobile-pop {
+    display: flex;
+  }
+}

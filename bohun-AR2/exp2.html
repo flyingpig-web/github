@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>EXP②-AR — 청산리 전투 (유니티)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/common.js"></script>
+    <style>
+      /* 유니티 연계용 셸 — 실제 AR 전투는 유니티 담당(PDF 33~43p). */
+      .unity-shell {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4%;
+        background: #1a140c;
+        color: #f4e9c9;
+        font-family: var(--font);
+        text-align: center;
+        padding: 0 8%;
+      }
+      .unity-shell h1 { font-size: 4rem; }
+      .unity-shell p { font-size: 2.2rem; line-height: 1.6; color: #cdbb95; }
+      .unity-shell .shell-next {
+        margin-top: 2%;
+        font-size: 2.4rem;
+        color: #1a140c;
+        background: #d8b87a;
+        border-radius: 0.8rem;
+        padding: 1.2rem 3rem;
+        cursor: pointer;
+      }
+      .unity-shell .shell-next:hover { transform: scale(1.1); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <div class="unity-shell">
+            <h1>4_EXP②-AR · 청산리 전투</h1>
+            <p>
+              이 구간(AR 전투 체험)은 <b>유니티 담당</b>입니다. (기획안 33~43p)<br />
+              웹은 진입/복귀 연계만 담당합니다.
+            </p>
+            <button class="shell-next" id="shellNext">다음으로 (테스트)</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      // 유니티 전투 종료 후 5_END 로 복귀(연계 규약은 유니티팀과 협의 — Open Item).
+      $(function () {
+        $("#shellNext").on("click", () => AR.go("end.html"));
+      });
+    </script>
+  </body>
+</html>

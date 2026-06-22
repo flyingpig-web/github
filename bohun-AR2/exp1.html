@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>EXP① — 물자 보급</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <div class="cut-bg exp1-bg"></div>
+          <canvas class="game-canvas" id="exp1Canvas"></canvas>
+
+          <!-- 물자 카운트(좌상단) -->
+          <div class="game-count" id="count">물자 0/3</div>
+
+          <!-- 상단 버튼(중앙): 설정 - 튜토리얼 - 나가기 -->
+          <div class="game-top exp1-top">
+            <button class="btn-top" id="btnSetting"><img src="img/2_Exp1/btn_setting.png" alt="설정" /></button>
+            <button class="btn-top" id="btnInfo"><img src="img/2_Exp1/btn_info.png" alt="튜토리얼" /></button>
+            <button class="btn-top" id="btnHome"><img src="img/2_Exp1/btn_home.png" alt="나가기" /></button>
+          </div>
+
+          <!-- 물자 획득 메시지(중앙) -->
+          <div class="exp1-msg" id="exp1Msg"><img id="exp1MsgImg" src="img/2_Exp1/exp1_msg_text1.png" alt="" /></div>
+
+          <!-- 충돌 플래시 -->
+          <div class="hit-flash" id="hitFlash"></div>
+
+          <!-- 가상 조이스틱(모바일 전용) -->
+          <div class="joystick" id="joystick">
+            <span class="joy-stick" id="joyStick"></span>
+          </div>
+
+          <!-- 시작 오버레이 -->
+          <div class="game-start" id="gameStart">
+            <img class="start-msg" src="img/2_Exp1/exp1_msg_start.png" alt="" />
+            <img class="start-touch" src="img/1_Intro/icon_touch.png" alt="터치하여 시작" />
+          </div>
+
+          <!-- 설정 팝업 -->
+          <div class="dimmed" id="settingDim">
+            <div class="dialog setting">
+              <img class="popup-base" src="img/2_Exp1/exp_setting.png" alt="설정" />
+              <button class="btn-close" id="setClose"><img src="img/2_Exp1/btn_close.png" alt="닫기" /></button>
+              <button class="toggle toggle-bgm" id="toggleBgm" data-img-on="img/2_Exp1/btn_toggle_on.png" data-img-off="img/2_Exp1/btn_toggle_off.png">
+                <img src="img/2_Exp1/btn_toggle_on.png" alt="배경음" />
+              </button>
+              <button class="toggle toggle-sfx" id="toggleSfx" data-img-on="img/2_Exp1/btn_toggle_on.png" data-img-off="img/2_Exp1/btn_toggle_off.png">
+                <img src="img/2_Exp1/btn_toggle_on.png" alt="효과음" />
+              </button>
+            </div>
+          </div>
+
+          <!-- 튜토리얼 팝업 -->
+          <div class="dimmed" id="tutorialDim">
+            <div class="dialog tutorial">
+              <img class="popup-base" src="img/2_Exp1/exp1_info.png" alt="게임 방법" />
+              <button class="btn-close" id="tutClose"><img src="img/2_Exp1/btn_close.png" alt="닫기" /></button>
+            </div>
+          </div>
+
+          <!-- 완료 팝업 -->
+          <div class="dimmed" id="finishDim">
+            <div class="dialog finish">
+              <img class="finish-base" src="img/2_Exp1/exp1_popup_finish.png" alt="물자 보급 완료" />
+              <div class="finish-btns">
+                <button id="btnRetry"><img src="img/2_Exp1/exp_popup_btn_retry.png" alt="다시 하기" /></button>
+                <button id="btnNext"><img src="img/2_Exp1/exp_popup_btn_next.png" alt="다음으로" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/exp1.js"></script>
+  </body>
+</html>

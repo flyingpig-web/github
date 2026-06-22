@@ -1,0 +1,112 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   EXP① — 미로/물자 수집 게임 전용 스타일
+   - 공통 게임 UI(.game-top / .game-start / .dialog.* )는 exp.css 재사용.
+   - 여기서는 물자 카운트 배지, (모바일) 조이스틱, 물자 획득 메시지, 충돌 플래시.
+   ========================================================================= */
+
+/* 게임 배경 */
+.exp1-bg {
+  background-image: url(../img/2_Exp1/exp1_bg.png);
+}
+
+/* 상단 버튼 그룹을 화면 중앙 정렬(PDF MAIN 기준) */
+.game-top.exp1-top {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+/* ===== 물자 카운트 배지(좌상단) ===== */
+.game-count {
+  position: absolute;
+  top: 4%;
+  left: 3%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.6em 1.2em;
+  background: rgba(40, 26, 12, 0.72);
+  border: 0.2rem solid #d8b87a;
+  border-radius: 0.8rem;
+  font-family: var(--font);
+  font-size: 2.4rem;
+  color: #f4e9c9;
+  white-space: nowrap;
+}
+
+/* ===== 물자 획득 메시지(화면 중앙, 잠깐 노출) ===== */
+.exp1-msg {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 56%;
+  z-index: 45;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.exp1-msg img {
+  width: 100%;
+  display: block;
+}
+.exp1-msg.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ===== 충돌 플래시(붉은 화면) ===== */
+.hit-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 44;
+  background: rgba(200, 30, 30, 0.45);
+  opacity: 0;
+  pointer-events: none;
+}
+.hit-flash.show {
+  animation: hitFlash 0.45s ease;
+}
+@keyframes hitFlash {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ===== 가상 조이스틱 (모바일 전용 — PC 에서는 숨김, 방향키 사용) =====
+   별도 이미지 자산 없이 CSS 로 그림. PDF 공통 안내 2번. */
+.joystick {
+  position: absolute;
+  left: 6%;
+  bottom: 8%;
+  width: 16%;
+  aspect-ratio: 1 / 1;
+  z-index: 30;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(60, 44, 24, 0.55), rgba(20, 14, 8, 0.55));
+  border: 0.3rem solid rgba(216, 184, 122, 0.85);
+  touch-action: none;
+  display: none; /* 기본 숨김 → 모바일에서만 표시 */
+}
+.joystick .joy-stick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #e7cf9a, #9c7838 70%, #6e5224);
+  border: 0.2rem solid #f4e9c9;
+  box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.5);
+}
+
+/* 모바일(세로/좁은 가로)에서만 조이스틱 노출 */
+@media (max-width: 1024px) {
+  .joystick {
+    display: block;
+  }
+}

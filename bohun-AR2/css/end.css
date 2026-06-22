@@ -1,0 +1,95 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   5_END — 편지 (청산리 전투 승리)
+   - 배경(설원 딤드, "청산리 전투 승리!" 타이틀은 end_bg.png 에 포함) +
+     좌측 이름입력 + 우측 편지.
+   - 편지 이미지 위에 이름을 absolute 로 올리고, [편지 보관하기] 시 캔버스 합성 캡처.
+   - AR1 수료증과 동일 로직이나, 수료증 번호/날짜 없이 이름만 오버레이.
+   ========================================================================= */
+
+.end-bg {
+  background-image: url(../img/5_End/end_bg.png);
+}
+
+/* ===== 좌측 입력 영역 ===== */
+.end-form {
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  width: 30%;
+  z-index: 3;
+}
+.end-form .form-box {
+  position: relative;
+  width: 100%;
+}
+.end-form .form-box .box-img {
+  width: 100%;
+  display: block;
+}
+.end-form .name-input {
+  position: absolute;
+  left: 9%;
+  top: 22%;
+  width: 60%;
+  height: 56%;
+  font-family: var(--font);
+  font-size: 2.6rem;
+  color: #2a1c0c;
+  text-align: center;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.end-form .name-input::placeholder {
+  color: #b0a48f;
+}
+
+/* ===== 우측 편지 ===== */
+.end-cert {
+  position: absolute;
+  right: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42%;
+  z-index: 3;
+}
+.end-cert .cert-img {
+  width: 100%;
+  display: block;
+}
+/* 편지 위 이름 오버레이 (tunable) — 화면=보관 캡처 단일 기준 */
+.end-cert .cert-name {
+  position: absolute;
+  left: 18%;
+  top: 30%;
+  font-family: var(--font);
+  font-size: 2.4rem;
+  line-height: 1; /* 보관 캡처가 top 기준으로 정확히 맞도록 */
+  white-space: nowrap;
+  color: #1c1208;
+}
+
+/* ===== 하단 버튼 ===== */
+.end-btns {
+  position: absolute;
+  left: 4%;
+  top: 68%;
+  display: flex;
+  gap: 4%;
+  width: 30%;
+  z-index: 4;
+}
+.end-btns button {
+  width: 47%;
+  cursor: pointer;
+}
+.end-btns img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.end-btns button:hover img {
+  transform: scale(1.1);
+}
