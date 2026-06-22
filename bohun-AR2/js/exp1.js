@@ -16,13 +16,13 @@ $(function () {
     goal: { x: 0.935, y: 0.355, r: 0.06 }, // 야영지(목표 복귀 지점)
     items: [
       { x: 0.69, y: 0.75, sprite: "rice", msg: "exp1_msg_text1.png" },
-      { x: 0.25, y: 0.35, sprite: "money", msg: "exp1_msg_text3.png" },
       { x: 0.47, y: 0.55, sprite: "fur", msg: "exp1_msg_text2.png" },
+      { x: 0.25, y: 0.35, sprite: "money", msg: "exp1_msg_text3.png" },
     ],
     enemies: [
-      { y: 0.73, x0: 0.34, x1: 0.95, speed: 0.12, dir: 1 },
-      { y: 0.53, x0: 0.1, x1: 0.95, speed: 0.12, dir: 1 },
-      { y: 0.33, x0: 0.08, x1: 0.8, speed: 0.12, dir: -1 },
+      { y: 0.73, x0: 0.34, x1: 0.6, speed: 0.12, dir: 1 }, // 1층 일본군
+      { y: 0.53, x0: 0.1, x1: 0.4, speed: 0.12, dir: 1 }, // 2층 일본군
+      { y: 0.33, x0: 0.3, x1: 0.8, speed: 0.12, dir: -1 }, // 3층 일본군
     ],
     playerSpeed: 0.2, // 기본 이동 속도(정규화/초) @100%
     speedStage: [1, 0.9, 0.8, 0.7], // 물자 획득 수에 따른 속도 배율
@@ -288,7 +288,14 @@ $(function () {
   }
   function overlapHit(p, e) {
     const pr = rectPx(p.x, p.y, CONFIG.playerW, imgs.p_stand, CONFIG.hitScale);
-    const er = rectPx(e.x, e.y, CONFIG.enemyW, imgs.e_stand, CONFIG.hitScale, CONFIG.hitScale * CONFIG.enemyHitScaleY);
+    const er = rectPx(
+      e.x,
+      e.y,
+      CONFIG.enemyW,
+      imgs.e_stand,
+      CONFIG.hitScale,
+      CONFIG.hitScale * CONFIG.enemyHitScaleY,
+    );
     const ox = Math.min(pr.r, er.r) - Math.max(pr.l, er.l);
     const oy = Math.min(pr.b, er.b) - Math.max(pr.t, er.t);
     if (ox <= 0 || oy <= 0) return false; // 겹치지 않음
@@ -507,12 +514,25 @@ $(function () {
     // 히트박스(디버그) — overlapHit 이 쓰는 실제 충돌 박스. bohun_show_path 로 표시.
     if (showPath) {
       ctx.lineWidth = 2;
-      const pr = rectPx(player.x, player.y, CONFIG.playerW, imgs.p_stand, CONFIG.hitScale);
+      const pr = rectPx(
+        player.x,
+        player.y,
+        CONFIG.playerW,
+        imgs.p_stand,
+        CONFIG.hitScale,
+      );
       ctx.strokeStyle = "rgba(255,140,0,0.95)"; // 대원(주황 — 파란 통로선과 구분)
       ctx.strokeRect(pr.l, pr.t, pr.r - pr.l, pr.b - pr.t);
       ctx.strokeStyle = "rgba(255,70,70,0.95)"; // 일본군(빨강)
       for (const e of enemies) {
-        const er = rectPx(e.x, e.y, CONFIG.enemyW, imgs.e_stand, CONFIG.hitScale, CONFIG.hitScale * CONFIG.enemyHitScaleY);
+        const er = rectPx(
+          e.x,
+          e.y,
+          CONFIG.enemyW,
+          imgs.e_stand,
+          CONFIG.hitScale,
+          CONFIG.hitScale * CONFIG.enemyHitScaleY,
+        );
         ctx.strokeRect(er.l, er.t, er.r - er.l, er.b - er.t);
       }
     }
