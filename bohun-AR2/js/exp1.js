@@ -12,8 +12,8 @@ document.title = "EXP① — 물자 보급";
 $(function () {
   /* ----- 게임 데이터(정규화 0~1) — 실기기에서 보며 조정 ----- */
   const CONFIG = {
-    start: { x: 0.1, y: 0.89 }, // 시작점(좌하단)
-    goal: { x: 0.935, y: 0.355, r: 0.025 }, // 야영지(목표 복귀 지점)
+    start: { x: 0.2, y: 0.89 }, // 시작점(좌하단)
+    goal: { x: 0.935, y: 0.355, r: 0.06 }, // 야영지(목표 복귀 지점)
     items: [
       { x: 0.69, y: 0.75, sprite: "rice", msg: "exp1_msg_text1.png" },
       { x: 0.25, y: 0.35, sprite: "money", msg: "exp1_msg_text3.png" },
@@ -24,10 +24,12 @@ $(function () {
       { y: 0.53, x0: 0.1, x1: 0.95, speed: 0.12, dir: 1 },
       { y: 0.33, x0: 0.08, x1: 0.8, speed: 0.12, dir: -1 },
     ],
-    playerSpeed: 0.15, // 기본 이동 속도(정규화/초) @100%
+    playerSpeed: 0.2, // 기본 이동 속도(정규화/초) @100%
     speedStage: [1, 0.9, 0.8, 0.7], // 물자 획득 수에 따른 속도 배율
     pickR: 0.06, // 물자 획득 판정 반경
     hitOverlap: 0.1, // 충돌 판정: 대원·일본군 이미지(AABB)가 작은 쪽 면적의 10% 이상 겹치면 실패
+    hitScale: 0.6, // 히트박스 = 스프라이트의 이 비율(중심 기준 축소). 작을수록 충돌이 관대해짐. bohun_show_path 로 박스 확인
+    enemyHitScaleY: 0.8, // 일본군 히트박스 세로 추가 배율(가로는 hitScale, 세로 = hitScale × 이 값)
     maxFails: 5, // 이 횟수 이상 실패 시 종료 팝업
     playerW: 0.085, // 스프라이트 폭(정규화)
     enemyW: 0.055,
@@ -67,7 +69,7 @@ $(function () {
       ],
       // 우측 사다리 (2층↔3층)
       [
-        [0.83, 0.73],
+        [0.845, 0.73],
         [0.87, 0.53],
       ],
       // 우측 사다리 (3층↔4층)
@@ -116,6 +118,9 @@ $(function () {
   loadImg("money", E + "exp1_money.png");
   loadImg("fur", E + "exp1_fur.png");
   loadImg("box", E + "exp1_box.png");
+  // 맨손(물자 0개) 걷기 세트 — 없으면 현재 세트로 폴백
+  loadImg("pe_walk1", E + "exp1_player_walk1_nomal.png");
+  loadImg("pe_walk2", E + "exp1_player_walk2_nomal.png");
 
   const assets = [
     E + "exp1_bg.png",
@@ -129,12 +134,16 @@ $(function () {
     E + "exp1_money.png",
     E + "exp1_fur.png",
     E + "exp1_box.png",
+    E + "exp1_player_walk1_nomal.png",
+    E + "exp1_player_walk2_nomal.png",
     E + "exp1_msg_start.png",
     E + "exp1_msg_text1.png",
     E + "exp1_msg_text2.png",
     E + "exp1_msg_text3.png",
     E + "exp1_info.png",
     E + "exp1_popup_finish.png",
+    E + "exp_joystick_bg.png",
+    E + "exp_joystick.png",
     E + "exp_setting.png",
     E + "exp_popup_btn_next.png",
     E + "exp_popup_btn_retry.png",
@@ -257,6 +266,36 @@ $(function () {
     }
     return best;
   }
+  /* ----- 충돌 판정: 대원·일본군 스프라이트(AABB) 겹침 비율 -----
+     스프라이트는 중심정렬, 폭=정규화값(playerW/enemyW), 높이=폭×이미지비율.
+     x·y 정규화 기준(W,H)이 다르므로 픽셀 공간에서 겹침 면적을 계산하고,
+     겹침 면적이 더 작은 스프라이트 면적의 hitOverlap(=10%) 이상이면 충돌(=실패). */
+  function rectPx(cxN, cyN, wN, img, sx = 1, sy = sx) {
+    const w0 = wN * W;
+    const h0 =
+      w0 * (img && img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1);
+    const w = w0 * sx,
+      h = h0 * sy;
+    const cx = cxN * W,
+      cy = cyN * H;
+    return {
+      l: cx - w / 2,
+      r: cx + w / 2,
+      t: cy - h / 2,
+      b: cy + h / 2,
+      area: w * h,
+    };
+  }
+  function overlapHit(p, e) {
+    const pr = rectPx(p.x, p.y, CONFIG.playerW, imgs.p_stand, CONFIG.hitScale);
+    const er = rectPx(e.x, e.y, CONFIG.enemyW, imgs.e_stand, CONFIG.hitScale, CONFIG.hitScale * CONFIG.enemyHitScaleY);
+    const ox = Math.min(pr.r, er.r) - Math.max(pr.l, er.l);
+    const oy = Math.min(pr.b, er.b) - Math.max(pr.t, er.t);
+    if (ox <= 0 || oy <= 0) return false; // 겹치지 않음
+    const inter = ox * oy;
+    return inter / Math.min(pr.area, er.area) >= CONFIG.hitOverlap;
+  }
+
   function update(dt) {
     if (over) return; // 게임 종료 후 조작/진행 정지
     animClock += dt;
@@ -299,7 +338,7 @@ $(function () {
         e.dir = 1;
       }
       // 충돌
-      if (Math.hypot(e.x - player.x, e.y - player.y) < CONFIG.hitR) {
+      if (overlapHit(player, e)) {
         fail();
         return;
       }
@@ -345,6 +384,21 @@ $(function () {
     // stand → walk1 → walk2 → walk1 ... (이동 중에만 교대)
     const f = Math.floor(animClock / 0.18) % 2;
     return imgs[f === 0 ? prefix + "walk1" : prefix + "walk2"];
+  }
+
+  // 대원 스프라이트: 물자 0개 → 맨손 세트(pe_*), 1개↑ → 드는 세트(p_*).
+  // 맨손 에셋이 아직 없으면 현재(드는) 세트로 폴백.
+  function playerSprite() {
+    const frame = player.moving
+      ? Math.floor(animClock / 0.18) % 2 === 0
+        ? "walk1"
+        : "walk2"
+      : "stand";
+    if (collected < 1) {
+      const e = imgs["pe_" + frame];
+      if (e && e.naturalWidth) return e;
+    }
+    return imgs["p_" + frame];
   }
 
   function render() {
@@ -447,8 +501,21 @@ $(function () {
     }
 
     // 대원(이동 중엔 걷기, 정지 시 stand)
-    const pImg = player.moving ? walkFrame("p_") : imgs.p_stand;
+    const pImg = playerSprite();
     drawSprite(pImg, player.x, player.y, CONFIG.playerW, player.face);
+
+    // 히트박스(디버그) — overlapHit 이 쓰는 실제 충돌 박스. bohun_show_path 로 표시.
+    if (showPath) {
+      ctx.lineWidth = 2;
+      const pr = rectPx(player.x, player.y, CONFIG.playerW, imgs.p_stand, CONFIG.hitScale);
+      ctx.strokeStyle = "rgba(255,140,0,0.95)"; // 대원(주황 — 파란 통로선과 구분)
+      ctx.strokeRect(pr.l, pr.t, pr.r - pr.l, pr.b - pr.t);
+      ctx.strokeStyle = "rgba(255,70,70,0.95)"; // 일본군(빨강)
+      for (const e of enemies) {
+        const er = rectPx(e.x, e.y, CONFIG.enemyW, imgs.e_stand, CONFIG.hitScale, CONFIG.hitScale * CONFIG.enemyHitScaleY);
+        ctx.strokeRect(er.l, er.t, er.r - er.l, er.b - er.t);
+      }
+    }
   }
 
   function loop(ts) {

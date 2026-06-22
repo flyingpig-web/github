@@ -15,8 +15,8 @@
 /* ===== 좌측 입력 영역 ===== */
 .end-form {
   position: absolute;
-  left: 4%;
-  top: 50%;
+  left: 12%;
+  top: 39%;
   width: 30%;
   z-index: 3;
 }
@@ -30,10 +30,10 @@
 }
 .end-form .name-input {
   position: absolute;
-  left: 9%;
-  top: 22%;
-  width: 60%;
-  height: 56%;
+  left: 11%;
+  top: 55%;
+  width: 44%;
+  height: 15%;
   font-family: var(--font);
   font-size: 2.6rem;
   color: #2a1c0c;
@@ -62,8 +62,10 @@
 /* 편지 위 이름 오버레이 (tunable) — 화면=보관 캡처 단일 기준 */
 .end-cert .cert-name {
   position: absolute;
-  left: 18%;
-  top: 30%;
+  width: 19%;
+  left: 24%;
+  top: 15%;
+  text-align: center;
   font-family: var(--font);
   font-size: 2.4rem;
   line-height: 1; /* 보관 캡처가 top 기준으로 정확히 맞도록 */
@@ -74,16 +76,21 @@
 /* ===== 하단 버튼 ===== */
 .end-btns {
   position: absolute;
-  left: 4%;
-  top: 68%;
+  left: 13%;
+  top: 80%;
   display: flex;
-  gap: 4%;
-  width: 30%;
+  gap: 11%;
+  width: 28%;
   z-index: 4;
 }
 .end-btns button {
-  width: 47%;
   cursor: pointer;
+}
+.end-btns button:nth-child(1) {
+  width: 60%;
+}
+.end-btns button:nth-child(2) {
+  width: 40%;
 }
 .end-btns img {
   width: 100%;

@@ -30,9 +30,23 @@ $(function () {
     g.textBaseline = "top";
     g.textAlign = "left";
     const ls = (parseFloat(cs.letterSpacing) || 0) * sy;
-    let x = (r.left - imgRect.left) * sx;
+    const chars = [...text];
+    // 렌더 글자열 폭(글자폭 합 + 글자 사이 letter-spacing) — 정렬 계산용
+    const runW =
+      chars.reduce((w, ch) => w + g.measureText(ch).width, 0) +
+      ls * Math.max(0, chars.length - 1);
+    // 요소 박스(캔버스 좌표)
+    const boxL = (r.left - imgRect.left) * sx;
+    const boxW = r.width * sx;
+    // CSS text-align 을 캔버스에도 반영(화면과 동일하게 박스 안에서 정렬)
+    let x =
+      cs.textAlign === "center"
+        ? boxL + (boxW - runW) / 2
+        : cs.textAlign === "right" || cs.textAlign === "end"
+          ? boxL + boxW - runW
+          : boxL;
     const y = (r.top - imgRect.top) * sy;
-    for (const chr of text) {
+    for (const chr of chars) {
       g.fillText(chr, x, y);
       x += g.measureText(chr).width + ls;
     }

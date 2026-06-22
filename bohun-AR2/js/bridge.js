@@ -7,7 +7,7 @@ $(function () {
 
   const cuts = [
     // 1-1 발자국 터치
-    { img: B + "bridge_bg1-1.png", hot: { x: 0.4, y: 0.62 } },
+    { img: B + "bridge_bg1-1.png", hot: { x: 0.31, y: 0.76 } },
     // 1-2 자막
     {
       img: B + "bridge_bg1-2.png",
@@ -16,16 +16,16 @@ $(function () {
       next: true,
     },
     // 2-1 모닥불 터치
-    { img: B + "bridge_bg2-1.png", hot: { x: 0.48, y: 0.5 } },
+    { img: B + "bridge_bg2-1.png", hot: { x: 0.47, y: 0.55 } },
     // 2-2 자막
     {
       img: B + "bridge_bg2-2.png",
-      text: "“그동안 동포들의 도움으로 버텨온 우리가, 어찌 그들의 위협을 모른 척할 수 있겠는가?”",
+      text: "“그동안 동포들의 도움으로 버텨온 우리가, 어찌 그분들의 위험을 모른 척할 수 있겠는가.”",
       vo: "bridge_2-2.wav",
       next: true,
     },
     // 3-1 김좌진 장군과 간부들 터치
-    { img: B + "bridge_bg3-1.png", hot: { x: 0.5, y: 0.5 } },
+    { img: B + "bridge_bg3-1.png", hot: { x: 0.45, y: 0.55 } },
     // 3-2 자막
     {
       img: B + "bridge_bg3-2.png",
@@ -34,11 +34,11 @@ $(function () {
       next: true,
     },
     // 4-1 백운평 계곡 입구 터치
-    { img: B + "bridge_bg4-1.png", hot: { x: 0.5, y: 0.5 } },
+    { img: B + "bridge_bg4-1.png", hot: { x: 0.66, y: 0.56 } },
     // 4-2 자막 → 목표②
     {
       img: B + "bridge_bg4-2.png",
-      text: "“백운평 골짜기로 끌어들여 측각을 잡고 싸우면, 우리는 반드시 일본군을 이길 수 있을 것이다.”",
+      text: "“백운평 골짜기로 끌어들여 죽기를 각오하고 싸우면 우리는 반드시 일본군을 이길 수 있을 것이다.”",
       vo: "bridge_4-2.wav",
       next: true,
     },

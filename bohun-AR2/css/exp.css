@@ -114,9 +114,9 @@
 }
 .dialog.setting .btn-close {
   position: absolute;
-  top: 11%;
-  right: 9%;
-  width: 8%;
+  top: 14%;
+  right: 10%;
+  width: 4%;
   cursor: pointer;
 }
 .dialog.setting .btn-close img {
@@ -129,7 +129,7 @@
 }
 .dialog.setting .toggle {
   position: absolute;
-  right: 13%;
+  right: 32%;
   width: 11%;
   cursor: pointer;
 }
@@ -138,10 +138,10 @@
   display: block;
 }
 .dialog.setting .toggle-bgm {
-  top: 41%;
+  top: 42%;
 }
 .dialog.setting .toggle-sfx {
-  top: 66%;
+  top: 67%;
 }
 
 /* ----- 튜토리얼(정보) 팝업 ----- */
@@ -150,9 +150,9 @@
 }
 .dialog.tutorial .btn-close {
   position: absolute;
-  top: 15%;
-  right: 13%;
-  width: 6%;
+  top: 10%;
+  right: 9%;
+  width: 4%;
   cursor: pointer;
 }
 .dialog.tutorial .btn-close img {

@@ -24,16 +24,16 @@
   top: 4%;
   left: 3%;
   z-index: 20;
+  width: 17%;
+  aspect-ratio: 450 / 237;
+  background: url(../img/2_Exp1/exp1_progress_bg.png) center / 100% 100% no-repeat;
   display: flex;
   align-items: center;
-  gap: 0.6em;
-  padding: 0.6em 1.2em;
-  background: rgba(40, 26, 12, 0.72);
-  border: 0.2rem solid #d8b87a;
-  border-radius: 0.8rem;
+  justify-content: center;
   font-family: var(--font);
   font-size: 2.4rem;
-  color: #f4e9c9;
+  color: #fff;
+  letter-spacing: 1.1px;
   white-space: nowrap;
 }
 
@@ -77,31 +77,33 @@
 }
 
 /* ===== 가상 조이스틱 (모바일 전용 — PC 에서는 숨김, 방향키 사용) =====
-   별도 이미지 자산 없이 CSS 로 그림. PDF 공통 안내 2번. */
+   bohun-AR1 의 조이스틱 이미지 사용. 크기는 기존(16%)의 1/2 = 8%. */
 .joystick {
   position: absolute;
   left: 6%;
   bottom: 8%;
-  width: 16%;
+  width: 8%;
   aspect-ratio: 1 / 1;
   z-index: 30;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 45%, rgba(60, 44, 24, 0.55), rgba(20, 14, 8, 0.55));
-  border: 0.3rem solid rgba(216, 184, 122, 0.85);
   touch-action: none;
+  user-select: none;
   display: none; /* 기본 숨김 → 모바일에서만 표시 */
+}
+.joystick .joy-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .joystick .joy-stick {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 46%;
-  aspect-ratio: 1 / 1;
+  /* 81×81 스틱 / 281×281 베이스 ≈ 28.8% */
+  width: 28.8%;
+  height: 28.8%;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #e7cf9a, #9c7838 70%, #6e5224);
-  border: 0.2rem solid #f4e9c9;
-  box-shadow: 0 0.3rem 0.8rem rgba(0, 0, 0, 0.5);
+  will-change: transform;
 }
 
 /* 모바일(세로/좁은 가로)에서만 조이스틱 노출 */
