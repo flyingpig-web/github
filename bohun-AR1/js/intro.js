@@ -84,6 +84,6 @@ $(function () {
   }
 
   $("#btnObjConfirm").on("click", function () {
-    AR.go("exp1.html");
+    AR.go("/exp1_ar/index.html");
   });
 });
