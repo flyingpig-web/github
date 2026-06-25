@@ -1,8 +1,0 @@
-/Build/*.br
-  Content-Type: application/octet-stream
-
-/Build/*.wasm
-  Content-Type: application/wasm
-
-/Build/*.js
-  Content-Type: application/javascript
