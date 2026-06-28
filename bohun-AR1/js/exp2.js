@@ -198,7 +198,9 @@ $(function () {
       // 모든 신호 판정 후 바로 끝내지 않고 잠깐 여유(마지막 dot 결과·연출 노출)
       if (done >= beats.length && !finishing) {
         finishing = true;
-        // 마지막 신호 결과·연출을 보여준 뒤 성공 팝업(exp3 와 동일하게 3초)
+        // 완료 순간 EAGLE SEND → '각 지대 즉각 전달' 교차 디졸브
+        revealKor();
+        // 한글 노출을 잠깐 보여준 뒤 성공 팝업(교차 디졸브 0.6초 + 여유)
         finishTimer = setTimeout(finish, 3000);
       }
     }
@@ -263,11 +265,27 @@ $(function () {
     $judge.addClass("show");
   }
 
+  // 완료 시: EAGLE SEND(영문 이미지) → '각 지대 즉각 전달'(한글) 교차 디졸브
+  function revealKor() {
+    const en = document.getElementById("morseLetter");
+    if (en) en.style.opacity = "0";
+    const ko = document.getElementById("morseLetterKor");
+    if (ko) ko.classList.add("show");
+  }
+  // 시작/재시작 시 한글 레이어 숨기고 영문 표시 복구
+  function resetKor() {
+    const en = document.getElementById("morseLetter");
+    if (en) en.style.opacity = "";
+    const ko = document.getElementById("morseLetterKor");
+    if (ko) ko.classList.remove("show");
+  }
+
   function startGame() {
     if (started) return;
     started = true;
     $("#gameStart").addClass("display-none");
     document.getElementById("morseLetter").innerHTML = "";
+    resetKor();
     sizeCanvas();
     buildBeats();
     clock = 0;
@@ -300,6 +318,7 @@ $(function () {
     // 재시작: 시작 메시지 없이 곧바로 전신기 터치 단계로
     armTelegraph();
     document.getElementById("morseLetter").innerHTML = "";
+    resetKor();
     ctx.clearRect(0, 0, canvas._w || 0, canvas._h || 0);
     started = false;
     paused = false;

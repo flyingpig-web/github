@@ -65,6 +65,29 @@
   display: flex;
   align-items: center;
   gap: 5%;
+  transition: opacity 0.6s ease; /* 완료 시 한글로 교차 디졸브(영문 페이드아웃) */
+}
+/* 완료 시 EAGLE SEND(영문 이미지) 위로 교차 디졸브되는 한글 텍스트 레이어.
+   같은 위치에 겹쳐두고 opacity 만 0→1 로. (추후 이미지 소스 오면 텍스트→<img> 교체) */
+.morse-window .morse-letter-kor {
+  position: absolute;
+  top: 18%;
+  left: 37%;
+  height: 6%;
+  display: flex;
+  align-items: center;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 5rem; /* 영문 글자 높이에 맞춰 시각 조정 가능 */
+  line-height: 1;
+  color: #2a1c0c;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.morse-window .morse-letter-kor.show {
+  opacity: 1;
 }
 .morse-window .morse-letter img {
   height: 100%;
