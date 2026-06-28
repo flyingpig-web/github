@@ -62,10 +62,11 @@ $(function () {
       ],
     ],
     reach: 0.07, // 체크포인트 도달 반경(정규화)
-    dustThreshold: 0.1, // 경로 10% 이탈 → 흙먼지 + 감속
-    blockThreshold: 0.2, // 경로 20% 이상 이탈 → 더 멀어지는 이동 차단
+    dustThreshold: 0.02, // (감속 시작) 이만큼 벗어나면 흙먼지 + 감속 시작 (기존 0.1 → 80% 좁힘)
+    blockThreshold: 0.04, // (벽) 이만큼 벗어나면 완전 차단 — 더 못 나감 (기존 0.2 → 80% 좁힘)
     speed: 0.22, // 이동 속도(정규화/초)
-    offPenalty: 0.5, // 이탈 시 속도 배율
+    offPenalty: 0, // 벽에서 바깥 방향 속도 배율(0 = 완전 0%). dustThreshold→blockThreshold 로 갈수록 100%→0%
+    returnFloor: 0.4, // 복귀(경로에 가까워지는) 방향 최소 속도 배율 — 벽에 끼이지 않도록 항상 이 속도는 보장
   };
   const clamp = (v) => Math.max(0.03, Math.min(0.97, v));
 
@@ -145,8 +146,14 @@ $(function () {
   let started = false,
     paused = false,
     raf = null,
-    lastTs = 0;
+    lastTs = 0,
+    finishing = false,
+    finishTimer = null,
+    startGate = false; // 시작 안내 팝업(체험 방법) 게이트 활성 여부
   let jeep, input, hasLetters, delivered, particles, stack;
+  let pulseT = 0; // 상호작용 마커 펄스용 시간 누적(초)
+  // 충칭 HQ 다음 펄스 순서(depots 인덱스): 지대3(푸양,idx1) → 지대2(진화 2구대,idx2) → 지대1(라오허카우 1구대,idx0)
+  const PULSE_ORDER = [2, 1, 0];
   // 서신 획득 연출 타이밍(초): step=한 장씩 쌓이는 간격, popIn=등장, hold=쌓인 뒤 유지, fade=사라짐
   const STACK = { step: 0.3, popIn: 0.25, hold: 1.0, fade: 0.5 };
   const STACK_FADE_START = STACK.step * 3 + STACK.hold; // 1초 유지 후 fade 시작
@@ -178,6 +185,7 @@ $(function () {
     hasLetters = false;
     delivered = 0;
     particles = [];
+    pulseT = 0;
     stack = null; // 서신 획득 연출 상태(없음)
     MAP.depots.forEach((d) => {
       d.done = false;
@@ -269,7 +277,12 @@ $(function () {
           updateGage();
           toast(`${d.name} 전달 완료! (${delivered}/3)`);
           AR.Sound.sfx(SFX.deliver);
-          if (delivered >= 3) finish();
+          // 3개 전달 완료 → 마지막 서신 전달 연출을 보여준 뒤 약 2초 후 성공 팝업
+          if (delivered >= 3 && !finishing) {
+            finishing = true;
+            // 마지막 서신 전달 연출을 보여준 뒤 성공 팝업(exp2 와 동일하게 3초)
+            finishTimer = setTimeout(finish, 3000);
+          }
         }
       }
     }
@@ -278,18 +291,38 @@ $(function () {
   const SFX = { pickup: "", deliver: "", dust: "" }; // ⚠️ 사운드 경로 미확정(Open Item)
 
   function update(dt) {
+    pulseT += dt; // 마커 펄스용 시간 누적
     // 전방향 이동(횡스크롤 탑다운): 머리 = 조이스틱 방향, 그 방향으로 이동.
     const mag = Math.hypot(input.x, input.y);
     const dev = distToPath(jeep.x, jeep.y);
-    const off = dev > MAP.dustThreshold; // 10% 이탈 → 흙먼지 + 감속
+    const off = dev > MAP.dustThreshold; // 감속 시작 + 흙먼지
+    // 이탈 정도에 비례해 100% → offPenalty(0=완전 정지)까지 선형 감속. 벽(blockThreshold)에서 0%.
+    let penalty = 1;
+    if (off) {
+      const t =
+        (dev - MAP.dustThreshold) /
+        (MAP.blockThreshold - MAP.dustThreshold); // 0(감속시작)~1(벽)
+      penalty = Math.max(MAP.offPenalty, 1 - t);
+    }
     if (mag > 0.05) {
       const ang = Math.atan2(input.y, input.x);
       jeep.angle = ang; // 머리 = 이동 방향
-      const sp = MAP.speed * (off ? MAP.offPenalty : 1) * Math.min(1, mag);
-      const nx = clamp(jeep.x + Math.cos(ang) * sp * dt);
-      const ny = clamp(jeep.y + Math.sin(ang) * sp * dt);
-      // 20% 이상 이탈 시: 경로에서 더 멀어지는 이동은 차단(복귀 방향만 허용)
-      const allow = !(dev > MAP.blockThreshold && distToPath(nx, ny) > dev);
+      const step = (p) => {
+        const sp = MAP.speed * p * Math.min(1, mag);
+        return [
+          clamp(jeep.x + Math.cos(ang) * sp * dt),
+          clamp(jeep.y + Math.sin(ang) * sp * dt),
+        ];
+      };
+      let [nx, ny] = step(penalty);
+      let nd = distToPath(nx, ny);
+      // 복귀(경로에 가까워지는) 방향은 returnFloor 최소 속도 보장 → 벽에 끼여 못 빠져나오는 것 방지.
+      if (nd <= dev && penalty < MAP.returnFloor) {
+        [nx, ny] = step(MAP.returnFloor);
+        nd = distToPath(nx, ny);
+      }
+      // 벽: blockThreshold 너머로 '더' 벗어나는 이동은 완전 차단(바깥 방향 0% — 가로막힌 느낌).
+      const allow = !(nd > dev && nd > MAP.blockThreshold);
       if (allow) {
         jeep.x = nx;
         jeep.y = ny;
@@ -319,12 +352,21 @@ $(function () {
     checkpoints();
   }
 
-  function drawSpot(cp, done) {
+  function drawSpot(cp, done, pulse) {
     const img = done ? imgs.spotDone : imgs.spot;
     if (!img || !img.complete) return;
-    const s = W * 0.055;
+    // 현재 가야 하는 목표(pulse=true)만 100~130% 반복 스케일
+    const k = pulse ? 1.15 + 0.15 * Math.sin((pulseT * Math.PI * 2) / 0.8) : 1;
+    const s = W * 0.055 * k;
     // 느낌표 마커를 체크포인트 좌표 중앙에 배치
     ctx.drawImage(img, PX(cp.x) - s / 2, PY(cp.y) - s / 2, s, s);
+  }
+
+  // 현재 펄스(가이드) 대상: 서신 수령 전엔 HQ, 이후엔 순서상 가장 먼저 남은 지대
+  function pulseTargetIdx() {
+    if (!hasLetters) return -1; // -1 = HQ
+    for (const i of PULSE_ORDER) if (!MAP.depots[i].done) return i;
+    return null; // 전부 전달
   }
 
   function render() {
@@ -364,22 +406,17 @@ $(function () {
       const cks = [["HQ", MAP.hq.x, MAP.hq.y]].concat(
         MAP.depots.map((d, i) => ["지대" + (i + 1), d.x, d.y]),
       );
+      // 마커 위에 겹치는 원(테두리)은 제거하고 라벨만 표시
       for (const [lab, x, y] of cks) {
         ctx.fillStyle = "rgba(60,230,110,0.95)";
-        ctx.beginPath();
-        ctx.arc(PX(x), PY(y), W * 0.012, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = "#063";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.fillStyle = "#fff";
         ctx.fillText(lab, PX(x), PY(y) - W * 0.025);
       }
     }
 
-    // 체크포인트 마커(총사령부 + 미전달 지대)
-    drawSpot(MAP.hq, hasLetters);
-    MAP.depots.forEach((d) => drawSpot(d, d.done));
+    // 체크포인트 마커(총사령부 + 미전달 지대). 순서상 현재 목표만 펄스.
+    const pulseIdx = pulseTargetIdx();
+    drawSpot(MAP.hq, hasLetters, pulseIdx === -1);
+    MAP.depots.forEach((d, i) => drawSpot(d, d.done, i === pulseIdx));
 
     // 전달된 서신: 차량 → 건물 왼쪽으로 날아가 안착(비행 중엔 호를 그림)
     if (imgs.susin && imgs.susin.complete) {
@@ -466,6 +503,7 @@ $(function () {
   function startGame() {
     if (started) return;
     started = true;
+    finishing = false;
     $("#gameStart").addClass("display-none");
     sizeCanvas();
     resetState();
@@ -474,6 +512,10 @@ $(function () {
   }
 
   function finish() {
+    if (finishTimer) {
+      clearTimeout(finishTimer);
+      finishTimer = null;
+    }
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     started = false;
@@ -481,12 +523,24 @@ $(function () {
   }
 
   function resetGame() {
+    if (finishTimer) {
+      clearTimeout(finishTimer);
+      finishTimer = null;
+    }
+    finishing = false;
     AR.closePopup("#finishDim");
-    $("#gameStart").removeClass("display-none");
     ctx.clearRect(0, 0, W, H);
     started = false;
     paused = false;
-    resetState();
+    // 재시작: 시작 안내 팝업 없이 곧바로 게임 시작
+    startGame();
+  }
+
+  // 진입 시 시작 메시지 대신 "체험 방법 안내" 팝업을 게이트로 띄운다.
+  function openStartGate() {
+    startGate = true;
+    $("#gameStart").addClass("display-none");
+    AR.openPopup("#tutorialDim");
   }
 
   // PC(뷰포트 1025px↑) = 방향키 조작 / 모바일 = 조이스틱
@@ -602,7 +656,12 @@ $(function () {
   });
   $("#tutClose").on("click", () => {
     AR.closePopup("#tutorialDim");
-    paused = false;
+    if (startGate) {
+      startGate = false;
+      startGame(); // 시작 게이트: 팝업 닫으면 게임 시작
+    } else {
+      paused = false; // 게임 중 튜토리얼 열람 후 닫기 → 재개
+    }
   });
   $("#btnNext").on("click", () => AR.go("end.html"));
   $("#btnRetry").on("click", resetGame);
@@ -616,5 +675,8 @@ $(function () {
     }
   });
 
-  AR.preload(assets).then(() => sizeCanvas());
+  AR.preload(assets).then(() => {
+    sizeCanvas();
+    openStartGate(); // 진입 시 체험 방법 안내 팝업
+  });
 });

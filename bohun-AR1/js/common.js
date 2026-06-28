@@ -12,18 +12,70 @@
      - 섹션 진입 시 그 섹션에서 쓸 이미지를 먼저 받아두고 시작한다.
      - 실패(404 등)해도 reject 하지 않고 계속 진행(저사양/누락 대비).
      --------------------------------------------------------------------- */
+  // 이미 요청한 URL(프리로드/프리페치 공용) — 중복 다운로드 방지
+  const requested = new Set();
+
   function preload(urls) {
     const list = (urls || []).filter(Boolean);
     return Promise.all(
       list.map(
         (src) =>
           new Promise((resolve) => {
+            requested.add(src);
             const img = new Image();
             img.onload = img.onerror = () => resolve(src);
             img.src = src;
           })
       )
     );
+  }
+
+  /* ---------------------------------------------------------------------
+     1-b. 백그라운드 프리페치 (프로젝트 전역 이미지 미리받기)
+     - 현재 화면을 막지 않고(논블로킹), 낮은 동시성으로 이미지를 캐시에 채운다.
+     - 같은 출처라 한 페이지에서 받아두면 다음 페이지에서 즉시 캐시 히트.
+     --------------------------------------------------------------------- */
+  function prefetch(urls, concurrency) {
+    const queue = (urls || []).filter((u) => u && !requested.has(u));
+    if (!queue.length) return;
+    queue.forEach((u) => requested.add(u));
+    const max = concurrency || 4;
+    let i = 0;
+    function next() {
+      if (i >= queue.length) return;
+      const src = queue[i++];
+      const img = new Image();
+      img.onload = img.onerror = next; // 한 장 끝나면 다음 장
+      img.src = src;
+    }
+    for (let k = 0; k < Math.min(max, queue.length); k++) next();
+  }
+
+  // 현재 페이지 기준으로 "다음 화면들 → 공통 → 현재/이전" 순서로 전역 프리페치.
+  // window.AR_MANIFEST(preload-manifest.js)가 있을 때만 동작.
+  function prefetchFlow(currentFile) {
+    const M = global.AR_MANIFEST;
+    if (!M || !Array.isArray(M.flow)) return;
+    const file = (currentFile || location.pathname.split("/").pop() || "").toLowerCase();
+    const idx = M.flow.findIndex((f) => file.endsWith(f.page.toLowerCase()));
+    const order = [];
+    if (idx >= 0) {
+      for (let i = idx + 1; i < M.flow.length; i++) order.push(...M.flow[i].images); // 다음 화면 우선
+      order.push(...(M.common || []));
+      order.push(...M.flow[idx].images); // 현재(재방문/팝업 대비)
+      for (let i = 0; i < idx; i++) order.push(...M.flow[i].images); // 이전
+    } else {
+      // 매니페스트에 없는 페이지: 공통 + 전체
+      order.push(...(M.common || []));
+      M.flow.forEach((f) => order.push(...f.images));
+    }
+    // 첫 페인트를 방해하지 않도록 idle 시점에 시작
+    const start = () => prefetch(order);
+    if (typeof global.requestIdleCallback === "function") {
+      global.requestIdleCallback(start, { timeout: 2000 });
+    } else {
+      setTimeout(start, 800);
+    }
   }
 
   /* ---------------------------------------------------------------------
@@ -185,6 +237,43 @@
     let ended = false;
     const $hot = cfg.hotspot ? $(cfg.hotspot) : $();
 
+    /* ----- 컷 배경 크로스 디졸브(블랙 경유 X) -----
+       cfg.bg 엘리먼트를 2겹으로 운용한다. 새 컷은 뒤 레이어에 깔고 opacity 0→1로
+       올리는 동안 앞 레이어(이전 이미지)가 그대로 보여 두 이미지가 겹쳐 디졸브된다.
+       (기존: 한 장의 background-image 교체 + opacity 0→1 → 0구간에 검정이 비쳐 블랙 디졸브)
+       HTML 은 그대로 두고 init 시 트윈(복제) 레이어를 만들어 둘을 번갈아 쓴다. */
+    const dissolveMs = cfg.dissolveMs == null ? 600 : cfg.dissolveMs;
+    let front = 0;
+    function bgLayers() {
+      const base = document.querySelector(cfg.bg);
+      if (!base) return null;
+      if (!base._twin) {
+        const twin = base.cloneNode(false);
+        twin.removeAttribute("id"); // id 중복 방지
+        twin.style.opacity = "0";
+        base.style.opacity = "1";
+        base.parentNode.insertBefore(twin, base.nextSibling);
+        base._twin = twin;
+      }
+      return [base, base._twin];
+    }
+    function crossTo(imgUrl) {
+      const ls = bgLayers();
+      if (!ls) return;
+      const cur = ls[front];
+      const nxt = ls[front ^ 1];
+      nxt.style.backgroundImage = `url("${imgUrl}")`;
+      // 자막(5)/핫스팟(8)/버튼(7)보다 아래로 유지하면서 두 bg 레이어 간 위/아래만 제어
+      nxt.style.zIndex = "1";
+      cur.style.zIndex = "0";
+      nxt.style.transition = "none";
+      nxt.style.opacity = "0";
+      void nxt.offsetWidth; // reflow → 트랜지션 리트리거
+      nxt.style.transition = `opacity ${dissolveMs}ms ease`;
+      nxt.style.opacity = "1";
+      front ^= 1;
+    }
+
     // 자막을 한 줄로 유지하며 자막바 폭에 맞게 폰트 자동 축소(최대 = CSS rem 기준)
     function fitSubtitle() {
       if (!cfg.textEl || !cfg.subtitle) return;
@@ -211,12 +300,8 @@
       if (i < 0 || i >= cuts.length) return;
       idx = i;
       const cut = cuts[i];
-      // 배경 교체 + 페이드
-      const $bg = $(cfg.bg);
-      $bg.css("background-image", `url("${cut.img}")`);
-      $bg.removeClass("fade-in");
-      void $bg[0]?.offsetWidth; // reflow 후 재적용(애니메이션 리트리거)
-      $bg.addClass("fade-in");
+      // 배경 크로스 디졸브(이전 컷 위로 새 컷이 겹쳐 페이드 — 블랙 경유 X)
+      crossTo(cut.img);
 
       // 자막(있을 때만 자막바 표시). 개행 무시 → 한 줄, 폭에 맞게 자동 축소.
       if (cfg.textEl) {
@@ -269,13 +354,7 @@
       Sound.stopNarration(); // 스킵 시 진행 중 내레이션 정지
       // 스킵 시 배경을 스토리 마지막 컷 이미지로 교체(목표 팝업 뒤에 마지막 장면이 보이도록)
       const last = cuts[cuts.length - 1];
-      if (last) {
-        const $bg = $(cfg.bg);
-        $bg.css("background-image", `url("${last.img}")`);
-        $bg.removeClass("fade-in");
-        void $bg[0]?.offsetWidth;
-        $bg.addClass("fade-in");
-      }
+      if (last) crossTo(last.img);
       if (typeof cfg.onSkip === "function") cfg.onSkip();
       else end();
     }
@@ -349,6 +428,8 @@
      --------------------------------------------------------------------- */
   global.AR = {
     preload,
+    prefetch,
+    prefetchFlow,
     Sound,
     openPopup,
     closePopup,
@@ -391,5 +472,8 @@
     $(document).on("click", '[role="button"], button, .btn, .btn-effect', function () {
       if (global.AR && global.AR.clickSfx) Sound.sfx(global.AR.clickSfx);
     });
+
+    // 프로젝트 전역 이미지 프리페치 — 현재 화면을 본 뒤(idle) 다음 화면들을 미리 받아둠.
+    prefetchFlow();
   });
 })(window);

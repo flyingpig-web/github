@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/preload-manifest.js"></script>
     <script src="js/common.js"></script>
   </head>
   <body>
@@ -44,8 +45,8 @@
             <img id="morseKeyImg" src="img/4_EXP2/exp2_morse_off.png" alt="전신기" />
           </div>
 
-          <!-- 시작 오버레이 -->
-          <div class="game-start" id="gameStart">
+          <!-- 시작 오버레이(시작 메시지는 미사용 — 진입 시 방법 안내 팝업이 게이트. 전신기 터치 단계에서만 노출) -->
+          <div class="game-start display-none" id="gameStart">
             <img class="start-msg" src="img/4_EXP2/exp2_msg_start.png" alt="" />
             <img class="start-touch" src="img/4_EXP2/icon_touch.png" alt="터치하여 시작" />
             <!-- 전신기 위 시작 핫스팟(start-touch 클릭 후 노출) -->
@@ -82,8 +83,8 @@
             <div class="dialog finish">
               <img class="finish-base" src="img/4_EXP2/exp2_popup_finish.png" alt="교신 완료" />
               <div class="finish-btns">
-                <button id="btnRetry"><img src="img/common/exp_popup_btn_retry.png" alt="다시 하기" /></button>
                 <button id="btnNext"><img src="img/common/exp_popup_btn_next.png" alt="다음으로" /></button>
+                <button id="btnRetry"><img src="img/common/exp_popup_btn_retry.png" alt="다시 하기" /></button>
               </div>
             </div>
           </div>

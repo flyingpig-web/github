@@ -34,8 +34,7 @@ $(function () {
       "img/1_INTRO/icon_touch.png",
     ]);
 
-  AR.preload(assets).then(() => {
-    AR.CutRunner({
+  const runner = AR.CutRunner({
       stage: ".container",
       bg: "#cutBg",
       textEl: "#subtitleText",
@@ -47,8 +46,10 @@ $(function () {
       cuts,
       onEnd: showObjective, // 마지막 컷 [다음] → 목표② → [확인] → exp2
       onSkip: showObjective, // 스킵 → 목표②까지만(바로 exp2 로 가지 않음)
-    }).start();
-  });
+    });
+  // 첫 컷 이미지만 받으면 즉시 시작(까만 화면 최소화) → 나머지 컷/팝업은 백그라운드 프리페치
+  AR.preload([cuts[0].img]).then(() => runner.start());
+  AR.prefetch(assets);
 
   function showObjective() {
     $("#subtitle, #btnNext, #btnSkip, #hotspot").addClass("display-none");
