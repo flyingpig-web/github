@@ -5,7 +5,7 @@
    - 물자 3개(식량자루/돈자루/보따리) 획득 시마다 메시지 + 이동속도 단계 하락(100→90→80→70%).
    - 물자 3/3 후 야영지(목표지점) 도달 → 성공 종료. 5회 이상 실패 → 종료 팝업.
    ⚠️ 맵 좌표/순찰 구간/속도/판정은 임시값(Open Item: EXP① 게임 데이터).
-      CONFIG 의 정규화 좌표(0~1)로 조정한다. localStorage.bohun_show_path="1" → 디버그 오버레이.
+      CONFIG 의 정규화 좌표(0~1)로 조정한다. localStorage.db="1" → 디버그 오버레이.
    ========================================================================= */
 document.title = "EXP① — 물자 보급";
 
@@ -28,7 +28,7 @@ $(function () {
     speedStage: [1, 0.9, 0.8, 0.7], // 물자 획득 수에 따른 속도 배율
     pickR: 0.06, // 물자 획득 판정 반경
     hitOverlap: 0.1, // 충돌 판정: 대원·일본군 이미지(AABB)가 작은 쪽 면적의 10% 이상 겹치면 실패
-    hitScale: 0.6, // 히트박스 = 스프라이트의 이 비율(중심 기준 축소). 작을수록 충돌이 관대해짐. bohun_show_path 로 박스 확인
+    hitScale: 0.6, // 히트박스 = 스프라이트의 이 비율(중심 기준 축소). 작을수록 충돌이 관대해짐. db 로 박스 확인
     enemyHitScaleY: 0.8, // 일본군 히트박스 세로 추가 배율(가로는 hitScale, 세로 = hitScale × 이 값)
     maxFails: 5, // 이 횟수 이상 실패 시 종료 팝업
     playerW: 0.085, // 스프라이트 폭(정규화)
@@ -38,7 +38,7 @@ $(function () {
     pathWidth: 0.025, // (디버그 표시용) 통로 튜브 반경
     railGrab: 0.05, // 통로(레일) 흡착 허용 거리 — 이 안에 주축 통로가 있을 때만 그 위로 스냅(사다리 진입 여유)
     // 이동 가능 경로(정규화 폴리라인). 대원은 이 통로 위에서만 이동 가능.
-    // 디버그 모드(localStorage.bohun_show_path="1" 또는 게임 중 P키)로 통로를 표시하며 튜닝.
+    // 디버그 모드(localStorage.db="1" 또는 게임 중 P키)로 통로를 표시하며 튜닝.
     paths: [
       // ── 가로 통로(층) : 위에서부터 y 가 작음. 4개 층 ──
       // 1층(맨 아래, 시작점이 있는 층)
@@ -161,7 +161,7 @@ $(function () {
 
   let showPath = (() => {
     try {
-      return localStorage.getItem("bohun_show_path") === "1";
+      return localStorage.getItem("db") === "1";
     } catch (e) {
       return false;
     }
@@ -511,7 +511,7 @@ $(function () {
     const pImg = playerSprite();
     drawSprite(pImg, player.x, player.y, CONFIG.playerW, player.face);
 
-    // 히트박스(디버그) — overlapHit 이 쓰는 실제 충돌 박스. bohun_show_path 로 표시.
+    // 히트박스(디버그) — overlapHit 이 쓰는 실제 충돌 박스. db 로 표시.
     if (showPath) {
       ctx.lineWidth = 2;
       const pr = rectPx(
@@ -693,7 +693,7 @@ $(function () {
   $("#btnNext").on("click", () => AR.go("bridge.html"));
   $("#btnRetry").on("click", resetGame);
 
-  // 디버그: 게임 중 P키로 이동 가능 통로(path) 표시 토글 (localStorage.bohun_show_path="1" 로도 켬)
+  // 디버그: 게임 중 P키로 이동 가능 통로(path) 표시 토글 (localStorage.db="1" 로도 켬)
   window.addEventListener("keydown", (e) => {
     if (e.key === "p" || e.key === "P") showPath = !showPath;
   });

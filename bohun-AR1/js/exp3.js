@@ -138,6 +138,7 @@ $(function () {
     "img/common/exp_setting.png",
     "img/common/exp_popup_btn_next.png",
     "img/common/exp_popup_btn_retry.png",
+    "img/common/clear_stamp.png",
   ];
 
   let W = 0,
@@ -161,7 +162,7 @@ $(function () {
   // localStorage 에 키가 있으면 경로(도로망) 표시 (개발/가이드용)
   const showPath = (() => {
     try {
-      return localStorage.getItem("bohun_show_path") === "1";
+      return localStorage.getItem("db") === "1";
     } catch (e) {
       return false;
     }
@@ -372,7 +373,7 @@ $(function () {
   function render() {
     ctx.clearRect(0, 0, W, H);
 
-    // 경로 디버그 표시 — localStorage "bohun_show_path"="1" 일 때만
+    // 경로 디버그 표시 — localStorage "db"="1" 일 때만
     if (showPath) {
       // 1) 부드러운 경로 라인
       ctx.lineWidth = Math.max(2, W * 0.004);

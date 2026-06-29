@@ -8,10 +8,10 @@
 document.title = "EXP② — 모스부호 교신";
 
 $(function () {
-  // 테스트 모드(localStorage bohun_show_path="1") → 신호 속도 3배(시간값 전체 1/3 스케일)
+  // 테스트 모드(localStorage db="1") → 신호 속도 3배(시간값 전체 1/3 스케일)
   const TEST = (() => {
     try {
-      return localStorage.getItem("bohun_show_path") === "1";
+      return localStorage.getItem("db") === "1";
     } catch (e) {
       return false;
     }
@@ -57,6 +57,7 @@ $(function () {
     "img/common/exp_setting.png",
     "img/common/exp_popup_btn_next.png",
     "img/common/exp_popup_btn_retry.png",
+    "img/common/clear_stamp.png",
   ].concat(["E", "A", "G", "L", "S", "N", "D"].map((c) => `img/4_EXP2/exp2_text_${c}.png`));
 
   const canvas = document.getElementById("morseCanvas");
@@ -79,6 +80,7 @@ $(function () {
   let done = 0;
   let finishing = false;
   let finishTimer = null;
+  let korTimer = null; // EAGLE SEND 노출 후 한글 교차 디졸브 지연 타이머
 
   function sizeCanvas() {
     const track = document.getElementById("morseTrack");
@@ -198,9 +200,9 @@ $(function () {
       // 모든 신호 판정 후 바로 끝내지 않고 잠깐 여유(마지막 dot 결과·연출 노출)
       if (done >= beats.length && !finishing) {
         finishing = true;
-        // 완료 순간 EAGLE SEND → '각 지대 즉각 전달' 교차 디졸브
-        revealKor();
-        // 한글 노출을 잠깐 보여준 뒤 성공 팝업(교차 디졸브 0.6초 + 여유)
+        // EAGLE SEND 를 1초간 노출한 뒤 '각 지대 즉각 전달'로 교차 디졸브(타이밍 보정)
+        korTimer = setTimeout(revealKor, 1000);
+        // 한글 노출을 잠깐 보여준 뒤 성공 팝업(1초 지연 + 교차 디졸브 0.6초 + 여유)
         finishTimer = setTimeout(finish, 3000);
       }
     }
@@ -302,6 +304,12 @@ $(function () {
       clearTimeout(finishTimer);
       finishTimer = null;
     }
+    if (korTimer) {
+      clearTimeout(korTimer);
+      korTimer = null;
+    }
+    // 팝업 진입 시점엔 한글이 보이도록 보정(지연 타이머가 못 돌았을 경우 대비)
+    revealKor();
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     started = false;
@@ -313,6 +321,10 @@ $(function () {
     if (finishTimer) {
       clearTimeout(finishTimer);
       finishTimer = null;
+    }
+    if (korTimer) {
+      clearTimeout(korTimer);
+      korTimer = null;
     }
     AR.closePopup("#finishDim");
     // 재시작: 시작 메시지 없이 곧바로 전신기 터치 단계로

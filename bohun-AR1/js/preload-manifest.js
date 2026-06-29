@@ -6,6 +6,7 @@ window.AR_MANIFEST = {
     "img/common/btn_home.png",
     "img/common/btn_toggle_off.png",
     "img/common/btn_toggle_on.png",
+    "img/common/clear_stamp.png",
     "img/common/exp_gage_bg.png",
     "img/common/exp_popup_btn_next.png",
     "img/common/exp_popup_btn_retry.png",
