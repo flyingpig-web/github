@@ -8,13 +8,23 @@
 document.title = "EXP② — 모스부호 교신";
 
 $(function () {
+  // 테스트 모드(localStorage db="1") → 신호 속도 3배(시간값 전체 1/3 스케일)
+  const TEST = (() => {
+    try {
+      return localStorage.getItem("db") === "1";
+    } catch (e) {
+      return false;
+    }
+  })();
+  const SPEED = TEST ? 3 : 1;
+
   /* ----- 튜닝 상수(가변) ----- */
   const CONFIG = {
     total: 20, // 총 신호 수(= MESSAGE 심볼 합)
     needSuccess: 10, // 교신 완료 기준
-    firstAt: 3600, // 첫 신호가 판정선에 닿는 시각(ms)
-    travel: 4000, // 우측 진입 → 판정선 도달까지 이동 시간(ms) — 0.5배속
-    goodWindow: 300, // ±판정 허용(ms) ≈ 프로토타입 "±5%" (0.5배속에 맞춰 2배)
+    firstAt: 3600 / SPEED, // 첫 신호가 판정선에 닿는 시각(ms)
+    travel: 4000 / SPEED, // 우측 진입 → 판정선 도달까지 이동 시간(ms) — 0.5배속
+    goodWindow: 300 / SPEED, // ±판정 허용(ms) ≈ 프로토타입 "±5%" (0.5배속에 맞춰 2배)
     hitFrac: 0.046, // 트랙 폭 대비 판정선 x 위치(좌측, .morse-hit-line 과 맞춤)
   };
 
@@ -32,7 +42,7 @@ $(function () {
     { ch: "N", code: "-." },
     { ch: "D", code: "-.." },
   ];
-  const GAP = { symbol: 940, letter: 1840, word: 3000 };
+  const GAP = { symbol: 940 / SPEED, letter: 1840 / SPEED, word: 3000 / SPEED };
 
   const assets = [
     "img/4_EXP2/exp2_bg.png",
@@ -47,6 +57,7 @@ $(function () {
     "img/common/exp_setting.png",
     "img/common/exp_popup_btn_next.png",
     "img/common/exp_popup_btn_retry.png",
+    "img/common/clear_stamp.png",
   ].concat(["E", "A", "G", "L", "S", "N", "D"].map((c) => `img/4_EXP2/exp2_text_${c}.png`));
 
   const canvas = document.getElementById("morseCanvas");
@@ -61,6 +72,7 @@ $(function () {
   let groups = []; // { ch, beats:[], shown }
   let started = false;
   let paused = false;
+  let startGate = false; // 시작 안내 팝업(체험 방법) 게이트 활성 여부
   let raf = null;
   let clock = 0; // 누적 게임 시각(ms)
   let lastTs = 0;
@@ -68,6 +80,7 @@ $(function () {
   let done = 0;
   let finishing = false;
   let finishTimer = null;
+  let korTimer = null; // EAGLE SEND 노출 후 한글 교차 디졸브 지연 타이머
 
   function sizeCanvas() {
     const track = document.getElementById("morseTrack");
@@ -187,7 +200,10 @@ $(function () {
       // 모든 신호 판정 후 바로 끝내지 않고 잠깐 여유(마지막 dot 결과·연출 노출)
       if (done >= beats.length && !finishing) {
         finishing = true;
-        finishTimer = setTimeout(finish, 1100);
+        // EAGLE SEND 를 1초간 노출한 뒤 '각 지대 즉각 전달'로 교차 디졸브(타이밍 보정)
+        korTimer = setTimeout(revealKor, 1000);
+        // 한글 노출을 잠깐 보여준 뒤 성공 팝업(1초 지연 + 교차 디졸브 0.6초 + 여유)
+        finishTimer = setTimeout(finish, 3000);
       }
     }
     raf = requestAnimationFrame(loop);
@@ -251,11 +267,27 @@ $(function () {
     $judge.addClass("show");
   }
 
+  // 완료 시: EAGLE SEND(영문 이미지) → '각 지대 즉각 전달'(한글) 교차 디졸브
+  function revealKor() {
+    const en = document.getElementById("morseLetter");
+    if (en) en.style.opacity = "0";
+    const ko = document.getElementById("morseLetterKor");
+    if (ko) ko.classList.add("show");
+  }
+  // 시작/재시작 시 한글 레이어 숨기고 영문 표시 복구
+  function resetKor() {
+    const en = document.getElementById("morseLetter");
+    if (en) en.style.opacity = "";
+    const ko = document.getElementById("morseLetterKor");
+    if (ko) ko.classList.remove("show");
+  }
+
   function startGame() {
     if (started) return;
     started = true;
     $("#gameStart").addClass("display-none");
     document.getElementById("morseLetter").innerHTML = "";
+    resetKor();
     sizeCanvas();
     buildBeats();
     clock = 0;
@@ -272,6 +304,12 @@ $(function () {
       clearTimeout(finishTimer);
       finishTimer = null;
     }
+    if (korTimer) {
+      clearTimeout(korTimer);
+      korTimer = null;
+    }
+    // 팝업 진입 시점엔 한글이 보이도록 보정(지연 타이머가 못 돌았을 경우 대비)
+    revealKor();
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     started = false;
@@ -284,12 +322,15 @@ $(function () {
       clearTimeout(finishTimer);
       finishTimer = null;
     }
+    if (korTimer) {
+      clearTimeout(korTimer);
+      korTimer = null;
+    }
     AR.closePopup("#finishDim");
-    // 시작 화면 초기 상태로(안내 보이고 핫스팟 숨김 → 다시 1단계부터)
-    $("#gameStart").removeClass("display-none armed");
-    $("#gameStart .start-msg, #gameStart .start-touch").removeClass("display-none");
-    $("#startHotspot").addClass("display-none");
+    // 재시작: 시작 메시지 없이 곧바로 전신기 터치 단계로
+    armTelegraph();
     document.getElementById("morseLetter").innerHTML = "";
+    resetKor();
     ctx.clearRect(0, 0, canvas._w || 0, canvas._h || 0);
     started = false;
     paused = false;
@@ -297,17 +338,24 @@ $(function () {
     updateGage();
   }
 
+  /* ----- 시작 흐름 -----
+     진입 시 시작 메시지 대신 "체험 방법 안내" 팝업을 게이트로 띄운다.
+     팝업 닫기 → 전신기 핫스팟 노출(armed) → 전신기 터치 → 게임 시작. */
+  function openStartGate() {
+    startGate = true;
+    $("#gameStart").addClass("display-none"); // 시작 메시지 오버레이 미사용
+    AR.openPopup("#tutorialDim");
+  }
+  function armTelegraph() {
+    $("#gameStart")
+      .removeClass("display-none")
+      .addClass("armed"); // dim 제거(전신기가 그대로 보이도록)
+    $("#gameStart .start-msg, #gameStart .start-touch").addClass("display-none");
+    $("#startHotspot").removeClass("display-none");
+  }
+
   /* ----- 이벤트 ----- */
-  // 1단계: "터치하여 시작" 클릭 → 안내 숨기고 전신기 핫스팟 노출(아직 게임 시작 X)
-  $("#gameStart").on("click", function () {
-    if (started) return;
-    if ($("#startHotspot").hasClass("display-none")) {
-      $("#gameStart").addClass("armed"); // dim 제거
-      $("#gameStart .start-msg, #gameStart .start-touch").addClass("display-none");
-      $("#startHotspot").removeClass("display-none");
-    }
-  });
-  // 2단계: 전신기 핫스팟 클릭 → 게임 시작. startGame 이 #gameStart 를 숨김.
+  // 전신기 핫스팟 클릭 → 게임 시작. startGame 이 #gameStart 를 숨김.
   $("#startHotspot").on("click touchstart", function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -342,7 +390,13 @@ $(function () {
   });
   $("#tutClose").on("click", () => {
     AR.closePopup("#tutorialDim");
-    paused = false;
+    if (startGate) {
+      // 시작 게이트: 팝업 닫으면 전신기 터치 단계로 진입
+      startGate = false;
+      armTelegraph();
+    } else {
+      paused = false; // 게임 중 튜토리얼 열람 후 닫기 → 재개
+    }
   });
 
   // 완료 팝업
@@ -356,5 +410,6 @@ $(function () {
   /* ----- 시작 ----- */
   AR.preload(assets).then(() => {
     sizeCanvas();
+    openStartGate(); // 진입 시 체험 방법 안내 팝업
   });
 });

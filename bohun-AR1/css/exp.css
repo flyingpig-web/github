@@ -84,6 +84,12 @@
 /* 핫스팟 노출 단계에서는 dim 제거(전신기가 그대로 보이도록) */
 .game-start.armed {
   background: transparent;
+  /* 시작 대기(armed) 중에도 상단 버튼(설정/튜토리얼/홈)이 눌리도록 클릭 통과 */
+  pointer-events: none;
+}
+/* 단, 전신기 시작 핫스팟은 그대로 클릭을 받아 게임을 시작 */
+.game-start.armed .key-hotspot {
+  pointer-events: auto;
 }
 
 /* ===== 캔버스(게임 렌더 영역) ===== */
@@ -189,4 +195,43 @@
 .dialog.finish .finish-btns img {
   width: 100%;
   display: block;
+  transition: transform 0.15s ease;
+}
+/* [다음으로]/[다시 하기] 마우스 오버 시 10% 확대 */
+.dialog.finish .finish-btns button:hover img {
+  transform: scale(1.1);
+}
+
+/* [성공] 도장 — 팝업 등장 후 찍히는 모션 */
+.dialog.finish .finish-stamp {
+  position: absolute;
+  top: 7%;
+  right: 5%;
+  width: 18%;
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: center center;
+}
+.dialog.finish.flex .finish-stamp {
+  animation: stampDown 0.45s cubic-bezier(0.2, 0.85, 0.3, 1) 0.45s forwards;
+}
+@keyframes stampDown {
+  0% {
+    opacity: 0;
+    transform: scale(2.6) rotate(-14deg);
+  }
+  55% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+    transform: scale(0.9) rotate(0deg);
+  }
+  85% {
+    transform: scale(1.06) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
