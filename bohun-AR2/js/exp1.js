@@ -109,6 +109,7 @@ $(function () {
   }
   const E = "img/2_Exp1/";
   loadImg("p_stand", E + "exp1_player_stand.png");
+  loadImg("p_stand_baggage", E + "exp1_player_stand_baggage.png"); // 짐 든 채 정지
   loadImg("p_walk1", E + "exp1_player_walk1.png");
   loadImg("p_walk2", E + "exp1_player_walk2.png");
   loadImg("e_stand", E + "exp1_police_stand.png");
@@ -125,6 +126,7 @@ $(function () {
   const assets = [
     E + "exp1_bg.png",
     E + "exp1_player_stand.png",
+    E + "exp1_player_stand_baggage.png",
     E + "exp1_player_walk1.png",
     E + "exp1_player_walk2.png",
     E + "exp1_police_stand.png",
@@ -155,6 +157,7 @@ $(function () {
   let started = false,
     paused = false,
     over = false, // 게임 종료(성공/실패) 후 조작 차단
+    startGate = false, // 시작 안내 팝업(체험 방법) 게이트 활성 여부
     raf = null,
     lastTs = 0;
   let player, input, items, enemies, collected, fails, animClock;
@@ -396,11 +399,17 @@ $(function () {
   // 대원 스프라이트: 물자 0개 → 맨손 세트(pe_*), 1개↑ → 드는 세트(p_*).
   // 맨손 에셋이 아직 없으면 현재(드는) 세트로 폴백.
   function playerSprite() {
-    const frame = player.moving
-      ? Math.floor(animClock / 0.18) % 2 === 0
-        ? "walk1"
-        : "walk2"
-      : "stand";
+    // 정지 상태
+    if (!player.moving) {
+      // 짐 보유 + 정지 → 짐 든 채 서 있는 모습(소스 없으면 기존 stand 로 폴백)
+      if (collected >= 1) {
+        const b = imgs.p_stand_baggage;
+        if (b && b.naturalWidth) return b;
+      }
+      return imgs.p_stand;
+    }
+    // 이동(걷기) 상태
+    const frame = Math.floor(animClock / 0.18) % 2 === 0 ? "walk1" : "walk2";
     if (collected < 1) {
       const e = imgs["pe_" + frame];
       if (e && e.naturalWidth) return e;
@@ -570,11 +579,21 @@ $(function () {
 
   function resetGame() {
     AR.closePopup("#finishDim");
-    $("#gameStart").removeClass("display-none");
     ctx.clearRect(0, 0, W, H);
     started = false;
     paused = false;
     resetState();
+    // 재시작: 시작 안내 팝업 없이 곧바로 게임 시작
+    startGame();
+  }
+
+  /* ----- 시작 흐름 -----
+     진입 시 시작 메시지(배너) 대신 "체험 방법 안내" 팝업을 게이트로 띄운다.
+     팝업 닫기 → 곧바로 게임 시작. (한국광복군편 EXP 와 동일) */
+  function openStartGate() {
+    startGate = true;
+    $("#gameStart").addClass("display-none"); // 시작 배너 오버레이 미사용
+    AR.openPopup("#tutorialDim");
   }
 
   // PC(뷰포트 1025px↑) = 방향키 / 모바일 = 조이스틱
@@ -688,7 +707,13 @@ $(function () {
   });
   $("#tutClose").on("click", () => {
     AR.closePopup("#tutorialDim");
-    paused = false;
+    if (startGate) {
+      // 시작 게이트: 팝업 닫으면 곧바로 게임 시작
+      startGate = false;
+      startGame();
+    } else {
+      paused = false; // 게임 중 튜토리얼 열람 후 닫기 → 재개
+    }
   });
   $("#btnNext").on("click", () => AR.go("bridge.html"));
   $("#btnRetry").on("click", resetGame);
@@ -706,5 +731,8 @@ $(function () {
     }
   });
 
-  AR.preload(assets).then(() => sizeCanvas());
+  AR.preload(assets).then(() => {
+    sizeCanvas();
+    openStartGate(); // 진입 시 체험 방법 안내 팝업(게이트)
+  });
 });

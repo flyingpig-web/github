@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>체험 완료 — 크리스마스의 기적</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/preload-manifest.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <div class="cut-bg end-bg"></div>
+
+          <!-- 이름 입력(배경 입력칸 위 오버레이) -->
+          <input
+            type="text"
+            class="end-name-input"
+            id="nameInput"
+            maxlength="12"
+            placeholder="이름 입력..."
+            aria-label="이름 입력"
+          />
+
+          <!-- 훈장 + 명판 위 이름 -->
+          <div class="end-medal" id="medal">
+            <img class="medal-img" src="img/5_END/end_image.png" alt="훈장" />
+            <span class="medal-name" id="medalName"></span>
+          </div>
+
+          <!-- 하단 버튼 -->
+          <div class="end-btns">
+            <button id="btnGet"><img src="img/5_END/end_scrap.png" alt="훈장 받기" /></button>
+            <button id="btnHome"><img src="img/5_END/end_home.png" alt="처음으로" /></button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/end.js"></script>
+  </body>
+</html>
