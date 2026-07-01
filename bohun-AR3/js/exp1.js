@@ -20,10 +20,11 @@ $(function () {
     firstSpawnAt: 1.0, // 첫 생성 지연(초)
     enemyTravel: [3, 5], // 생성 위치 → 트럭 도달 소요(초) 범위
     spawnDist: [0.18, 0.34], // 트럭으로부터 생성 거리(화면비 보정 거리)
-    rearArcDeg: 150, // 진행 반대(뒤) 방향 ±각도 안에서만 생성(앞쪽 퇴로엔 X)
     contactR: 0.05, // 트럭-중국군 충돌 판정 거리(화면비 보정)
     tapR: 0.06, // 터치 판정 반경(화면비 보정)
     dieDur: 0.5, // 터치 시 페이드아웃 시간(초)
+    popDur: 0.65, // 등장 스케일(0→100%) 시간(초) — 살짝 텐션
+    spawnMinAlpha: 0.2, // 등장 시작 투명도(0에 가까울수록 더 흐릿하게 매복→등장)
     // 퇴로(정규화 폴리라인) — 장진호(★) → 흥남(⚓)
     path: [
       [0.182, 0.22],
@@ -49,6 +50,12 @@ $(function () {
   const AR_RATIO = 953 / 537; // 컨테이너 가로:세로 — 거리 계산 화면비 보정
   // 화면비 보정 거리(정규화 좌표를 화면 비율에 맞춰 측정)
   const adist = (ax, ay, bx, by) => Math.hypot((ax - bx) * AR_RATIO, ay - by);
+
+  // 화면 대각선(좌상단→우하단, 정규화 y=x) 기준 중국군 좌우반전.
+  // 선의 좌하단쪽(y>x)에 있는 적은 반전, 우상단쪽(y<x)은 기본 방향.
+  // ※ 스프라이트 기본 바라보는 방향에 따라 FLIP_SIGN(±1)로 부호를 맞춘다(db=1 로 확인).
+  const FLIP_SIGN = 1;
+  const sideFace = (nx, ny) => (ny > nx ? -FLIP_SIGN : FLIP_SIGN);
 
   // 경로 누적 길이(화면비 보정) 사전 계산
   const segLen = [];
@@ -125,7 +132,8 @@ $(function () {
     over = false,
     startGate = false,
     raf = null,
-    lastTs = 0;
+    lastTs = 0,
+    restartTimer = null; // 실패 시 붉은 점멸 후 자동 재시작 타이머
   let elapsed, hp, enemies, spawnTimer, animClock, truck;
 
   let showPath = (() => {
@@ -176,14 +184,12 @@ $(function () {
     $timer.text(`${mm}:${ss}`);
   }
 
-  /* ----- 중국군 생성: 트럭 뒤(진행 반대) ± rearArc 안, spawnDist 거리 ----- */
+  /* ----- 중국군 생성: 트럭 주변 사방(360°), spawnDist 거리 -----
+     정면·측면·후면 어디서나 등장(뒤쪽만 나오는 느낌 제거). */
   function spawnEnemy() {
     const tp = pointAtDist((elapsed / CONFIG.duration) * totalLen);
-    // 진행 방향(화면비 보정) → 그 반대(뒤)를 기준 각으로
-    const fwd = Math.atan2(tp.dy, tp.dx * AR_RATIO);
-    const rear = fwd + Math.PI;
-    const arc = (CONFIG.rearArcDeg * Math.PI) / 180;
-    const ang = rear + (Math.random() - 0.5) * arc;
+    // 사방(전방위) 무작위 각
+    const ang = Math.random() * Math.PI * 2;
     const d =
       CONFIG.spawnDist[0] +
       Math.random() * (CONFIG.spawnDist[1] - CONFIG.spawnDist[0]);
@@ -200,7 +206,8 @@ $(function () {
       x: ex,
       y: ey,
       speed: d0 / travel, // 화면비 보정 거리/초
-      face: 1,
+      face: sideFace(ex, ey), // 화면 대각선 기준 좌우반전
+      age: 0, // 등장 경과(초) — 등장 스케일(0→100%)용
       dying: 0, // >0 이면 페이드아웃 진행(초)
     });
   }
@@ -225,6 +232,7 @@ $(function () {
 
     // 중국군 이동/판정
     for (const e of enemies) {
+      e.age += dt; // 등장 스케일(0→100%) 진행
       if (e.dying > 0) {
         e.dying += dt; // 페이드아웃 진행
         continue;
@@ -246,8 +254,8 @@ $(function () {
       const f = Math.min(1, (e.speed * dt) / Math.max(d, 1e-4));
       e.x += (truck.x - e.x) * f;
       e.y += (truck.y - e.y) * f;
-      if (Math.abs(truck.x - e.x) > 0.0001)
-        e.face = truck.x - e.x >= 0 ? 1 : -1;
+      // 좌우반전: 화면 대각선(y=x) 기준(현재 위치가 선의 어느 쪽인지)
+      e.face = sideFace(e.x, e.y);
     }
     // 정리: 제거 대상 + 페이드아웃 끝난 적
     enemies = enemies.filter((e) => !e.remove && e.dying <= CONFIG.dieDur);
@@ -275,11 +283,55 @@ $(function () {
     return Math.floor(animClock / 0.18) % 2 === 0 ? imgs.enemy1 : imgs.enemy2;
   }
 
+  // 등장 중 흰색 틴트용 오프스크린(재사용) — 배경 오염 없이 스프라이트만 하얗게
+  const tintCv = document.createElement("canvas");
+  const tintCtx = tintCv.getContext("2d");
+
+  // 중국군 그리기: 등장 중이면 흰색 틴트(white 0~1)를 스프라이트에만 입힘.
+  // white=1 → 완전 하양, white=0 → 원래 붉은색. alpha 는 전체 투명도.
+  function drawEnemy(img, nx, ny, nw, flip, alpha, white) {
+    if (!img || !img.complete || !img.naturalWidth) return;
+    if (white <= 0.001) {
+      drawSprite(img, nx, ny, nw, flip, alpha); // 등장 완료 → 원본 그대로
+      return;
+    }
+    const w = Math.max(1, Math.round(nw * W));
+    const h = Math.max(1, Math.round(w * (img.naturalHeight / img.naturalWidth)));
+    // 오프스크린: 스프라이트 그린 뒤 source-atop 으로 흰색을 스프라이트 픽셀에만 덧칠
+    tintCv.width = w;
+    tintCv.height = h;
+    tintCtx.clearRect(0, 0, w, h);
+    tintCtx.globalCompositeOperation = "source-over";
+    tintCtx.globalAlpha = 1;
+    tintCtx.drawImage(img, 0, 0, w, h);
+    tintCtx.globalCompositeOperation = "source-atop";
+    tintCtx.globalAlpha = Math.min(1, white);
+    tintCtx.fillStyle = "#ffffff";
+    tintCtx.fillRect(0, 0, w, h);
+    tintCtx.globalCompositeOperation = "source-over";
+    // 메인 캔버스에 배치(중앙 기준 + 좌우반전 + 전체 알파)
+    ctx.save();
+    ctx.globalAlpha = alpha == null ? 1 : alpha;
+    ctx.translate(PX(nx), PY(ny));
+    if (flip < 0) ctx.scale(-1, 1);
+    ctx.drawImage(tintCv, -w / 2, -h / 2, w, h);
+    ctx.restore();
+  }
+
   function render() {
     ctx.clearRect(0, 0, W, H);
 
     // 디버그 오버레이(경로/생성/판정) — db=1 또는 P키
     if (showPath) {
+      // 좌우반전 경계선: 화면 대각선(좌상단 → 우하단, 정규화 y=x).
+      // 이 선의 좌하단쪽 중국군이 좌우반전됨.
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(255,60,60,0.9)";
+      ctx.beginPath();
+      ctx.moveTo(PX(0), PY(0));
+      ctx.lineTo(PX(1), PY(1));
+      ctx.stroke();
+
       ctx.lineWidth = 2;
       ctx.strokeStyle = "rgba(80,180,255,0.9)";
       ctx.beginPath();
@@ -321,10 +373,21 @@ $(function () {
       ctx.stroke();
     }
 
-    // 중국군(2프레임 애니, 죽는 중이면 페이드)
+    // 중국군: 등장 중(t<1)엔 하얀색·반투명(매복→등장), 완료 시 원래 붉은색.
     for (const e of enemies) {
-      const a = e.dying > 0 ? Math.max(0, 1 - e.dying / CONFIG.dieDur) : 1;
-      drawSprite(enemyFrame(), e.x, e.y, CONFIG.enemyW, e.face, a);
+      const t = Math.min(1, (e.age || 0) / CONFIG.popDur); // 등장 진행 0~1
+      const dieA = e.dying > 0 ? Math.max(0, 1 - e.dying / CONFIG.dieDur) : 1;
+      const white = 1 - t; // t=0 완전 하양 → t=1 원색
+      const spawnA = CONFIG.spawnMinAlpha + (1 - CONFIG.spawnMinAlpha) * t; // 페이드인
+      drawEnemy(
+        enemyFrame(),
+        e.x,
+        e.y,
+        CONFIG.enemyW * t, // 등장 스케일(0→100%)
+        e.face,
+        dieA * spawnA,
+        white,
+      );
     }
 
     // 트럭(진행 방향으로 플립)
@@ -349,19 +412,40 @@ $(function () {
     lastTs = 0;
   }
 
-  function finish() {
+  // 붉은 화면 점멸(피격/실패 연출) — #hitFlash 오버레이 애니메이션 재시작
+  function flashHit() {
+    const $f = $("#hitFlash");
+    if (!$f.length) return;
+    $f.removeClass("show");
+    void $f[0].offsetWidth; // 리플로우 강제 → 애니메이션 재시작
+    $f.addClass("show");
+  }
+
+  function finish(success) {
     over = true;
     started = false;
-    AR.openPopup("#finishDim");
+    if (success) {
+      // 성공(30초 생존) → 체험 종료 팝업
+      AR.openPopup("#finishDim");
+    } else {
+      // 실패(체력 0) → 종료 팝업 대신 붉은 화면 점멸 후 자동 재시작(청산리 EXP① 방식)
+      flashHit();
+      if (restartTimer) clearTimeout(restartTimer);
+      restartTimer = setTimeout(resetGame, 700);
+    }
   }
 
   function resetGame() {
+    if (restartTimer) {
+      clearTimeout(restartTimer);
+      restartTimer = null;
+    }
     AR.closePopup("#finishDim");
     started = false;
     paused = false;
     resetState();
     render();
-    // 재시작: 안내 없이 곧바로 시작 대기(화면 터치 → PLAY) — 바로 시작
+    // 재시작: 안내 없이 곧바로 시작
     startGame();
   }
 
@@ -426,9 +510,9 @@ $(function () {
   $("#tutClose").on("click", () => {
     AR.closePopup("#tutorialDim");
     if (startGate) {
-      // 시작 게이트: 안내 닫으면 시작 오버레이 노출(화면 터치 → PLAY)
+      // 시작 게이트: 안내 닫으면 터치 없이 곧바로 게임 시작(자동 진행)
       startGate = false;
-      $("#gameStart").removeClass("display-none");
+      startGame();
     } else {
       paused = false; // 게임 중 튜토리얼 열람 후 닫기 → 재개
     }

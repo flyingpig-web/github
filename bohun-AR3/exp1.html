@@ -43,8 +43,11 @@
             <span class="timer-text" id="timerText">00:30</span>
           </div>
 
-          <!-- 시작 오버레이(체험 방법 안내 닫은 뒤: 화면 터치 → PLAY 시작) -->
+          <!-- 시작 오버레이(안내 닫으면 자동 시작이라 현재 미사용, 폴백용 유지) -->
           <div class="game-start display-none" id="gameStart"></div>
+
+          <!-- 실패(체력 0) 시 붉은 화면 점멸 오버레이 -->
+          <div class="hit-flash" id="hitFlash"></div>
 
           <!-- 설정 팝업 -->
           <div class="dimmed" id="settingDim">

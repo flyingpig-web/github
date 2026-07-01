@@ -13,6 +13,7 @@ window.AR_MANIFEST = {
     {
       "page": "intro.html",
       "images": [
+        "img/1_INTRO/btn_ok.png",
         "img/1_INTRO/icon_touch.png",
         "img/1_INTRO/icon_touch_effect.png",
         "img/1_INTRO/intro_bg1-1.png",
@@ -65,6 +66,7 @@ window.AR_MANIFEST = {
         "img/3_BRIDGE/bridge_bg3-1.png",
         "img/3_BRIDGE/bridge_bg3-2.png",
         "img/3_BRIDGE/bridge_popup_objective.png",
+        "img/3_BRIDGE/btn_ok.png",
         "img/3_BRIDGE/icon_touch.png",
         "img/3_BRIDGE/icon_touch_effect.png",
         "img/3_BRIDGE/skip_btn.png",

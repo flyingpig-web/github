@@ -55,6 +55,7 @@ $(function () {
     .map((c) => c.img)
     .concat([
       B + "intro_popup_objective.png",
+      B + "btn_ok.png",
       B + "icon_touch_effect.png",
       B + "icon_touch.png",
       B + "text_bg.png",

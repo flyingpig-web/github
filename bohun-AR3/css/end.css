@@ -34,12 +34,12 @@
   color: #b7a98c;
 }
 
-/* ===== 훈장(메달) ===== */
+/* ===== 훈장(메달) — 크기 살짝 축소 + 오른편으로 이동(수정요청 p8) ===== */
 .end-medal {
   position: absolute;
-  left: 53%;
-  top: 5%;
-  width: 31%;
+  left: 60%;
+  top: 8%;
+  width: 27%;
   z-index: 3;
 }
 .end-medal .medal-img {

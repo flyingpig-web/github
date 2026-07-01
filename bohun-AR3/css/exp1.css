@@ -30,20 +30,21 @@
   width: 100%;
   display: block;
 }
-/* hp_bg 우측 슬롯 영역(트럭 아이콘 오른쪽)에 5칸 정렬 */
+/* hp_bg 우측 슬롯 영역(트럭 아이콘 오른쪽)에 5칸 정렬.
+   트럭 이미지가 가려지지 않도록 슬롯을 트럭 오른쪽으로 완전히 밀어 배치. */
 .exp1-hp .hp-segs {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 27%;
-  right: 3%;
+  left: 35%;
+  width: 12%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 3%;
+  gap: 2%;
 }
 .exp1-hp .hp-segs img {
-  height: 62%;
+  height: 72%;
   width: auto;
   display: block;
 }
@@ -85,4 +86,28 @@
   z-index: 15;
   cursor: pointer;
   background: transparent;
+}
+
+/* ===== 실패(체력 0) 시 붉은 화면 점멸 후 자동 재시작 연출 ===== */
+.hit-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 44;
+  background: rgba(200, 30, 30, 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+.hit-flash.show {
+  animation: hitFlash 0.55s ease;
+}
+@keyframes hitFlash {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

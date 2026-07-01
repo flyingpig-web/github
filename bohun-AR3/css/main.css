@@ -143,25 +143,39 @@
   transform: scale(1.1);
 }
 
-/* ===== 목표 팝업(도입/연결 공통) — 이미지 박스 자체를 터치하면 진행 =====
-   AR3 목표 이미지는 메시지 박스만 포함(별도 확인 버튼 없음) → 박스 클릭으로 [확인]. */
+/* ===== 목표 팝업(도입/연결 공통) — 목표 UI 아래 [임무 확인] 버튼으로 진행 =====
+   목표 이미지(메시지 박스) + 하단 [임무 확인] 버튼. 박스 자체는 클릭 대상 아님. */
 .dialog.objective {
   width: 64%;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  animation: pulse2 1.6s ease-in-out infinite;
+  gap: 3%;
 }
 .dialog.objective .obj-img {
   width: 100%;
   display: block;
 }
-@keyframes pulse2 {
+/* [임무 확인] 버튼 — 목표 박스 아래 중앙. 시선 유도용 은은한 펄스 + 호버 확대. */
+.dialog.objective .obj-ok {
+  width: 26%;
+  cursor: pointer;
+  animation: okPulse 1.6s ease-in-out infinite;
+  margin-top: 4rem;
+}
+.dialog.objective .obj-ok img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.dialog.objective .obj-ok:hover img {
+  transform: scale(1.1);
+}
+@keyframes okPulse {
   0%,
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
   }
   50% {
-    transform: translate(-50%, -50%) scale(1.02);
+    transform: scale(1.05);
   }
 }
