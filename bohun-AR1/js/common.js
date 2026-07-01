@@ -473,6 +473,23 @@
       if (global.AR && global.AR.clickSfx) Sound.sfx(global.AR.clickSfx);
     });
 
+    // 디버그 토글: Ctrl + ;  → localStorage.db "1" 설정/삭제 토글 후 새로고침
+    $(document).on("keydown", function (e) {
+      if (e.ctrlKey && (e.key === ";" || e.code === "Semicolon")) {
+        e.preventDefault();
+        try {
+          if (localStorage.getItem("db") === "1") {
+            localStorage.removeItem("db");
+            console.log("[debug] db OFF");
+          } else {
+            localStorage.setItem("db", "1");
+            console.log("[debug] db ON");
+          }
+        } catch (err) {}
+        location.reload();
+      }
+    });
+
     // 프로젝트 전역 이미지 프리페치 — 현재 화면을 본 뒤(idle) 다음 화면들을 미리 받아둠.
     prefetchFlow();
   });

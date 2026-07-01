@@ -213,7 +213,7 @@
   transform-origin: center center;
 }
 .dialog.finish.flex .finish-stamp {
-  animation: stampDown 0.45s cubic-bezier(0.2, 0.85, 0.3, 1) 0.45s forwards;
+  animation: stampDown 0.9s cubic-bezier(0.2, 0.85, 0.3, 1) 0.45s forwards;
 }
 @keyframes stampDown {
   0% {

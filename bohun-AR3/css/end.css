@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   5_END — 체험 완료(훈장)
+   - 배경(end_bg)에 타이틀·설명·"이름을 입력해주세요" 라벨·입력칸 테두리가 포함됨.
+   - 그 위에 실제 <input>, 훈장(end_image), 훈장 명판 위 이름, 하단 버튼을 오버레이.
+   - [훈장 받기] = 훈장 이미지 + 이름을 캔버스로 합성해 PNG 다운로드(외부 라이브러리 X).
+   ⚠️ 입력칸/명판 좌표는 임시값(Open Item): 배경 이미지 기준 미세조정.
+   ========================================================================= */
+
+.end-bg {
+  background-image: url(../img/5_END/end_bg.png);
+}
+
+/* ===== 이름 입력(배경에 그려진 입력칸 위에 오버레이) ===== */
+.end-name-input {
+  position: absolute;
+  left: 6.5%;
+  top: 63.6%;
+  width: 37%;
+  height: 8.4%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  font-size: 4rem;
+  color: #1c1208;
+  z-index: 4;
+  text-align: center;
+  letter-spacing: 1rem;
+}
+
+.end-name-input::placeholder {
+  color: #b7a98c;
+}
+
+/* ===== 훈장(메달) ===== */
+.end-medal {
+  position: absolute;
+  left: 53%;
+  top: 5%;
+  width: 31%;
+  z-index: 3;
+}
+.end-medal .medal-img {
+  width: 100%;
+  display: block;
+}
+/* 메달 하단 명판 위 이름(tunable) — 화면=다운로드 합성 단일 기준 */
+.end-medal .medal-name {
+  position: absolute;
+  left: 17.5%;
+  right: 17%;
+  top: 72.8%;
+  height: 8.2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 4rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #2a1c0c;
+  letter-spacing: 1rem;
+}
+
+/* ===== 하단 버튼(훈장 받기 / 처음으로) ===== */
+.end-btns {
+  position: absolute;
+  left: 6.5%;
+  top: 79%;
+  display: flex;
+  gap: 4%;
+  width: 38%;
+  z-index: 4;
+}
+.end-btns button {
+  cursor: pointer;
+  flex: 1;
+}
+.end-btns img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.end-btns button:hover img {
+  transform: scale(1.05);
+}

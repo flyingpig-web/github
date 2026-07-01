@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>EXP① — 병력 이동 방어</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/preload-manifest.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <div class="cut-bg exp1-bg"></div>
+          <canvas class="game-canvas" id="exp1Canvas"></canvas>
+
+          <!-- 상단 버튼(중앙): 설정 - 튜토리얼 - 나가기 -->
+          <div class="game-top exp1-top">
+            <button class="btn-top" id="btnSetting"><img src="img/2_EXP1/btn_setting.png" alt="설정" /></button>
+            <button class="btn-top" id="btnInfo"><img src="img/2_EXP1/btn_info.png" alt="튜토리얼" /></button>
+            <button class="btn-top" id="btnHome"><img src="img/2_EXP1/btn_home.png" alt="나가기" /></button>
+          </div>
+
+          <!-- 트럭 체력(좌하단): hp_bg(트럭 아이콘 포함) + 5칸 -->
+          <div class="exp1-hp">
+            <img class="hp-bg" src="img/2_EXP1/exp1_hp_bg.png" alt="" />
+            <div class="hp-segs" id="hpSegs">
+              <img src="img/2_EXP1/exp_hp.png" alt="" />
+              <img src="img/2_EXP1/exp_hp.png" alt="" />
+              <img src="img/2_EXP1/exp_hp.png" alt="" />
+              <img src="img/2_EXP1/exp_hp.png" alt="" />
+              <img src="img/2_EXP1/exp_hp.png" alt="" />
+            </div>
+          </div>
+
+          <!-- 남은 시간(우하단) -->
+          <div class="exp1-timer">
+            <img class="timer-bg" src="img/2_EXP1/exp1_timer.png" alt="" />
+            <span class="timer-text" id="timerText">00:30</span>
+          </div>
+
+          <!-- 시작 오버레이(체험 방법 안내 닫은 뒤: 화면 터치 → PLAY 시작) -->
+          <div class="game-start display-none" id="gameStart"></div>
+
+          <!-- 설정 팝업 -->
+          <div class="dimmed" id="settingDim">
+            <div class="dialog setting">
+              <img class="popup-base" src="img/2_EXP1/exp_setting.png" alt="설정" />
+              <button class="btn-close" id="setClose"><img src="img/2_EXP1/btn_close.png" alt="닫기" /></button>
+              <button class="toggle toggle-bgm" id="toggleBgm" data-img-on="img/2_EXP1/btn_toggle_on.png" data-img-off="img/2_EXP1/btn_toggle_off.png">
+                <img src="img/2_EXP1/btn_toggle_on.png" alt="배경음" />
+              </button>
+              <button class="toggle toggle-sfx" id="toggleSfx" data-img-on="img/2_EXP1/btn_toggle_on.png" data-img-off="img/2_EXP1/btn_toggle_off.png">
+                <img src="img/2_EXP1/btn_toggle_on.png" alt="효과음" />
+              </button>
+            </div>
+          </div>
+
+          <!-- 튜토리얼(체험 방법 안내) 팝업 -->
+          <div class="dimmed" id="tutorialDim">
+            <div class="dialog tutorial">
+              <img class="popup-base" src="img/2_EXP1/exp1_info.png" alt="체험 방법 안내" />
+              <button class="btn-close" id="tutClose"><img src="img/2_EXP1/btn_close.png" alt="닫기" /></button>
+            </div>
+          </div>
+
+          <!-- 완료(체험 종료) 팝업 -->
+          <div class="dimmed" id="finishDim">
+            <div class="dialog finish">
+              <img class="finish-base" src="img/2_EXP1/exp1_popup_finish.png" alt="병력 이동 종료" />
+              <div class="finish-btns">
+                <button id="btnNext"><img src="img/2_EXP1/exp_popup_btn_next.png" alt="다음으로" /></button>
+                <button id="btnRetry"><img src="img/2_EXP1/exp_popup_btn_retry.png" alt="다시 하기" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/exp1.js"></script>
+  </body>
+</html>

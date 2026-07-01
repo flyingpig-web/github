@@ -1,0 +1,88 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   EXP① — 병력 이동 방어 게임 전용 스타일
+   - 공통 게임 UI(.game-top / .dialog.* )는 exp.css 재사용.
+   - 여기서는 게임 배경, 트럭 체력(HP) UI, 남은 시간 UI, 시작 오버레이.
+   ========================================================================= */
+
+/* 게임 배경(장진호 → 흥남 퇴로 지도) */
+.exp1-bg {
+  background-image: url(../img/2_EXP1/exp1_bg.png);
+}
+
+/* 상단 버튼 그룹을 화면 중앙 정렬(구성안 MAIN 기준) */
+.game-top.exp1-top {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+/* ===== 트럭 체력(좌하단) : hp_bg(좌측 트럭 아이콘 포함) + 우측 슬롯 5칸 ===== */
+.exp1-hp {
+  position: absolute;
+  left: 3%;
+  bottom: 5%;
+  width: 25%;
+  z-index: 20;
+}
+.exp1-hp .hp-bg {
+  width: 100%;
+  display: block;
+}
+/* hp_bg 우측 슬롯 영역(트럭 아이콘 오른쪽)에 5칸 정렬 */
+.exp1-hp .hp-segs {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 27%;
+  right: 3%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3%;
+}
+.exp1-hp .hp-segs img {
+  height: 62%;
+  width: auto;
+  display: block;
+}
+
+/* ===== 남은 시간(우하단) : timer_bg(좌측 시계 포함) + 우측 카운트다운 ===== */
+.exp1-timer {
+  position: absolute;
+  right: 3%;
+  bottom: 5%;
+  width: 17%;
+  z-index: 20;
+}
+.exp1-timer .timer-bg {
+  width: 100%;
+  display: block;
+}
+.exp1-timer .timer-text {
+  position: absolute;
+  left: 30%;
+  right: 2%;
+  top: 20%;
+  bottom: 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 4.2rem;
+  color: #f4e9c9;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+/* ===== 시작 오버레이 : 체험 방법 안내 닫은 뒤 화면 아무 곳이나 터치 → PLAY =====
+   상단 버튼(z-index 20) 아래에 두어, 시작 전에도 설정/튜토리얼/홈은 눌리게 함. */
+.game-start {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  cursor: pointer;
+  background: transparent;
+}
