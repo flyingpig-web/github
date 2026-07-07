@@ -76,6 +76,6 @@ $(function () {
 
   $("#btnObjConfirm").on("click", function () {
     // 4_EXP②-AR 은 유니티 담당. 웹은 진입 셸(exp2.html)로 이동.
-    AR.go("/exp2_ar/index.html");
+    AR.go("exp2_ar/index.html");
   });
 });
