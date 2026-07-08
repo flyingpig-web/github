@@ -101,5 +101,5 @@ $(function () {
   }
 
   // 목표 박스 터치 → 4_EXP②-AR(웹 진입 셸)로 이동
-  $("#objConfirm").on("click", () => AR.go("exp2.html"));
+  $("#objConfirm").on("click", () => AR.go("exp2_ar/index.html"));
 });
