@@ -82,7 +82,7 @@
   position: absolute;
   left: 6%;
   bottom: 8%;
-  width: 8%;
+  width: 16%; /* 모바일 조작성 개선 위해 2배 확대(수정요청) */
   aspect-ratio: 1 / 1;
   z-index: 30;
   touch-action: none;

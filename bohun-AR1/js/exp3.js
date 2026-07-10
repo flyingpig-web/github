@@ -150,7 +150,9 @@ $(function () {
     lastTs = 0,
     finishing = false,
     finishTimer = null,
-    startGate = false; // 시작 안내 팝업(체험 방법) 게이트 활성 여부
+    startGate = false, // 시작 안내 팝업(체험 방법) 게이트 활성 여부
+    engineStarted = false, // 시동음 재생 여부(세션 내 최초 이동)
+    engineMoving = false; // 엔진 루프음 재생 중 여부
   let jeep, input, hasLetters, delivered, particles, stack;
   let pulseT = 0; // 상호작용 마커 펄스용 시간 누적(초)
   // 충칭 HQ 다음 펄스 순서(depots 인덱스): 지대3(푸양,idx1) → 지대2(진화 2구대,idx2) → 지대1(라오허카우 1구대,idx0)
@@ -289,12 +291,39 @@ $(function () {
     }
   }
 
-  const SFX = { pickup: "", deliver: "", dust: "" }; // ⚠️ 사운드 경로 미확정(Open Item)
+  // 마커가 빨간색→파란색으로 바뀌는 순간(HQ 수신 / 각 지대 전달) 성공음, 완료 팝업음.
+  const SFX = {
+    pickup: "audio/effects/item_success.wav", // 총사령부 수신(HQ 마커 파란색)
+    deliver: "audio/effects/item_success.wav", // 각 지대 전달(지대 마커 파란색)
+    complete: "audio/effects/mission_complete.wav", // 성공 팝업
+    dust: "",
+  };
+  // 차량 엔진음: 최초 이동 시 시동음(startup) 후 루프, 재이동은 루프만.
+  const ENGINE = {
+    startup: "audio/effects/car_startup.wav",
+    loop: "audio/effects/car_loop.wav",
+  };
+  function stopEngine() {
+    engineMoving = false;
+    AR.Sound.stopLoop("carEngine");
+  }
 
   function update(dt) {
     pulseT += dt; // 마커 펄스용 시간 누적
     // 전방향 이동(횡스크롤 탑다운): 머리 = 조이스틱 방향, 그 방향으로 이동.
     const mag = Math.hypot(input.x, input.y);
+    // 엔진음: 조작 시작 → (최초면 시동음+)루프, 멈추면 루프 정지
+    const moving = mag > 0.05;
+    if (moving && !engineMoving) {
+      engineMoving = true;
+      if (!engineStarted) {
+        engineStarted = true;
+        AR.Sound.sfx(ENGINE.startup);
+      }
+      AR.Sound.loop("carEngine", ENGINE.loop, { volume: 0.5 });
+    } else if (!moving && engineMoving) {
+      stopEngine();
+    }
     const dev = distToPath(jeep.x, jeep.y);
     const off = dev > MAP.dustThreshold; // 감속 시작 + 흙먼지
     // 이탈 정도에 비례해 100% → offPenalty(0=완전 정지)까지 선형 감속. 벽(blockThreshold)에서 0%.
@@ -505,6 +534,9 @@ $(function () {
     if (started) return;
     started = true;
     finishing = false;
+    // 엔진음 초기화(새 판 시작 → 첫 이동에 다시 시동음)
+    engineStarted = false;
+    stopEngine();
     $("#gameStart").addClass("display-none");
     sizeCanvas();
     resetState();
@@ -520,6 +552,8 @@ $(function () {
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     started = false;
+    stopEngine();
+    AR.Sound.sfx(SFX.complete); // 성공 팝업 등장음
     AR.openPopup("#finishDim");
   }
 
@@ -648,11 +682,15 @@ $(function () {
     closeBtn: "#setClose",
     toggleBgm: "#toggleBgm",
     toggleSfx: "#toggleSfx",
-    onPause: () => (paused = true),
+    onPause: () => {
+      paused = true;
+      stopEngine(); // 일시정지 중 엔진 루프음이 계속 도는 것 방지
+    },
     onResume: () => (paused = false),
   });
   $("#btnInfo").on("click", () => {
     paused = true;
+    stopEngine();
     AR.openPopup("#tutorialDim");
   });
   $("#tutClose").on("click", () => {
@@ -676,6 +714,8 @@ $(function () {
     }
   });
 
+  // 엔진음/성공음은 지연 없이 나오도록 미리 로드
+  AR.Sound.prime([ENGINE.startup, ENGINE.loop, SFX.pickup, SFX.complete]);
   AR.preload(assets).then(() => {
     sizeCanvas();
     openStartGate(); // 진입 시 체험 방법 안내 팝업

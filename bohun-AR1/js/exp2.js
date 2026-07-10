@@ -194,6 +194,7 @@ $(function () {
           done++;
           updateGage();
           tryLetter(b.group);
+          AR.Sound.sfx(SFX.bad); // 누르지 않고 지나침 → 실패음
         }
       }
       draw();
@@ -234,6 +235,8 @@ $(function () {
 
     target.judged = true;
     done++;
+    // 터치 시작 시 부호 길이별 효과음(점=short, 선=long)
+    AR.Sound.sfx(target.dash ? SFX.long : SFX.short);
     if (best <= CONFIG.goodWindow) {
       target.ok = true;
       success++;
@@ -252,10 +255,12 @@ $(function () {
   }
 
   const SFX = {
-    // ⚠️ 사운드 경로 미확정(Open Item). 파일 배치 시 채우면 자동 재생.
-    good: "",
-    bad: "",
-    morse: "",
+    short: "audio/effects/morse_short.wav", // 점(dot) 길이 큐
+    long: "audio/effects/morse_long.wav", // 선(dash) 길이 큐
+    good: "audio/effects/morse_good.mp3", // 정타
+    bad: "audio/effects/morse_bad.mp3", // 오타/미스(누르지 않고 지나침)
+    itemSuccess: "audio/effects/item_success.wav", // '각 지대 즉각 전달' 텍스트 전환
+    complete: "audio/effects/mission_complete.wav", // 성공 팝업
   };
 
   function showJudge(ok) {
@@ -270,8 +275,12 @@ $(function () {
   // 완료 시: EAGLE SEND(영문 이미지) → '각 지대 즉각 전달'(한글) 교차 디졸브
   function revealKor() {
     const en = document.getElementById("morseLetter");
-    if (en) en.style.opacity = "0";
     const ko = document.getElementById("morseLetterKor");
+    // 최초 전환(숨김→표시)일 때만 '각 지대 즉각 전달' 성공음 재생
+    if (ko && !ko.classList.contains("show")) {
+      AR.Sound.sfx(SFX.itemSuccess);
+    }
+    if (en) en.style.opacity = "0";
     if (ko) ko.classList.add("show");
   }
   // 시작/재시작 시 한글 레이어 숨기고 영문 표시 복구
@@ -314,6 +323,7 @@ $(function () {
     raf = null;
     started = false;
     // 성공 여부와 무관하게 결과 팝업(성공 기준 미달 시 [다시 하기] 유도)
+    AR.Sound.sfx(SFX.complete); // 성공 팝업 등장음
     AR.openPopup("#finishDim");
   }
 
@@ -408,6 +418,8 @@ $(function () {
   });
 
   /* ----- 시작 ----- */
+  // 타격감 있는 효과음은 지연 없이 나오도록 미리 로드
+  AR.Sound.prime([SFX.short, SFX.long, SFX.good, SFX.bad, SFX.itemSuccess, SFX.complete]);
   AR.preload(assets).then(() => {
     sizeCanvas();
     openStartGate(); // 진입 시 체험 방법 안내 팝업
