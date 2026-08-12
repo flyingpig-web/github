@@ -1,0 +1,114 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   7_END — 기록 증서(밀랍 원통 + "기록자" 이름표)
+   - 배경(end_bg)에 완료 문구가 이미 렌더되어 있음. 웹은 이름 입력/증서/버튼만 배치.
+   - ★ .cert-name 이 화면 표시와 다운로드(캔버스 합성)의 단일 기준 좌표다.
+   ========================================================================= */
+
+.end-bg {
+  background-image: url(../img/7_END/end_bg.png);
+}
+
+/* ===== 좌측: 이름 작성 ===== (구성안 60p 목업 실측: x 0.135~0.455, y 0.485~0.68) */
+.end-input {
+  position: absolute;
+  left: 13.5%;
+  top: 48.5%;
+  width: 32%;
+  z-index: 5;
+}
+.end-input .box-img {
+  width: 100%;
+  display: block;
+}
+/* end_text_box.png 안쪽 크림색 입력 영역 실측 */
+.end-input input {
+  position: absolute;
+  left: 4.5%;
+  top: 36%;
+  width: 91%;
+  height: 42%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font);
+  font-size: 3.6rem;
+  font-weight: 600;
+  color: #2b1d0d;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+.end-input input::placeholder {
+  color: rgba(70, 50, 25, 0.45);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* ===== 좌측 하단: 버튼 ===== (목업 실측: 증서받기 x 0.14~0.285 / 처음으로 x 0.305~0.45) */
+.end-btns {
+  position: absolute;
+  left: 14%;
+  top: 75.5%;
+  display: flex;
+  gap: 6.4%;
+  width: 31%;
+  z-index: 5;
+}
+.end-btns button {
+  width: 46.8%;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.end-btns button img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.end-btns button:hover img {
+  transform: scale(1.08);
+}
+
+/* ===== 우측: 기록 증서(밀랍 원통 + 이름표) ===== */
+.end-cert {
+  position: absolute;
+  left: 55%;
+  top: 16%;
+  width: 39%; /* 749/1920 ≈ 원본 760 */
+  z-index: 5;
+
+  /* ★ 이름표 기울기 — 이름 텍스트를 이름표(서명선)와 같은 각도로 눕힌다.
+     end_image.png 의 서명선 실측값은 +6.24°(우측이 아래로)이고, 최종 적용값은 8.24°.
+     여기만 고치면 화면과 [증서 받기] 다운로드 이미지에 동시에 반영된다
+     (end.js 가 computed transform 에서 각도를 읽어감). 기울기를 없애려면 0deg. */
+  --cert-name-tilt: 8.24deg;
+}
+.end-cert .cert-img {
+  width: 100%;
+  display: block;
+}
+/* ★ 이름표(태그) 서명란 — 화면/다운로드 공통 기준 */
+.end-cert .cert-name {
+  position: absolute;
+  left: 55%;
+  top: 73%;
+  width: 39%;
+  height: 7%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-size: 3.4rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  color: #3a2a12;
+  white-space: nowrap;
+  pointer-events: none;
+  /* 이름표와 같은 각도로 기울임. 회전축은 요소 중앙(=서명란 중앙)이라
+     end.js 가 중심 좌표만 맞추면 캔버스에도 동일하게 재현된다. */
+  transform: rotate(var(--cert-name-tilt, 0deg));
+  transform-origin: 50% 50%;
+}

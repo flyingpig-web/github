@@ -1,0 +1,95 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   4_EXP②-AR — 웹 담당 구간(로딩 화면 + AR 방식 선택)
+   실제 AR 체험(광장 NPC 탐색)은 유니티 빌드가 담당한다.
+   ========================================================================= */
+
+/* ===== 화면 전환(로딩 ↔ 선택) ===== */
+.ar-screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+.ar-screen.on {
+  display: block;
+}
+
+/* ===== 로딩 게이지 — ar_loading_bar.png 1093×84(프레임) ===== */
+.ar-loading-bar {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  transform: translate(-50%, -50%);
+  width: 56.9%; /* 1093/1920 */
+  z-index: 5;
+}
+.ar-loading-bar .bar-frame {
+  width: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+/* 프레임 안쪽 트랙(장식 끝단 제외).
+   프레임 이미지의 홈이 불투명해서 아래 레이어로 두면 채움이 가려진다 → 프레임 위에 올린다. */
+.ar-loading-bar .bar-track {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 24%;
+  height: 52%;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 999px;
+}
+.ar-loading-bar .bar-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(180deg, #f6d98a 0%, #c9963c 55%, #8a601c 100%);
+  box-shadow: 0 0 1.2rem rgba(246, 217, 138, 0.75);
+  transition: width 0.15s linear;
+}
+.ar-loading-bar .bar-percent {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  font-family: var(--font);
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #2a1c0c;
+  text-shadow: 0 0.1rem 0 rgba(255, 240, 200, 0.55);
+}
+
+/* ===== AR 방식 선택 버튼 ===== */
+.ar-modes {
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 5%;
+  width: 74%;
+  justify-content: center;
+  z-index: 5;
+}
+.ar-modes button {
+  width: 44%;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.ar-modes button img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.ar-modes button:hover img {
+  transform: scale(1.06);
+  filter: brightness(1.12);
+}
+.ar-modes button:active img {
+  filter: var(--btn-active-effect);
+}

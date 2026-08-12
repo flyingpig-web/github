@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>체험③ — 이위종 특사의 연설을 기록하라</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/preload-manifest.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body class="exp3-page">
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <!-- 배경(강연장 + 연단 + 군중 + 축음기) -->
+          <div class="cut-bg exp3-bg"></div>
+
+          <!-- 이위종 특사(연단) — 문장마다 포즈 교체 -->
+          <div class="exp3-wijong">
+            <img id="wijong" src="img/6_EXP3/exp3_wijong1.png" alt="이위종 특사" />
+          </div>
+          <!-- 연단 앞면 재오버레이(하반신 가림) -->
+          <div class="exp3-podium"></div>
+
+          <!-- 연설 말풍선 -->
+          <div class="exp3-message" id="message">
+            <img id="messageImg" src="img/6_EXP3/exp3_message1.png" alt="연설" />
+          </div>
+
+          <!-- 회전 안내 -->
+          <div class="exp3-guide" id="guide">
+            <img src="img/6_EXP3/exp3_arrow.png" alt="손잡이를 돌려 연설을 기록해 주세요!" />
+          </div>
+
+          <!-- 축음기 크랭크(배경의 손잡이를 덮고 회전 스프라이트를 올림) -->
+          <div class="exp3-crank-patch"></div>
+          <div class="exp3-crank-zone" id="crankZone"></div>
+          <div class="exp3-crank hint" id="crank">
+            <img src="img/6_EXP3/exp3_lever.png" alt="축음기 손잡이" />
+          </div>
+
+          <!-- 기록 진행률 -->
+          <div class="exp3-progress">
+            <img class="progress-bg" src="img/6_EXP3/exp3_progress.png" alt="기록 진행률" />
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          </div>
+
+          <!-- 상단 버튼: 설정 - 튜토리얼 - 홈 -->
+          <div class="game-top">
+            <button class="btn-top" id="btnSetting"><img src="img/common/btn_setting.png" alt="설정" /></button>
+            <button class="btn-top" id="btnInfo"><img src="img/common/btn_info.png" alt="튜토리얼" /></button>
+            <button class="btn-top" id="btnHome"><img src="img/common/btn_home.png" alt="홈" /></button>
+          </div>
+
+          <!-- 시작 안내(메인) — 체험 방법 안내 팝업(딤드 없음). 화면 아무 곳이나 터치 → PLAY -->
+          <div class="dimmed plain exp3-start-hit" id="startDim">
+            <div class="dialog tutorial">
+              <img class="popup-base" src="img/6_EXP3/exp3_info.png" alt="축음기 손잡이를 돌려 이위종 열사의 연설을 기록하세요!" />
+              <button class="btn-close" id="startClose"><img src="img/common/btn_close.png" alt="닫기" /></button>
+            </div>
+          </div>
+
+          <!-- 설정 팝업 -->
+          <div class="dimmed" id="settingDim">
+            <div class="dialog setting">
+              <img class="popup-base" src="img/common/exp_setting.png" alt="설정" />
+              <button class="btn-close" id="setClose"><img src="img/common/btn_close.png" alt="닫기" /></button>
+              <button class="toggle toggle-bgm" id="toggleBgm" data-img-on="img/common/btn_toggle_on.png" data-img-off="img/common/btn_toggle_off.png">
+                <img src="img/common/btn_toggle_on.png" alt="배경음" />
+              </button>
+              <button class="toggle toggle-sfx" id="toggleSfx" data-img-on="img/common/btn_toggle_on.png" data-img-off="img/common/btn_toggle_off.png">
+                <img src="img/common/btn_toggle_on.png" alt="효과음" />
+              </button>
+            </div>
+          </div>
+
+          <!-- 튜토리얼(체험 방법 안내) 팝업 -->
+          <div class="dimmed" id="tutorialDim">
+            <div class="dialog tutorial">
+              <img class="popup-base" src="img/6_EXP3/exp3_info.png" alt="체험 방법 안내" />
+              <button class="btn-close" id="tutClose"><img src="img/common/btn_close.png" alt="닫기" /></button>
+            </div>
+          </div>
+
+          <!-- 완료(기록 성공) 팝업 — 구성안 59p "마지막 화면에서 딤드 처리" -->
+          <div class="dimmed" id="finishDim">
+            <div class="dialog finish">
+              <img class="finish-base" src="img/6_EXP3/exp3_popup_finish.png" alt="기록 성공" />
+              <div class="finish-btns">
+                <button id="btnNext"><img src="img/6_EXP3/exp_popup_btn_next.png" alt="다음으로" /></button>
+                <button id="btnRetry"><img src="img/6_EXP3/exp_popup_btn_retry.png" alt="다시 하기" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/exp3.js"></script>
+  </body>
+</html>

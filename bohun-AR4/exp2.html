@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>체험② — AR 체험 (한국의 호소)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/preload-manifest.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body>
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <!-- (1) 로딩 화면 -->
+          <div class="ar-screen on" id="scrLoading">
+            <div class="cut-bg" style="background-image: url(img/4_EXP2-AR/ar_loading_bg.png)"></div>
+            <div class="ar-loading-bar">
+              <img class="bar-frame" src="img/4_EXP2-AR/ar_loading_bar.png" alt="" />
+              <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+              <span class="bar-percent" id="barPercent">0%</span>
+            </div>
+          </div>
+
+          <!-- (2) AR 방식 선택 -->
+          <div class="ar-screen" id="scrSelect">
+            <div class="cut-bg" style="background-image: url(img/4_EXP2-AR/ar_select_bg.png)"></div>
+            <div class="ar-modes">
+              <button id="btnModeAr">
+                <img src="img/4_EXP2-AR/ar_mode_ground_btn.png" alt="AR로 체험 (바닥 인식)" />
+              </button>
+              <button id="btnModePc">
+                <img src="img/4_EXP2-AR/ar_mode_no_tracking_btn.png" alt="인식 없이 체험" />
+              </button>
+            </div>
+          </div>
+
+          <!-- 완료(요청 성공) 팝업 — 유니티 복귀 지점 / 빌드 미납품 시 셸 -->
+          <div class="dimmed" id="finishDim">
+            <div class="dialog finish">
+              <img class="finish-base" src="img/4_EXP2-AR/exp2_popup_finish.png" alt="요청 성공" />
+              <div class="finish-btns">
+                <button id="btnNext"><img src="img/common/exp_popup_btn_next.png" alt="다음으로" /></button>
+                <button id="btnRetry"><img src="img/common/exp_popup_btn_retry.png" alt="다시 하기" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/exp2.js"></script>
+  </body>
+</html>

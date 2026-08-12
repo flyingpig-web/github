@@ -1,0 +1,186 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   6_EXP③ — 축음기 크랭크 기록 게임
+   - 배경(exp3_bg)에 축음기·연단·군중이 모두 포함되어 있어 DOM 오버레이로 구성.
+   - 좌표는 배경 이미지 실측(정규화 %) 기준.
+   ========================================================================= */
+
+.exp3-bg {
+  background-image: url(../img/6_EXP3/exp3_bg.png);
+}
+
+/* ===== 이위종 특사(연단) — 문장마다 포즈 교체
+   구성안 57p 목업 실측: x 0.20~0.30, y 0.30~0.60 → 스프라이트 원본 크기(243×324). ===== */
+.exp3-wijong {
+  position: absolute;
+  left: 18.7%;
+  top: 26%;
+  width: 12.66%; /* 243/1920 */
+  z-index: 5;
+}
+.exp3-wijong img {
+  width: 100%;
+  display: block;
+}
+
+/* 연단(강연대) 앞면을 다시 덮어 이위종의 하반신을 가린다(배경 이미지 크롭 오버레이) */
+.exp3-podium {
+  position: absolute;
+  left: 16%;
+  top: 53%;
+  width: 15%;
+  height: 20%;
+  z-index: 4;
+  background-image: url(../img/6_EXP3/exp3_bg.png);
+  background-repeat: no-repeat;
+  background-size: 666.67% 500%;
+  background-position: 18.82% 66.25%;
+  pointer-events: none;
+}
+
+/* ===== 연설 말풍선 ===== (목업 실측: x 0.265~0.475, y 0.185~0.395) */
+.exp3-message {
+  position: absolute;
+  left: 26.5%;
+  top: 18.5%;
+  width: 22.7%; /* 436/1920 */
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.exp3-message.on {
+  opacity: 1;
+}
+.exp3-message img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 회전 안내 배너(오른쪽 화살표) — exp3_arrow.png 482×100 ===== */
+.exp3-guide {
+  position: absolute;
+  left: 44%;
+  top: 55%;
+  width: 25.1%; /* 482/1920 */
+  z-index: 6;
+  animation: exp3GuideFloat 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.exp3-guide img {
+  width: 100%;
+  display: block;
+}
+@keyframes exp3GuideFloat {
+  0%,
+  100% {
+    transform: translateX(-1.5%);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateX(1.5%);
+    opacity: 1;
+  }
+}
+
+/* ===== 축음기 크랭크 =====
+   배경에 이미 그려진 손잡이를 상자 면 조각으로 덮고(exp3-crank-patch),
+   그 위에 회전 가능한 손잡이 스프라이트를 올린다. */
+.exp3-crank-patch {
+  position: absolute;
+  left: 77.5%;
+  top: 82.8%;
+  width: 3.6%;
+  height: 12.5%; /* 손잡이 knob 하단까지 완전히 덮도록 */
+  z-index: 4;
+  background-image: url(../img/6_EXP3/exp3_bg.png);
+  background-repeat: no-repeat;
+  background-size: 2777.78% 800%;
+  background-position: 88.69% 94.63%;
+  pointer-events: none;
+}
+.exp3-crank {
+  position: absolute;
+  left: 78.3%;
+  top: 80.25%;
+  width: 2.5%; /* 48/1920 */
+  z-index: 7;
+  transform-origin: 42% 3%; /* 스프라이트 상단 = 회전축 */
+  cursor: grab;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.exp3-crank.grabbing {
+  cursor: grabbing;
+}
+.exp3-crank img {
+  width: 100%;
+  display: block;
+}
+/* 조작 유도 — 아직 한 번도 돌리지 않았을 때만 */
+.exp3-crank.hint {
+  animation: exp3CrankHint 1.6s ease-in-out infinite;
+}
+@keyframes exp3CrankHint {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(8deg);
+  }
+}
+/* 회전축 주변 넓은 드래그 히트영역(작은 손잡이를 잡기 쉽게) */
+.exp3-crank-zone {
+  position: absolute;
+  left: 72.5%;
+  top: 74%;
+  width: 14%;
+  height: 25%;
+  z-index: 6;
+  touch-action: none;
+  cursor: grab;
+}
+
+/* ===== 기록 진행률 — exp3_progress.png 575×146
+   구성안 57p 목업 실측: 우측 상단(x 0.635~0.935, y 0.23~) — 상단 버튼 아래. ===== */
+.exp3-progress {
+  position: absolute;
+  right: 6.5%;
+  top: 23%;
+  width: 30%; /* 575/1920 */
+  z-index: 20;
+  pointer-events: none;
+}
+.exp3-progress .progress-bg {
+  width: 100%;
+  display: block;
+}
+.exp3-progress .progress-track {
+  position: absolute;
+  left: 4.5%;
+  right: 4.5%;
+  top: 47%;
+  height: 38%;
+  overflow: hidden;
+  border-radius: 999px;
+}
+.exp3-progress .progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(180deg, #f6d98a 0%, #c9963c 55%, #8a601c 100%);
+  box-shadow: 0 0 1rem rgba(246, 217, 138, 0.7);
+  transition: width 0.2s linear;
+}
+
+/* ===== 시작 안내(메인) =====
+   구성안 53p 목업: 메인의 [메시지(팝업)] = `exp3_info.png`(체험 방법 안내)를
+   딤드 없이 띄우고, 화면 아무 곳이나 터치하면 PLAY 시작. */
+.exp3-start-hit {
+  cursor: pointer;
+}
+
+/* 튜토리얼 팝업(exp3_info.png 1263×840) */
+.exp3-page .dialog.tutorial {
+  width: 66%;
+}

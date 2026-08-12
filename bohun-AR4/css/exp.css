@@ -1,0 +1,171 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   게임 공통 UI (EXP② 모스 / EXP③ 운전 공용)
+   - 상단 버튼(설정/튜토리얼/홈), 진행 게이지, 시작 메시지,
+     설정·튜토리얼·완료 팝업. 위치는 % + absolute.
+   ========================================================================= */
+
+/* ===== 상단 중앙 버튼 그룹 (설정 - 튜토리얼 - 홈) ===== */
+/* 버튼 원본 62×65px, gap 35px (1920 기준). 컨테이너 100%=1920px 이므로
+   game-top 폭 = 62*3 + 35*2 = 256px = 256/1920 = 13.3333%.
+   버튼/gap 은 game-top 폭 기준 % (62/256, 35/256) → 1920 에서 정확히 62/65/35px.
+   ★ 위치는 구성안 목업 실측: 그룹이 x 0.435~0.565(=화면 중앙), y 0.045 에 위치. */
+.game-top {
+  position: absolute;
+  top: 4.5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  width: 13.3333%;
+  gap: 13.671875%; /* 35/256 */
+  z-index: 20;
+}
+.game-top .btn-top {
+  position: static;
+  width: 24.21875%; /* 62/256 → 62px @1920 */
+  height: auto; /* 이미지 62:65 → 자동으로 65px */
+  cursor: pointer;
+}
+.game-top .btn-top img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 진행 게이지(성공률 n/20, 서신 n/3 등) ===== */
+.game-gage {
+  position: absolute;
+  top: 4%;
+  left: 3%;
+  width: 22%;
+  z-index: 20;
+}
+.game-gage .gage-bg {
+  width: 100%;
+  display: block;
+}
+.game-gage .gage-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font);
+  font-size: 2rem;
+  color: #f4e9c9;
+  white-space: nowrap;
+}
+
+/* ※ 시작 메시지는 별도 오버레이가 아니라 각 체험의 "체험 방법 안내" 팝업
+   (exp1_info / exp3_info)을 딤드 없이(.dimmed.plain) 띄우는 방식이다. 구성안 15p·53p 목업 참고. */
+
+/* ===== 캔버스(게임 렌더 영역) ===== */
+.game-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+/* =========================================================================
+   팝업 공통 (설정 / 튜토리얼 / 완료)
+   ========================================================================= */
+.dialog.popup-img {
+  width: 50%;
+}
+.dialog.popup-img > .popup-base {
+  width: 100%;
+  display: block;
+}
+
+/* ----- 설정 팝업 ----- (구성안 18p 목업 실측: 팝업 폭 30%, X 는 우측 테두리에 걸침) */
+.dialog.setting {
+  width: 30%; /* 552/1920 ≈ 원본 크기 */
+}
+.dialog.setting .btn-close {
+  position: absolute;
+  top: 20%;
+  right: -4%;
+  width: 9%;
+  cursor: pointer;
+}
+.dialog.setting .btn-close img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.dialog.setting .btn-close:hover img {
+  transform: scale(1.1);
+}
+/* 토글 위치 — 목업 실측(배경음 39%, 효과음 57%, 라벨 우측 60% 지점) */
+.dialog.setting .toggle {
+  position: absolute;
+  left: 60%;
+  width: 16%;
+  cursor: pointer;
+}
+.dialog.setting .toggle img {
+  width: 100%;
+  display: block;
+}
+.dialog.setting .toggle-bgm {
+  top: 39%;
+}
+.dialog.setting .toggle-sfx {
+  top: 57%;
+}
+
+/* ----- 튜토리얼(정보) 팝업 ----- */
+.dialog.tutorial {
+  width: 62%;
+}
+.dialog.tutorial .btn-close {
+  position: absolute;
+  top: 16%; /* 목업 실측 */
+  right: 9%;
+  width: 4.2%;
+  cursor: pointer;
+}
+.dialog.tutorial .btn-close img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+.dialog.tutorial .btn-close:hover img {
+  transform: scale(1.1);
+}
+
+/* ----- 완료(체험 종료) 팝업 ----- */
+.dialog.finish {
+  width: 56%;
+  flex-direction: column;
+  align-items: center;
+}
+.dialog.finish .finish-base {
+  width: 100%;
+  display: block;
+}
+/* 버튼은 팝업 소스의 장식 구분선 아래 빈 영역에 배치(목업 실측: 팝업 높이의 74~83%) */
+.dialog.finish .finish-btns {
+  position: absolute;
+  left: 50%;
+  bottom: 13%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5%;
+  width: 72%;
+  justify-content: center;
+}
+.dialog.finish .finish-btns button {
+  width: 46.5%; /* 팝업 폭의 33.5% = 318/950 원본 비율 */
+  cursor: pointer;
+}
+.dialog.finish .finish-btns img {
+  width: 100%;
+  display: block;
+  transition: transform 0.15s ease;
+}
+/* [다음으로]/[다시 하기] 마우스 호버 시 10% 확대 */
+.dialog.finish .finish-btns button:hover img {
+  transform: scale(1.1);
+}

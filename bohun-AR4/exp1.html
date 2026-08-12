@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>체험① — 일본 순사를 피해 부산항으로</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/import.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/preload-manifest.js"></script>
+    <script src="js/common.js"></script>
+  </head>
+  <body class="exp1-page">
+    <main>
+      <div class="wrap">
+        <div class="container">
+          <!-- 게임 렌더(배경 스크롤 + 특사/순사 스프라이트 + 감지범위) -->
+          <canvas class="game-canvas" id="exp1Canvas"></canvas>
+
+          <!-- 상단 버튼: 설정 - 튜토리얼 - 홈 -->
+          <div class="game-top">
+            <button class="btn-top" id="btnSetting"><img src="img/common/btn_setting.png" alt="설정" /></button>
+            <button class="btn-top" id="btnInfo"><img src="img/common/btn_info.png" alt="튜토리얼" /></button>
+            <button class="btn-top" id="btnHome"><img src="img/common/btn_home.png" alt="홈" /></button>
+          </div>
+
+          <!-- 진행도(중명전 → 서울역 → 부산역 → 부산항) -->
+          <div class="exp1-progress">
+            <img class="progress-bg" src="img/2_EXP1/exp1_progress.png" alt="진행도" />
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
+              <div class="progress-dot" id="progressDot"></div>
+            </div>
+          </div>
+
+          <!-- [숨기] 버튼(홀드) -->
+          <div class="exp1-hide" id="btnHide" role="button">
+            <img src="img/2_EXP1/btn_hide.png" alt="숨기" />
+          </div>
+
+          <!-- 카운트다운 -->
+          <div class="exp1-count" id="countdown"><span id="countText">3</span></div>
+
+          <!-- 시작 안내(메인) — 체험 방법 안내 팝업(딤드 없음). 화면 아무 곳이나 터치 → PLAY -->
+          <div class="dimmed plain exp1-start-hit" id="startDim">
+            <div class="dialog tutorial">
+              <img class="popup-base" src="img/2_EXP1/exp1_info.png" alt="일본 순사를 피해 부산항까지 이동하라!" />
+              <button class="btn-close" id="startClose"><img src="img/common/btn_close.png" alt="닫기" /></button>
+            </div>
+          </div>
+
+          <!-- 설정 팝업 -->
+          <div class="dimmed" id="settingDim">
+            <div class="dialog setting">
+              <img class="popup-base" src="img/common/exp_setting.png" alt="설정" />
+              <button class="btn-close" id="setClose"><img src="img/common/btn_close.png" alt="닫기" /></button>
+              <button class="toggle toggle-bgm" id="toggleBgm" data-img-on="img/common/btn_toggle_on.png" data-img-off="img/common/btn_toggle_off.png">
+                <img src="img/common/btn_toggle_on.png" alt="배경음" />
+              </button>
+              <button class="toggle toggle-sfx" id="toggleSfx" data-img-on="img/common/btn_toggle_on.png" data-img-off="img/common/btn_toggle_off.png">
+                <img src="img/common/btn_toggle_on.png" alt="효과음" />
+              </button>
+            </div>
+          </div>
+
+          <!-- 튜토리얼(체험 방법 안내) 팝업 -->
+          <div class="dimmed" id="tutorialDim">
+            <div class="dialog tutorial">
+              <img class="popup-base" src="img/2_EXP1/exp1_info.png" alt="체험 방법 안내" />
+              <button class="btn-close" id="tutClose"><img src="img/common/btn_close.png" alt="닫기" /></button>
+            </div>
+          </div>
+
+          <!-- 실패 팝업(발각) — 목업 기준 딤드 없음 -->
+          <div class="dimmed plain" id="failDim">
+            <div class="dialog fail">
+              <img src="img/2_EXP1/exp1_fail.png" alt="실패" />
+            </div>
+          </div>
+
+          <!-- 완료(탑승 완료) 팝업 — 목업 기준 딤드 없음 -->
+          <div class="dimmed plain" id="finishDim">
+            <div class="dialog finish">
+              <img class="finish-base" src="img/2_EXP1/exp1_popup_finish.png" alt="탑승 완료" />
+              <div class="finish-btns">
+                <button id="btnNext"><img src="img/common/exp_popup_btn_next.png" alt="다음으로" /></button>
+                <button id="btnRetry"><img src="img/common/exp_popup_btn_retry.png" alt="다시 하기" /></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/exp1.js"></script>
+  </body>
+</html>

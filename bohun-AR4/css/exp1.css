@@ -1,0 +1,128 @@
+@charset "UTF-8";
+
+/* =========================================================================
+   2_EXP① — 횡스크롤 잠입 게임 (일본 순사를 피해 부산항까지)
+   - 게임 렌더는 <canvas>, HUD(진행도/숨기/카운트다운/팝업)는 DOM.
+   - 위치/크기는 % + absolute (디자인 기준 1920×1080).
+   ========================================================================= */
+
+/* ===== 진행도 UI (하단 좌측) — exp1_progress.png 827×139
+   구성안 20~24p 목업 실측: 바가 x 0.03~0.53, 하단에 붙어 있음. ===== */
+.exp1-progress {
+  position: absolute;
+  left: 3%;
+  bottom: 2.5%;
+  width: 50%;
+  z-index: 20;
+  pointer-events: none;
+}
+.exp1-progress .progress-bg {
+  width: 100%;
+  display: block;
+}
+/* 프레임 안쪽 홈(그루브) 영역 — 이미지 비율 기준 실측값 */
+.exp1-progress .progress-track {
+  position: absolute;
+  left: 4.2%;
+  right: 4.2%;
+  top: 60%;
+  height: 24%;
+}
+.exp1-progress .progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f6d98a 0%, #c9963c 55%, #8a601c 100%);
+  box-shadow: 0 0 0.8rem rgba(246, 217, 138, 0.7);
+  transition: width 0.12s linear;
+}
+/* 현재 위치 표시 점 */
+.exp1-progress .progress-dot {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  width: 1.6%;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #fff6d8;
+  box-shadow: 0 0 1.2rem rgba(255, 235, 170, 0.95);
+  transition: left 0.12s linear;
+}
+
+/* ===== [숨기] 버튼 (우하단) — btn_hide.png 217×217
+   구성안 20p 목업 실측: x 0.845~0.965, y 0.79~0.99. ===== */
+.exp1-hide {
+  position: absolute;
+  right: 3.5%;
+  bottom: 1%;
+  width: 12%;
+  z-index: 25;
+  cursor: pointer;
+  touch-action: none; /* 홀드 중 스크롤/제스처 방지 */
+  -webkit-tap-highlight-color: transparent;
+}
+.exp1-hide img {
+  width: 100%;
+  display: block;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+.exp1-hide:hover img {
+  transform: scale(1.06);
+}
+.exp1-hide.active img {
+  transform: scale(0.94);
+  filter: brightness(1.35) saturate(1.2);
+}
+
+/* ===== 시작 안내(메인) =====
+   구성안 15p 목업: 메인 화면의 [메시지(팝업)] = `exp1_info.png`(체험 방법 안내) 를
+   딤드 없이 띄우고, 화면 아무 곳이나 터치하면 PLAY 시작. */
+.exp1-start-hit {
+  cursor: pointer;
+}
+
+/* ===== 카운트다운(3 → 2 → 1) ===== */
+/* PDF 의 카운트다운 에셋이 미제공 → 타이포로 구현 */
+.exp1-count {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 45;
+  pointer-events: none;
+}
+.exp1-count.flex {
+  display: flex !important;
+}
+.exp1-count span {
+  font-family: var(--font);
+  font-size: 16rem;
+  font-weight: 800;
+  color: #f6e3b4;
+  text-shadow: 0 0 3rem rgba(0, 0, 0, 0.85), 0 0 6rem rgba(201, 165, 90, 0.8);
+  animation: exp1Count 0.9s ease-out;
+}
+@keyframes exp1Count {
+  0% { transform: scale(1.8); opacity: 0; }
+  30% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.85; }
+}
+
+/* ===== 실패 팝업 — exp1_fail.png 774×424 ===== */
+.dialog.fail {
+  width: 40%; /* 774/1920 */
+}
+.dialog.fail img {
+  width: 100%;
+  display: block;
+}
+
+/* ===== 튜토리얼 팝업(exp1_info.png 1263×840) 개별 폭 ===== */
+.exp1-page .dialog.tutorial {
+  width: 66%;
+}
