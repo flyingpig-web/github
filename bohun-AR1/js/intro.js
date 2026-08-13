@@ -16,7 +16,7 @@ $(function () {
       img: B + "intro_bg1-2.png",
       text: "1940년 9월 17일, 대한민국 임시정부는 충칭에서 정규군인 한국광복군을 창설했다.",
       vo: "intro_1-2.wav",
-      sfx: "audio/effects/intro_reveille.wav", // 인트로 1-2 진입 시 기상나팔
+      //sfx: "audio/effects/intro_reveille.wav", // 인트로 1-2 진입 시 기상나팔
       next: true,
     },
     // 2-1 광복군 훈련 이미지 터치
