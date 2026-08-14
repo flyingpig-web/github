@@ -94,7 +94,19 @@ $(function () {
   const $timer = $("#timerText");
   const $hpSegs = $("#hpSegs img");
 
-  const SFX = { tap: "", hit: "" }; // ⚠️ 사운드 경로 미확정(Open Item)
+  /* 효과음 — 수정요청안(사운드 시트) 기준.
+     · tap      : 적을 터치했을 때
+     · hit      : 적에게 트럭이 피격되었을 때
+     · move     : 트럭이 움직이는 동안 반복 재생(루프 채널 "truck")
+     · arrive   : 트럭이 최종 지점에 도달 — 이 소리가 끝난 뒤 성공 팝업이 뜬다
+     · complete : 성공 팝업 등장 */
+  const SFX = {
+    tap: "audio/effects/enemy_explosion.wav",
+    hit: "audio/effects/truck_damaged.wav",
+    move: "audio/effects/truck_move.wav",
+    arrive: "audio/effects/item_success.wav",
+    complete: "audio/effects/mission_complete.wav",
+  };
   const E = "img/2_EXP1/";
 
   /* ----- 이미지 ----- */
@@ -410,6 +422,16 @@ $(function () {
     over = false;
     $("#gameStart").addClass("display-none");
     lastTs = 0;
+    AR.Sound.loop("truck", SFX.move, { volume: 0.5 }); // 트럭 주행음(이동하는 동안 반복)
+  }
+
+  /* 일시정지 토글 — 주행음(루프)이 정지 상태를 따라가도록 한 곳에서 관리한다.
+     (설정/튜토리얼 팝업이 열려 트럭이 멈춘 동안 주행음이 계속 울리면 안 됨) */
+  function setPaused(v) {
+    paused = v;
+    if (!started || over) return;
+    if (v) AR.Sound.stopLoop("truck");
+    else AR.Sound.loop("truck", SFX.move, { volume: 0.5 });
   }
 
   // 붉은 화면 점멸(피격/실패 연출) — #hitFlash 오버레이 애니메이션 재시작
@@ -424,9 +446,13 @@ $(function () {
   function finish(success) {
     over = true;
     started = false;
+    AR.Sound.stopLoop("truck"); // 트럭 정지 → 주행음 정지
     if (success) {
-      // 성공(30초 생존) → 체험 종료 팝업
-      AR.openPopup("#finishDim");
+      // 성공(30초 생존) → 도착 효과음이 다 울린 뒤 체험 종료 팝업(수정요청안 p8)
+      AR.Sound.sfxThen(SFX.arrive, () => {
+        AR.Sound.sfx(SFX.complete);
+        AR.openPopup("#finishDim");
+      });
     } else {
       // 실패(체력 0) → 종료 팝업 대신 붉은 화면 점멸 후 자동 재시작(청산리 EXP① 방식)
       flashHit();
@@ -500,11 +526,11 @@ $(function () {
     closeBtn: "#setClose",
     toggleBgm: "#toggleBgm",
     toggleSfx: "#toggleSfx",
-    onPause: () => (paused = true),
-    onResume: () => (paused = false),
+    onPause: () => setPaused(true),
+    onResume: () => setPaused(false),
   });
   $("#btnInfo").on("click", () => {
-    paused = true;
+    setPaused(true);
     AR.openPopup("#tutorialDim");
   });
   $("#tutClose").on("click", () => {
@@ -514,7 +540,7 @@ $(function () {
       startGate = false;
       startGame();
     } else {
-      paused = false; // 게임 중 튜토리얼 열람 후 닫기 → 재개
+      setPaused(false); // 게임 중 튜토리얼 열람 후 닫기 → 재개
     }
   });
   $("#btnNext").on("click", () => AR.go("bridge.html"));
