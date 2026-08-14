@@ -7,8 +7,8 @@ $(function () {
   const B = "img/1_INTRO/";
   const C = "img/common/";
 
-  // 목표① 배경 = 유라시아 전도(부산 → 블라디보스토크 경로). bridge_bg1-1 과 동일 소스.
-  const OBJ_BG = B + "intro_bg5-2.png";
+  // ※ 목표① 배경은 도입 마지막 컷(intro_bg5-1)을 그대로 쓴다.
+  //    (지도 intro_bg5-2 는 연결 파트 배경과 같은 그림이라 목표①에 쓰지 않는다 — 수정요청안 p21)
 
   const cuts = [
     // 도입1-1 : 어두운 회의장, 책상 위 조약 문서 터치
@@ -58,7 +58,6 @@ $(function () {
   const assets = cuts
     .map((c) => c.img)
     .concat([
-      OBJ_BG,
       B + "intro_popup_objective.png",
       C + "btn_ok.png",
       C + "icon_touch_effect.png",
@@ -86,8 +85,8 @@ $(function () {
   });
 
   function showObjective() {
-    // 목표① 배경 = 이동 경로 지도. cut-bg 는 crossTo 용 twin 이 있어 둘 다 교체한다.
-    $(".cut-bg").css("background-image", `url("${OBJ_BG}")`);
+    // 수정요청안 p21: 목표① 뒤에 연결(Bridge)의 지도 배경이 나오던 것을 막고
+    // 도입 마지막 컷(intro_bg5-1) 그대로 두다. → 배경 교체 없음.
     $("#subtitle, #btnNext, #btnSkip, #hotspot").addClass("display-none");
     AR.openPopup("#objectiveDim");
   }

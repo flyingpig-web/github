@@ -18,7 +18,11 @@ $(function () {
 
   const CONFIG = {
     stageSec: [20, 20, 20], // 구간별 이동 시간(초) — PDF "각 구간 20초 내외, 총 1분"
-    groundY: [0.858, 0.86, 0.885], // 스테이지별 지면선(정규화 y) — 구성안 목업 실측
+    /* 스테이지별 지면선(정규화 y).
+       [2]는 수정요청안 p25("3번째 구간 BG 위치가 안맞음") 반영 —
+       배경 스트립 실측상 부두 바닥이 끝나고 석축이 시작되는 행이 0.827 이라
+       0.885 로는 특사가 석축(=진행도 바 뒤)에 파묻혀 있었다. */
+    groundY: [0.858, 0.86, 0.827],
     playerX: 0.18, // 특사 고정 x(정규화) — 목업 실측(0.13~0.19)
     playerFps: 10, // PDF 17p "캐릭터 프레임마다 0.1s씩 반복"
     enemyFps: 10, // 〃
@@ -49,9 +53,18 @@ $(function () {
   const SPEED = isDev() ? CONFIG.devSpeed : 1;
   const ms = (v) => v / SPEED; // 타이머 계열은 배속만큼 짧게
 
+  /* 효과음 — 수정요청안(사운드 시트) 기준.
+     · detected : 적(순사)에게 발각되었을 때
+     · hiding   : [숨기] 버튼을 눌렀을 때
+     · transition : 스테이지가 전환될 때
+     · arrive   : 최종 지점 도달 — 이 소리가 끝난 뒤 성공 팝업이 뜬다
+     · complete : 성공 팝업 등장 */
   const SFX = {
-    caught: "audio/sfx/caught.wav", // (e) 쿵! — 미수급(무음 폴백)
-    horn: "audio/sfx/horn.wav", // (e) 뱃고동 — 미수급(무음 폴백)
+    detected: "audio/effects/detected.wav",
+    hiding: "audio/effects/hiding.wav",
+    transition: "audio/effects/transition.mp3",
+    arrive: "audio/effects/item_success.wav",
+    complete: "audio/effects/mission_complete.wav",
   };
 
   const B = "img/2_EXP1/";
@@ -308,6 +321,7 @@ $(function () {
   function nextStage() {
     const from = S.stage;
     S.paused = true;
+    AR.Sound.sfx(SFX.transition); // 구간 전환음
     fadeTo(1, ms(CONFIG.stageFadeMs) / 2, () => {
       S.stage = from + 1;
       S.offset = 0;
@@ -335,7 +349,7 @@ $(function () {
     S.caughtBy = e;
     S.hiding = false;
     setHideBtn(false);
-    AR.Sound.sfx(SFX.caught);
+    AR.Sound.sfx(SFX.detected);
     draw();
     // PDF 23p 순서: ① BG·특사 정지 ② 순사 발각 모습 ③ 느낌표 ④ "실패!" ⑤ 메인 복귀.
     // 실패 팝업이 느낌표를 가리므로 한 박자 뒤에 띄운다.
@@ -352,8 +366,11 @@ $(function () {
     S.phase = "clear";
     S.traveled = totalTravel();
     paintProgress();
-    AR.Sound.sfx(SFX.horn);
-    AR.openPopup("#finishDim");
+    // 도착 효과음이 다 울린 뒤에 성공 팝업 등장(수정요청안 p20).
+    AR.Sound.sfxThen(SFX.arrive, () => {
+      AR.Sound.sfx(SFX.complete);
+      AR.openPopup("#finishDim");
+    });
   }
 
   function resetToMain() {
@@ -399,7 +416,10 @@ $(function () {
   /* ---------------------------- 입력 바인딩 ---------------------------- */
   const $hide = $("#btnHide");
   function setHideBtn(on) {
+    const was = S.hiding;
     S.hiding = on && S.phase === "play";
+    // 숨기 시작하는 순간에만 1회(키 리피트로 연타되지 않도록 상태 전이로 판정)
+    if (S.hiding && !was) AR.Sound.sfx(SFX.hiding);
     $hide.toggleClass("active", !!S.hiding);
   }
 
@@ -482,7 +502,7 @@ $(function () {
       );
       console.info(`[EXP①] 개발자 모드 — 진행 ${SPEED}배속 (localStorage.db="1")`);
     }
-    AR.openPopup("#startDim"); // 메인 = 체험 방법 안내 팝업(딤드 없음)
+    AR.openPopup("#startDim"); // 메인 = 체험 방법 안내 팝업(배경 딤드)
     AR.Sound.armBgm("audio/BGM.mp3", { volume: 0.3 });
     requestAnimationFrame(frame);
   });

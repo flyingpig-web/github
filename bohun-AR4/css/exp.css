@@ -82,10 +82,11 @@
 .dialog.setting {
   width: 30%; /* 552/1920 ≈ 원본 크기 */
 }
+/* 수정요청안 p23: X 버튼이 팝업 테두리에 걸쳐 있던 것을 박스 안쪽 우상단으로 이동 */
 .dialog.setting .btn-close {
   position: absolute;
-  top: 20%;
-  right: -4%;
+  top: 16%;
+  right: 5%;
   width: 9%;
   cursor: pointer;
 }

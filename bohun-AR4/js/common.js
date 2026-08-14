@@ -101,8 +101,9 @@
       return cache[src];
     }
 
+    // 재생 중인 Audio 를 반환(호출부에서 재생 길이만큼 기다렸다 다음 연출로 넘어갈 수 있도록).
     function sfx(src) {
-      if (!sfxOn || !src) return;
+      if (!sfxOn || !src) return null;
       try {
         const base = load(src);
         // 효과음은 겹쳐 재생될 수 있으므로 복제 재생
@@ -110,8 +111,10 @@
         a.currentTime = 0;
         const p = a.play();
         if (p && p.catch) p.catch(() => {});
+        return a;
       } catch (e) {
         /* 무음 폴백 */
+        return null;
       }
     }
 
@@ -170,9 +173,74 @@
       } catch (e) {}
     }
 
+    /* 효과음을 재생하고 "재생이 끝난 뒤" done() 을 호출한다.
+       수정요청안: 도착/기록완료 효과음이 다 울린 다음 성공 팝업이 뜨도록.
+       효과음 OFF·로드 실패면 즉시 done(). ended 가 오지 않는 경우를 대비해 안전 타임아웃. */
+    function sfxThen(src, done, { maxWaitMs = 4000 } = {}) {
+      const cb = typeof done === "function" ? done : () => {};
+      const a = sfx(src);
+      if (!a) return cb();
+      let fired = false;
+      const fire = () => {
+        if (fired) return;
+        fired = true;
+        cb();
+      };
+      a.addEventListener("ended", fire, { once: true });
+      setTimeout(fire, maxWaitMs);
+    }
+
+    /* 루프 효과음(터치 강조음처럼 상태가 유지되는 동안 계속 반복되는 소리).
+       name 으로 채널을 구분해 겹쳐 운용. sfx ON/OFF 토글과 연동된다.
+       want = "지금 켜져 있어야 하는가"(토글 OFF 후 다시 ON 시 자동 복구용). */
+    const loops = {};
+    function loop(name, src, { volume = 0.6 } = {}) {
+      let L = loops[name];
+      if (!L) {
+        const a = load(src);
+        if (!a) return;
+        a.loop = true;
+        a.volume = volume;
+        L = loops[name] = { a };
+      }
+      L.want = true;
+      if (!sfxOn) return;
+      try {
+        const p = L.a.play();
+        if (p && p.catch) p.catch(() => {});
+      } catch (e) {}
+    }
+    function stopLoop(name) {
+      const L = loops[name];
+      if (!L) return;
+      L.want = false;
+      try {
+        L.a.pause();
+        L.a.currentTime = 0;
+      } catch (e) {}
+    }
+
+    // 지연 최소화용 오디오 프리로드(재생은 하지 않고 Audio 객체만 미리 생성)
+    function prime(list) {
+      (list || []).filter(Boolean).forEach(load);
+    }
+
     function setSfx(on) {
       sfxOn = on;
       localStorage.setItem(KEY_SFX, on ? "on" : "off");
+      // 켜져 있어야 하는 루프음은 토글 상태에 맞춰 재개/정지
+      try {
+        Object.keys(loops).forEach((k) => {
+          const L = loops[k];
+          if (!L || !L.want) return;
+          if (on) {
+            const p = L.a.play();
+            if (p && p.catch) p.catch(() => {});
+          } else {
+            L.a.pause();
+          }
+        });
+      } catch (e) {}
     }
 
     /* 내레이션(V.O) — bgm/sfx 와 독립된 1채널.
@@ -203,6 +271,10 @@
 
     return {
       sfx,
+      sfxThen,
+      loop,
+      stopLoop,
+      prime,
       playBgm,
       armBgm,
       stopBgm,
@@ -220,7 +292,12 @@
      --------------------------------------------------------------------- */
   function openPopup(sel) {
     // 딤드 + 안쪽 다이얼로그 모두 표시(.dialog 는 .flex 일 때만 보임)
-    $(sel).addClass("flex").find(".dialog").addClass("flex");
+    const $d = $(sel).addClass("flex");
+    $d.find(".dialog").addClass("flex");
+    // 목표 화면(모든 목표 팝업) 진입 효과음
+    if ($d.find(".dialog.objective").length) {
+      Sound.sfx("audio/effects/objective_in.wav");
+    }
   }
   function closePopup(sel) {
     $(sel).removeClass("flex").find(".dialog").removeClass("flex");
@@ -351,6 +428,9 @@
           $hot.addClass("display-none");
         }
       }
+      // 터치 강조(핫스팟) 노출 중에는 강조 효과음을 반복 재생, 사라지면 정지
+      if (useHot) Sound.loop("touchHint", "audio/effects/touch_highlight.wav", { volume: 0.7 });
+      else Sound.stopLoop("touchHint");
     }
 
     function next() {
@@ -367,12 +447,14 @@
       ended = true;
       // BGM 은 유지(AR4 는 전 구간 동일 BGM). 내레이션만 정지.
       Sound.stopNarration();
+      Sound.stopLoop("touchHint"); // 터치 강조음 정지
       $hot.addClass("display-none");
       if (typeof cfg.onEnd === "function") cfg.onEnd();
     }
 
     function skip() {
       Sound.stopNarration(); // 스킵 시 진행 중 내레이션 정지
+      Sound.stopLoop("touchHint"); // 터치 강조음 정지
       // 스킵 시 배경을 스토리 마지막 컷 이미지로 교체(목표 팝업 뒤에 마지막 장면이 보이도록)
       const last = cuts[cuts.length - 1];
       if (last) crossTo(last.img);
@@ -493,6 +575,17 @@
     $(document).on("click", '[role="button"], button, .btn, .btn-effect', function () {
       if (global.AR && global.AR.clickSfx) Sound.sfx(global.AR.clickSfx);
     });
+
+    // 버튼 호버 효과음 — 마우스 호버 시 스케일이 커지는 버튼들(hover 가능한 기기에서만).
+    if (!global.matchMedia || global.matchMedia("(hover: hover)").matches) {
+      $(document).on(
+        "mouseenter",
+        'button, [role="button"], .btn-effect, .btn-skip, .btn-next',
+        function () {
+          Sound.sfx("audio/effects/button.mp3");
+        }
+      );
+    }
 
     // 디버그 토글: Ctrl + ;  → localStorage.db "1" 설정/삭제 토글 후 새로고침
     $(document).on("keydown", function (e) {

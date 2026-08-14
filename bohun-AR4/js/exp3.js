@@ -20,6 +20,14 @@ $(function () {
     pivot: { x: 0.7935, y: 0.806 }, // 축음기 크랭크 회전축(배경 실측, 정규화)
   };
 
+  /* 효과음 — 수정요청안(사운드 시트) 기준.
+     · arrive   : 기록 게이지가 모두 찼을 때 — 이 소리가 끝난 뒤 성공 팝업이 뜬다
+     · complete : 성공 팝업 등장 */
+  const SFX = {
+    arrive: "audio/effects/item_success.wav",
+    complete: "audio/effects/mission_complete.wav",
+  };
+
   /* ------------------------------ 상태 ------------------------------ */
   const S = {
     phase: "main", // 'main' | 'play' | 'clear'
@@ -183,7 +191,11 @@ $(function () {
     S.dragging = false;
     stopAll();
     $fill.css("width", "100%");
-    AR.openPopup("#finishDim");
+    // 기록 완료 효과음이 다 울린 뒤에 성공 팝업 등장(수정요청안 p20).
+    AR.Sound.sfxThen(SFX.arrive, () => {
+      AR.Sound.sfx(SFX.complete);
+      AR.openPopup("#finishDim");
+    });
   }
 
   function resetToMain() {
@@ -273,7 +285,7 @@ $(function () {
   }
 
   AR.preload(assets).then(() => {
-    AR.openPopup("#startDim"); // 메인 = 체험 방법 안내 팝업(딤드 없음)
+    AR.openPopup("#startDim"); // 메인 = 체험 방법 안내 팝업(배경 딤드)
     AR.Sound.armBgm("audio/BGM.mp3", { volume: 0.22 }); // 연설이 주인공이라 BGM 은 낮게
     requestAnimationFrame(tick);
   });

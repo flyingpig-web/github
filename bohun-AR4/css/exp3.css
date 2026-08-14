@@ -58,10 +58,11 @@
 }
 
 /* ===== 회전 안내 배너(오른쪽 화살표) — exp3_arrow.png 482×100 ===== */
+/* 수정요청안 p27: 안내 배너를 손잡이(크랭크) 쪽으로 이동 — 화살표 끝이 크랭크를 가리킨다. */
 .exp3-guide {
   position: absolute;
-  left: 44%;
-  top: 55%;
+  left: 50%;
+  top: 81%;
   width: 25.1%; /* 482/1920 */
   z-index: 6;
   animation: exp3GuideFloat 1.5s ease-in-out infinite;
@@ -175,7 +176,7 @@
 
 /* ===== 시작 안내(메인) =====
    구성안 53p 목업: 메인의 [메시지(팝업)] = `exp3_info.png`(체험 방법 안내)를
-   딤드 없이 띄우고, 화면 아무 곳이나 터치하면 PLAY 시작. */
+   배경 딤드와 함께 띄우고(수정요청안 p22), 화면 아무 곳이나 터치하면 PLAY 시작. */
 .exp3-start-hit {
   cursor: pointer;
 }
