@@ -9,8 +9,8 @@ $(function () {
   const B = "img/1_INTRO/";
 
   const cuts = [
-    // 1-1 태극기 터치
-    { img: B + "intro_bg1-1.png", hot: { x: 0.55, y: 0.17 } },
+    // 1-1 태극기 터치 (수정요청안 p2: 배경 교체로 깃발이 우측으로 이동 → 태극기 쪽으로 내림)
+    { img: B + "intro_bg1-1.png", hot: { x: 0.45, y: 0.28 } },
     // 1-2 [다음] (자막 — 한 줄, 폭 맞춰 자동 축소)
     {
       img: B + "intro_bg1-2.png",
