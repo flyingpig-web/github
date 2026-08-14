@@ -98,7 +98,14 @@ $(function () {
   const ctx = canvas.getContext("2d");
   const $count = $("#count");
 
-  const SFX = { pickup: "", hit: "" }; // ⚠️ 사운드 경로 미확정(Open Item)
+  /* 효과음 — 수정요청안(사운드 시트) 기준.
+     · pickup   : 아이템(물자) 획득
+     · complete : 성공 팝업 등장
+     ※ "일본군에게 붙잡힘"용 효과음은 최종 사운드 스펙에 없어 무음 진행한다. */
+  const SFX = {
+    pickup: "audio/effects/item_success.wav",
+    complete: "audio/effects/mission_complete.wav",
+  };
 
   /* ----- 이미지 ----- */
   const imgs = {};
@@ -228,8 +235,7 @@ $(function () {
 
   function fail() {
     fails++;
-    flashHit();
-    AR.Sound.sfx(SFX.hit);
+    flashHit(); // 피격 연출은 화면 플래시만(전용 효과음은 사운드 스펙에 없음)
     // 일본군에게 잡히면 물자 초기화 + 시작점으로 복귀
     collected = 0;
     items.forEach((it) => (it.got = false));
@@ -574,6 +580,7 @@ $(function () {
     if (raf) cancelAnimationFrame(raf);
     raf = null;
     started = false;
+    AR.Sound.sfx(SFX.complete); // 성공 팝업 등장음
     AR.openPopup("#finishDim");
   }
 

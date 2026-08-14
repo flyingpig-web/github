@@ -101,8 +101,9 @@
       return cache[src];
     }
 
+    // 재생 중인 Audio 를 반환(호출부에서 재생 길이만큼 기다렸다 다음 연출로 넘어갈 수 있도록).
     function sfx(src) {
-      if (!sfxOn || !src) return;
+      if (!sfxOn || !src) return null;
       try {
         const base = load(src);
         // 효과음은 겹쳐 재생될 수 있으므로 복제 재생
@@ -110,22 +111,55 @@
         a.currentTime = 0;
         const p = a.play();
         if (p && p.catch) p.catch(() => {});
+        return a;
       } catch (e) {
         /* 무음 폴백 */
+        return null;
       }
     }
 
-    function playBgm(src, { loop = true, volume = 0.5 } = {}) {
+    function playBgm(src, { loop = true, volume = 0.5, startAt = 0 } = {}) {
       try {
         if (bgm) bgm.pause();
         bgm = load(src);
         if (!bgm) return;
         bgm.loop = loop;
         bgm.volume = volume;
+        if (startAt > 0) {
+          try {
+            bgm.currentTime = startAt;
+          } catch (e) {}
+        }
         if (bgmOn) {
           const p = bgm.play();
           if (p && p.catch) p.catch(() => {});
         }
+      } catch (e) {}
+    }
+
+    // 현재 BGM 재생 위치(초) — 페이지 이동 시 이어듣기용
+    function bgmTime() {
+      try {
+        return bgm ? bgm.currentTime || 0 : 0;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    // 자동재생 차단으로 멈춰 있던 BGM 을 현재 위치 그대로 재개(첫 사용자 제스처 시).
+    function resumeBgm() {
+      try {
+        if (bgm && bgmOn && bgm.paused) {
+          const p = bgm.play();
+          if (p && p.catch) p.catch(() => {});
+        }
+      } catch (e) {}
+    }
+
+    // 위치를 유지한 채 일시정지(페이지 이탈 시 중첩 방지용 — 재생위치 보존).
+    function pauseBgm() {
+      try {
+        if (bgm) bgm.pause();
       } catch (e) {}
     }
 
@@ -152,9 +186,74 @@
       } catch (e) {}
     }
 
+    /* 효과음을 재생하고 "재생이 끝난 뒤" done() 을 호출한다.
+       수정요청안: 도착 효과음이 다 울린 다음 성공 팝업이 뜨도록.
+       효과음 OFF·로드 실패면 즉시 done(). ended 가 오지 않는 경우를 대비해 안전 타임아웃. */
+    function sfxThen(src, done, { maxWaitMs = 4000 } = {}) {
+      const cb = typeof done === "function" ? done : () => {};
+      const a = sfx(src);
+      if (!a) return cb();
+      let fired = false;
+      const fire = () => {
+        if (fired) return;
+        fired = true;
+        cb();
+      };
+      a.addEventListener("ended", fire, { once: true });
+      setTimeout(fire, maxWaitMs);
+    }
+
+    /* 루프 효과음(터치 강조음처럼 상태가 유지되는 동안 계속 반복되는 소리).
+       name 으로 채널을 구분해 겹쳐 운용. sfx ON/OFF 토글과 연동된다.
+       want = "지금 켜져 있어야 하는가"(토글 OFF 후 다시 ON 시 자동 복구용). */
+    const loops = {};
+    function loop(name, src, { volume = 0.6 } = {}) {
+      let L = loops[name];
+      if (!L) {
+        const a = load(src);
+        if (!a) return;
+        a.loop = true;
+        a.volume = volume;
+        L = loops[name] = { a };
+      }
+      L.want = true;
+      if (!sfxOn) return;
+      try {
+        const p = L.a.play();
+        if (p && p.catch) p.catch(() => {});
+      } catch (e) {}
+    }
+    function stopLoop(name) {
+      const L = loops[name];
+      if (!L) return;
+      L.want = false;
+      try {
+        L.a.pause();
+        L.a.currentTime = 0;
+      } catch (e) {}
+    }
+
+    // 지연 최소화용 오디오 프리로드(재생은 하지 않고 Audio 객체만 미리 생성)
+    function prime(list) {
+      (list || []).filter(Boolean).forEach(load);
+    }
+
     function setSfx(on) {
       sfxOn = on;
       localStorage.setItem(KEY_SFX, on ? "on" : "off");
+      // 켜져 있어야 하는 루프음은 토글 상태에 맞춰 재개/정지
+      try {
+        Object.keys(loops).forEach((k) => {
+          const L = loops[k];
+          if (!L || !L.want) return;
+          if (on) {
+            const p = L.a.play();
+            if (p && p.catch) p.catch(() => {});
+          } else {
+            L.a.pause();
+          }
+        });
+      } catch (e) {}
     }
 
     /* 내레이션(V.O) — bgm/sfx 와 독립된 1채널.
@@ -185,7 +284,14 @@
 
     return {
       sfx,
+      sfxThen,
+      loop,
+      stopLoop,
+      prime,
       playBgm,
+      bgmTime,
+      resumeBgm,
+      pauseBgm,
       stopBgm,
       setBgm,
       setSfx,
@@ -201,7 +307,12 @@
      --------------------------------------------------------------------- */
   function openPopup(sel) {
     // 딤드 + 안쪽 다이얼로그 모두 표시(.dialog 는 .flex 일 때만 보임)
-    $(sel).addClass("flex").find(".dialog").addClass("flex");
+    const $d = $(sel).addClass("flex");
+    $d.find(".dialog").addClass("flex");
+    // 목표 화면(모든 목표 팝업) 진입 효과음
+    if ($d.find(".dialog.objective").length) {
+      Sound.sfx("audio/effects/objective_in.wav");
+    }
   }
   function closePopup(sel) {
     $(sel).removeClass("flex").find(".dialog").removeClass("flex");
@@ -332,6 +443,9 @@
           $hot.addClass("display-none");
         }
       }
+      // 터치 강조(핫스팟) 노출 중에는 강조 효과음을 반복 재생, 사라지면 정지
+      if (useHot) Sound.loop("touchHint", "audio/effects/touch_highlight.wav", { volume: 0.7 });
+      else Sound.stopLoop("touchHint");
     }
 
     function next() {
@@ -346,14 +460,16 @@
     function end() {
       if (ended) return;
       ended = true;
-      Sound.stopBgm();
+      // ※ 메인 BGM(main_music)은 전체 진행 동안 이어지므로 여기서 멈추지 않는다.
       Sound.stopNarration();
+      Sound.stopLoop("touchHint"); // 터치 강조음 정지
       $hot.addClass("display-none");
       if (typeof cfg.onEnd === "function") cfg.onEnd();
     }
 
     function skip() {
       Sound.stopNarration(); // 스킵 시 진행 중 내레이션 정지
+      Sound.stopLoop("touchHint"); // 터치 강조음 정지
       // 스킵 시 배경을 스토리 마지막 컷 이미지로 교체(목표 팝업 뒤에 마지막 장면이 보이도록)
       const last = cuts[cuts.length - 1];
       if (last) crossTo(last.img);
@@ -474,6 +590,52 @@
     $(document).on("click", '[role="button"], button, .btn, .btn-effect', function () {
       if (global.AR && global.AR.clickSfx) Sound.sfx(global.AR.clickSfx);
     });
+
+    // 버튼 호버 효과음 — 마우스 호버 시 스케일이 커지는 버튼들(hover 가능한 기기에서만).
+    if (!global.matchMedia || global.matchMedia("(hover: hover)").matches) {
+      $(document).on(
+        "mouseenter",
+        'button, [role="button"], .btn-effect, .btn-skip, .btn-next',
+        function () {
+          Sound.sfx("audio/effects/button.mp3");
+        }
+      );
+    }
+
+    // ===== 메인 BGM(main_music) — 타이틀부터 전체 웹페이지 연속 재생 =====
+    // 자동재생 정책상 첫 사용자 제스처 전엔 막힐 수 있어, 로드 시 시도 + 첫 입력에 재개.
+    // 페이지 이동 시 재생 위치를 sessionStorage 에 저장해 이어듣는다.
+    (function bootstrapBgm() {
+      const SRC = "audio/bgm/main_music.mp3";
+      const KEY_T = "bohun_bgm_t";
+      let at = 0;
+      try {
+        at = parseFloat(sessionStorage.getItem(KEY_T) || "0") || 0;
+      } catch (e) {}
+      Sound.playBgm(SRC, { loop: true, volume: 0.2, startAt: at });
+      // 첫 사용자 입력에 재개(자동재생 차단 대비). 위치는 그대로 유지(되감기 X).
+      const kick = () => {
+        Sound.resumeBgm();
+        ["click", "touchstart", "keydown"].forEach((ev) =>
+          document.removeEventListener(ev, kick)
+        );
+      };
+      ["click", "touchstart", "keydown"].forEach((ev) =>
+        document.addEventListener(ev, kick)
+      );
+      // 페이지 이탈 시: 현재 위치 저장 → 다음 페이지에서 이어듣기. 이전 오디오는 즉시 pause.
+      let left = false;
+      const onLeave = () => {
+        if (left) return;
+        left = true;
+        try {
+          sessionStorage.setItem(KEY_T, String(Sound.bgmTime()));
+        } catch (e) {}
+        Sound.pauseBgm();
+      };
+      global.addEventListener("pagehide", onLeave);
+      global.addEventListener("beforeunload", onLeave); // pagehide 미지원 환경 대비
+    })();
 
     // 디버그 토글: Ctrl + ;  → localStorage.db "1" 설정/삭제 토글 후 새로고침
     $(document).on("keydown", function (e) {

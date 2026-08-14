@@ -18,8 +18,8 @@ $(function () {
       vo: "intro_1-2.wav",
       next: true,
     },
-    // 2-1 초가집 터치
-    { img: B + "intro_bg2-1.png", hot: { x: 0.6, y: 0.55 } },
+    // 2-1 지도 터치 (수정요청안 p5: 배경 교체 → 신흥무관학교와 서전서숙 사이)
+    { img: B + "intro_bg2-1.png", hot: { x: 0.46, y: 0.43 } },
     // 2-2 자막 (서전서숙 / 신흥무관학교)
     {
       img: B + "intro_bg2-2.png",
@@ -36,8 +36,8 @@ $(function () {
       vo: "intro_3-2.wav",
       next: true,
     },
-    // 4-1 주민들 터치
-    { img: B + "intro_bg4-1.png", hot: { x: 0.7, y: 0.59 } },
+    // 4-1 주민들 터치 (수정요청안 p6: 배경 교체 → 우측 시민들 쪽)
+    { img: B + "intro_bg4-1.png", hot: { x: 0.84, y: 0.52 } },
     // 4-2 자막
     {
       img: B + "intro_bg4-2.png",
