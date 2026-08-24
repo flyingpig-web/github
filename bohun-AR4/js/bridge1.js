@@ -93,5 +93,7 @@ $(function () {
   }
 
   // 목표② [확인] → 4_EXP②-AR(로딩 → AR 방식 선택)
-  $("#objConfirm").on("click", () => AR.go("exp4_ar/index.html"));
+  $("#objConfirm").on("click", function () {
+     AR.go("exp4_ar/index.html");
+  });
 });
