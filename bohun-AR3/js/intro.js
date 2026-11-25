@@ -8,44 +8,44 @@ $(function () {
 
   const cuts = [
     // 1-1 북진하는 연합군(좌하단 발광부) 터치
-    { img: B + "intro_bg1-1.png", hot: { x: 0.3, y: 0.66 } },
+    { img: B + "intro_bg1-1.jpg", hot: { x: 0.3, y: 0.66 } },
     // 1-2 자막
     {
-      img: B + "intro_bg1-2.png",
+      img: B + "intro_bg1-2.jpg",
       text: "1950년 11월, 국군과 유엔군은 북쪽으로 진격하였고,\n그중 미 제1해병사단은 함경남도 장진호 일대로 나아가고 있었다.",
       vo: "intro_1-2.wav",
       next: true,
     },
     // 2-1 산맥 능선 터치
-    { img: B + "intro_bg2-1.png", hot: { x: 0.63, y: 0.26 } },
+    { img: B + "intro_bg2-1.jpg", hot: { x: 0.63, y: 0.26 } },
     // 2-2 자막
     {
-      img: B + "intro_bg2-2.png",
+      img: B + "intro_bg2-2.jpg",
       text: "그러던 11월 27일 밤. 영하 30도의 깊은 산속에 갑자기 기괴한 나팔과 꽹과리 소리가 울려 퍼졌다.",
       vo: "intro_2-2.wav",
       next: true,
     },
     // 3-1 조명총(조명탄) 터치
-    { img: B + "intro_bg3-1.png", hot: { x: 0.4, y: 0.54 } },
+    { img: B + "intro_bg3-1.jpg", hot: { x: 0.4, y: 0.54 } },
     // 3-2 자막
     {
-      img: B + "intro_bg3-2.png",
+      img: B + "intro_bg3-2.jpg",
       text: "12만 명에 달하는 중국군이 몰려와 3만 명의 연합군을 추위와 공포 속에 몰아넣었다.",
       vo: "intro_3-2.wav",
       next: true,
     },
     // 4-1 막사 안 꺼진 조명 터치
-    { img: B + "intro_bg4-1.png", hot: { x: 0.51, y: 0.15 } },
+    { img: B + "intro_bg4-1.jpg", hot: { x: 0.51, y: 0.15 } },
     // 4-2 자막
     {
-      img: B + "intro_bg4-2.png",
+      img: B + "intro_bg4-2.jpg",
       text: "미 제1해병사단장 올리버 스미스 장군은 고심 끝에 결단을 내렸다.",
       vo: "intro_4-2.wav",
       next: true,
     },
     // 4-3 자막(타이포) → 목표①
     {
-      img: B + "intro_bg4-3.png",
+      img: B + "intro_bg4-3.jpg",
       vo: "intro_4-3.wav",
       next: true,
     },

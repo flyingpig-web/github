@@ -18,48 +18,48 @@ $(function () {
   const cuts = [
     // 연결1-1 : 흥남항 전경 — [다음] 진행(기존 Glow 터치는 삭제)
     {
-      img: B + "bridge_bg1-1.png",
+      img: B + "bridge_bg1-1.jpg",
       text: "1950년 12월, 흥남항에서는 연합군의 대규모 철수 작전이 진행되고 있었다.",
       vo: "bridge_1-1.wav",
       next: true,
     },
     // 연결2-1 : 부두를 메운 피란민 — 어머니와 아이 터치(자막 없음)
-    { img: B + "bridge_bg2-1.png", hot: { x: 0.49, y: 0.61 } },
+    { img: B + "bridge_bg2-1.jpg", hot: { x: 0.49, y: 0.61 } },
     // 연결2-2 : 자막
     {
-      img: B + "bridge_bg2-2.png",
+      img: B + "bridge_bg2-2.jpg",
       text: "하지만 항구에는 군인들뿐만 아니라, 전쟁을 피해 남쪽으로 가려는 수많은 피란민이 모여 있었다.",
       vo: "bridge_2-2.wav",
       next: true,
     },
     // 연결3-1 : 뒷짐 지고 선 인물(현봉학) 터치(자막 없음)
-    { img: B + "bridge_bg3-1.png", hot: { x: 0.22, y: 0.58 } },
+    { img: B + "bridge_bg3-1.jpg", hot: { x: 0.22, y: 0.58 } },
     // 연결3-2 : 자막
     {
-      img: B + "bridge_bg3-2.png",
+      img: B + "bridge_bg3-2.jpg",
       text: "미 10군단에서 통역을 맡았던 현봉학은 눈앞의 피란민들을 외면할 수 없었다.",
       vo: "bridge_3-2.wav",
       next: true,
     },
     // 연결4-1 : 군단 사령부 — 코트를 입은 인물(현봉학) 터치(자막 없음)
-    { img: B + "bridge_bg4-1.png", hot: { x: 0.43, y: 0.44 } },
+    { img: B + "bridge_bg4-1.jpg", hot: { x: 0.43, y: 0.44 } },
     // 연결4-2 : 자막 + [다음]
     {
-      img: B + "bridge_bg4-2.png",
+      img: B + "bridge_bg4-2.jpg",
       text: "“장군님, 피란민들을 이대로 두고 갈 수 없습니다. 함께 가야 합니다!”",
       vo: "bridge_4-2.wav",
       next: true,
     },
     // 연결5-1 : 자막 + 고민하는 알몬드 장군 터치([다음] 없음)
     {
-      img: B + "bridge_bg5-1.png",
+      img: B + "bridge_bg5-1.jpg",
       text: "현봉학의 간절한 설득에 알몬드 장군은 결단을 내렸다.",
       vo: "bridge_5-1.wav",
       hot: { x: 0.63, y: 0.53 },
     },
     // 연결5-2 : 자막 → 목표②
     {
-      img: B + "bridge_bg5-2.png",
+      img: B + "bridge_bg5-2.jpg",
       text: "“좋소. 가능한 한 많은 피란민을 함께 철수시키도록 합시다.”",
       vo: "bridge_5-2.wav",
       next: true,
