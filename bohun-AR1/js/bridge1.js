@@ -7,19 +7,19 @@ $(function () {
 
   const cuts = [
     // 1-1 손전등 터치
-    { img: B + "bridge1_bg1-1.png", hot: { x: 0.3, y: 0.74 } },
+    { img: B + "bridge1_bg1-1.jpg", hot: { x: 0.3, y: 0.74 } },
     // 1-2 [다음] (자막)
     {
-      img: B + "bridge1_bg1-2.png",
+      img: B + "bridge1_bg1-2.jpg",
       text: "“훈련 장비를 보관 중인 창고에 누군가 침입했다. 즉시 대장님께 보고 해야 한다!”",
       vo: "bridge1_1-2.wav",
       next: true,
     },
     // 2-1 이범석 터치
-    { img: B + "bridge1_bg2-1.png", hot: { x: 0.42, y: 0.5 } },
+    { img: B + "bridge1_bg2-1.jpg", hot: { x: 0.42, y: 0.5 } },
     // 2-2 [다음] → 목표② (자막)
     {
-      img: B + "bridge1_bg2-2.png",
+      img: B + "bridge1_bg2-2.jpg",
       text: "“작전 계획이 노출됐을 수 있으니, 즉시 총사령부에 알려라!”",
       vo: "bridge1_2-2.wav",
       next: true,
