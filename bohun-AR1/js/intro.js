@@ -10,45 +10,45 @@ $(function () {
 
   const cuts = [
     // 1-1 태극기 터치 (수정요청안 p2: 배경 교체로 깃발이 우측으로 이동 → 태극기 쪽으로 내림)
-    { img: B + "intro_bg1-1.png", hot: { x: 0.45, y: 0.28 } },
+    { img: B + "intro_bg1-1.jpg", hot: { x: 0.45, y: 0.28 } },
     // 1-2 [다음] (자막 — 한 줄, 폭 맞춰 자동 축소)
     {
-      img: B + "intro_bg1-2.png",
+      img: B + "intro_bg1-2.jpg",
       text: "1940년 9월 17일, 대한민국 임시 정부는 충칭에서 정규군인 한국광복군을 창설했다.",
       vo: "intro_1-2.wav",
       //sfx: "audio/effects/intro_reveille.wav", // 인트로 1-2 진입 시 기상나팔
       next: true,
     },
     // 2-1 광복군 훈련 이미지 터치
-    { img: B + "intro_bg2-1.png", hot: { x: 0.48, y: 0.16 } },
+    { img: B + "intro_bg2-1.jpg", hot: { x: 0.48, y: 0.16 } },
     // 2-2 [다음] (자막)
     {
-      img: B + "intro_bg2-2.png",
+      img: B + "intro_bg2-2.jpg",
       text: "이후 한국광복군은 인도·미얀마 전선 등에서 연합군과 협력하며 항일 작전을 수행했다.",
       vo: "intro_2-2.wav",
       next: true,
     },
     // 3-1 장교 막사 건물 터치
-    { img: B + "intro_bg3-1.png", hot: { x: 0.4, y: 0.6 } },
+    { img: B + "intro_bg3-1.jpg", hot: { x: 0.4, y: 0.6 } },
     // 3-2 작전 현황판 터치 (자막)
     {
-      img: B + "intro_bg3-2.png",
+      img: B + "intro_bg3-2.jpg",
       text: "1944년, 한국광복군은 미국 전략 정보국 ‘OSS’와 함께 조국으로 향하기 위한 국내 진공 작전을 추진했다.",
       vo: "intro_3-2.wav",
       hot: { x: 0.42, y: 0.62 },
     },
     // 3-3 [다음] (자막)
     {
-      img: B + "intro_bg3-3.png",
+      img: B + "intro_bg3-3.jpg",
       text: "1945년 봄, 한국광복군 제2지대는 무전, 정보수집, 폭파, 침투 등 OSS 특수훈련을 받았다.",
       vo: "intro_3-3.wav",
       next: true,
     },
     // 4-1 해 터치
-    { img: B + "intro_bg4-1.png", hot: { x: 0.255, y: 0.655 } },
+    { img: B + "intro_bg4-1.jpg", hot: { x: 0.255, y: 0.655 } },
     // 4-2 [다음] → 목표① (자막)
     {
-      img: B + "intro_bg4-2.png",
+      img: B + "intro_bg4-2.jpg",
       text: "하지만 작전 준비가 진행될수록 훈련소 경비와 보안 유지도 한국광복군의 주요 임무가 됐다.",
       vo: "intro_4-2.wav",
       next: true,
