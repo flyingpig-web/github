@@ -3,7 +3,7 @@
    "일본 순사의 시야를 피해 중명전 → 서울역 → 부산역 → 부산항까지 이동하라"
 
    - 3개 스테이지(각 5711×1081 스트립)를 순차로 팬(pan). 특사는 화면에 고정.
-   - 진행도 30% / 60% / 90% 에서 순사가 화면 밖 우측 → 좌측으로 통과(3초).
+   - 스테이지별 2 / 2 / 3회, 구간 진행도 지점에서 순사가 화면 밖 우측 → 좌측으로 통과(3초).
    - [숨기] 홀드 = 은신 자세로 교체 + 감지 무효 + 배경 정지.
    - 순사 감지범위 접촉(비은신) → 발각 연출 → 메인 화면 복귀.
    - 부산항 도착 → 체험 종료 팝업.
@@ -26,7 +26,14 @@ $(function () {
     playerX: 0.18, // 특사 고정 x(정규화) — 목업 실측(0.13~0.19)
     playerFps: 10, // PDF 17p "캐릭터 프레임마다 0.1s씩 반복"
     enemyFps: 10, // 〃
-    enemyAt: [0.3, 0.6, 0.9], // 순사 등장 진행도(PDF 9번)
+    /* 순사 등장 지점 — 스테이지별, 해당 구간 진행도(0~1) 기준.
+       261125 요청: 스테이지당 1회 → 2 / 2 / 3회. 값은 요청 이미지의 위치 마커를
+       스트립 가로 비율로 환산한 것(1·2번 36%·67%, 3번 28%·54%·80%). */
+    enemyAt: [
+      [0.36, 0.67],
+      [0.36, 0.67],
+      [0.28, 0.54, 0.8],
+    ],
     enemyCrossMs: 3000, // 화면 밖 → 반대편 밖까지 소요(PDF 10번)
     enemyMargin: 260, // 화면 밖 생성/소멸 여유
     coneScale: 1.0, // 감지범위 배율
@@ -129,7 +136,7 @@ $(function () {
     traveled: 0, // 전체 누적 이동거리
     hiding: false,
     enemies: [],
-    spawned: [false, false, false],
+    nextEnemy: 0, // 현재 스테이지에서 다음에 등장할 순사 인덱스
     animT: 0,
     fadeAlpha: 0,
     caughtBy: null, // 발각시킨 순사(연출 고정용)
@@ -161,9 +168,9 @@ $(function () {
   // 진행도 이미지의 지점 마커(중명전 9.5% ~ 부산항 90.5%)에 맞춘 매핑
   const P_FROM = 5.5;
   const P_TO = 94.5;
-  function paintProgress() {
-    const p = progress();
-    const x = P_FROM + (P_TO - P_FROM) * p;
+  // full=true(도착 시)면 마커 매핑과 무관하게 트랙 끝까지 채운다 — 완료인데 우측 홈이 비어 보이던 문제(261125).
+  function paintProgress(full = false) {
+    const x = full ? 100 : P_FROM + (P_TO - P_FROM) * progress();
     $fill.css("width", x + "%");
     $dot.css("left", x + "%");
   }
@@ -218,14 +225,13 @@ $(function () {
       }
     }
 
-    // 순사 등장(진행도 기준)
-    const p = progress();
-    CONFIG.enemyAt.forEach((t, i) => {
-      if (!S.spawned[i] && p >= t) {
-        S.spawned[i] = true;
-        spawnEnemy();
-      }
-    });
+    // 순사 등장(현재 구간 진행도 기준)
+    const at = CONFIG.enemyAt[S.stage];
+    const sp = S.offset / stageTravel(S.stage);
+    while (S.nextEnemy < at.length && sp >= at[S.nextEnemy]) {
+      S.nextEnemy++;
+      spawnEnemy();
+    }
 
     // 순사 이동 + 감지 판정
     const es = enemySpeed();
@@ -326,6 +332,7 @@ $(function () {
       S.stage = from + 1;
       S.offset = 0;
       S.enemies = [];
+      S.nextEnemy = 0;
       fadeTo(0, ms(CONFIG.stageFadeMs) / 2, () => {
         S.paused = false;
       });
@@ -365,7 +372,7 @@ $(function () {
   function clearGame() {
     S.phase = "clear";
     S.traveled = totalTravel();
-    paintProgress();
+    paintProgress(true);
     // 도착 효과음이 다 울린 뒤에 성공 팝업 등장(수정요청안 p20).
     AR.Sound.sfxThen(SFX.arrive, () => {
       AR.Sound.sfx(SFX.complete);
@@ -379,7 +386,7 @@ $(function () {
     S.offset = 0;
     S.traveled = 0;
     S.enemies = [];
-    S.spawned = [false, false, false];
+    S.nextEnemy = 0;
     S.hiding = false;
     S.fadeAlpha = 0;
     S.caughtBy = null;
