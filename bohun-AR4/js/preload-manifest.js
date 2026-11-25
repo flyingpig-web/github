@@ -22,7 +22,7 @@ window.AR_MANIFEST = {
     {
       "page": "index.html",
       "images": [
-        "img/0_TITLE/title_bg.png",
+        "img/0_TITLE/title_bg.jpg",
         "img/0_TITLE/touch_btn.png"
       ]
     },

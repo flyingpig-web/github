@@ -78,7 +78,7 @@ $(function () {
 
   /* --------------------------- 이미지 로딩 --------------------------- */
   const SRC = {
-    stages: [B + "exp1_stage1.png", B + "exp1_stage2.png", B + "exp1_stage3.png"],
+    stages: [B + "exp1_stage1.jpg", B + "exp1_stage2.jpg", B + "exp1_stage3.jpg"],
     player: [B + "exp1_player1.png", B + "exp1_player2.png", B + "exp1_player3.png", B + "exp1_player4.png"],
     hide: [B + "exp1_player_hide1.png", B + "exp1_player_hide2.png", B + "exp1_player_hide3.png"],
     enemy: [B + "exp1_enemy1.png", B + "exp1_enemy2.png", B + "exp1_enemy3.png", B + "exp1_enemy4.png"],
