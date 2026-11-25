@@ -12,44 +12,44 @@ $(function () {
 
   const cuts = [
     // 도입1-1 : 어두운 회의장, 책상 위 조약 문서 터치
-    { img: B + "intro_bg1-1.png", hot: { x: 0.5, y: 0.63 } },
+    { img: B + "intro_bg1-1.jpg", hot: { x: 0.5, y: 0.63 } },
     // 도입1-2 : 자막
     {
-      img: B + "intro_bg1-2.png",
+      img: B + "intro_bg1-2.jpg",
       text: "1905년, 일본은 을사늑약으로 대한제국의 외교권을 빼앗았다.",
       vo: "intro_1-2.wav",
       next: true,
     },
     // 도입2-1 : 중명전 집무실, 고종(발광 실루엣) 터치
-    { img: B + "intro_bg2-1.png", hot: { x: 0.6, y: 0.64 } },
+    { img: B + "intro_bg2-1.jpg", hot: { x: 0.6, y: 0.64 } },
     // 도입2-2 : 자막
     {
-      img: B + "intro_bg2-2.png",
+      img: B + "intro_bg2-2.jpg",
       text: "고종 황제는 조약의 위법성을 알리려 외국에 친서를 보냈으나,\n일본은 고종 황제를 경운궁(덕수궁)에 가두고 삼엄하게 감시했다.",
       vo: "intro_2-2.wav",
       next: true,
     },
     // 도입3-1 : 밤 침실, 편지(서찰) 터치
-    { img: B + "intro_bg3-1.png", hot: { x: 0.48, y: 0.67 } },
+    { img: B + "intro_bg3-1.jpg", hot: { x: 0.48, y: 0.67 } },
     // 도입3-2 : 자막
     {
-      img: B + "intro_bg3-2.png",
+      img: B + "intro_bg3-2.jpg",
       text: "그러던 1907년, 세계 각국 대표가 모이는 만국평화회의가\n네덜란드 헤이그에서 개최된다는 소식이 전해졌다.",
       vo: "intro_3-2.wav",
       next: true,
     },
     // 도입4-1 : 백지 위임장 클로즈업, 위임장 터치
-    { img: B + "intro_bg4-1.png", hot: { x: 0.46, y: 0.64 } },
+    { img: B + "intro_bg4-1.jpg", hot: { x: 0.46, y: 0.64 } },
     // 도입4-2 : 자막
     {
-      img: B + "intro_bg4-2.png",
+      img: B + "intro_bg4-2.jpg",
       text: "고종 황제는 이준을 비밀리에 불러들여 백지 위임장을 건넸다.",
       vo: "intro_4-2.wav",
       next: true,
     },
     // 도입4-3 : 타이포 컷(문구가 이미지에 렌더되어 있어 자막바 미표시) + 고종 V.O.
     {
-      img: B + "intro_bg5-1.png",
+      img: B + "intro_bg5-1.jpg",
       vo: "intro_4-3.wav",
       next: true,
     },
