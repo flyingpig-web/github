@@ -7,37 +7,37 @@ $(function () {
 
   const cuts = [
     // 1-1 발자국 터치
-    { img: B + "bridge_bg1-1.png", hot: { x: 0.31, y: 0.76 } },
+    { img: B + "bridge_bg1-1.jpg", hot: { x: 0.31, y: 0.76 } },
     // 1-2 자막
     {
-      img: B + "bridge_bg1-2.png",
+      img: B + "bridge_bg1-2.jpg",
       text: "“일본군이 우리를 도와준 동포들까지 위협하니, 더는 가만히 앉아 지켜볼 수 없을 지경이다.”",
       vo: "bridge_1-2.wav",
       next: true,
     },
     // 2-1 모닥불 터치
-    { img: B + "bridge_bg2-1.png", hot: { x: 0.47, y: 0.55 } },
+    { img: B + "bridge_bg2-1.jpg", hot: { x: 0.47, y: 0.55 } },
     // 2-2 자막
     {
-      img: B + "bridge_bg2-2.png",
+      img: B + "bridge_bg2-2.jpg",
       text: "“그동안 동포들의 도움으로 버텨온 우리가, 어찌 그분들의 위험을 모른 척할 수 있겠는가.”",
       vo: "bridge_2-2.wav",
       next: true,
     },
     // 3-1 김좌진 장군과 간부들 터치
-    { img: B + "bridge_bg3-1.png", hot: { x: 0.45, y: 0.55 } },
+    { img: B + "bridge_bg3-1.jpg", hot: { x: 0.45, y: 0.55 } },
     // 3-2 자막
     {
-      img: B + "bridge_bg3-2.png",
+      img: B + "bridge_bg3-2.jpg",
       text: "“적의 병력과 무기가 우리보다 훨씬 강하지만, 청산리의 험한 산세는 우리 편이 되어 줄 것이다.”",
       vo: "bridge_3-2.wav",
       next: true,
     },
     // 4-1 백운평 계곡 입구 터치
-    { img: B + "bridge_bg4-1.png", hot: { x: 0.66, y: 0.56 } },
+    { img: B + "bridge_bg4-1.jpg", hot: { x: 0.66, y: 0.56 } },
     // 4-2 자막 → 목표②
     {
-      img: B + "bridge_bg4-2.png",
+      img: B + "bridge_bg4-2.jpg",
       text: "“백운평 골짜기로 끌어들여 죽기를 각오하고 싸우면 우리는 반드시 일본군을 이길 수 있을 것이다.”",
       vo: "bridge_4-2.wav",
       next: true,

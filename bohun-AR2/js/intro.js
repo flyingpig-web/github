@@ -10,44 +10,44 @@ $(function () {
 
   const cuts = [
     // 1-1 간도 지역(지도 발광부) 터치
-    { img: B + "intro_bg1-1.png", hot: { x: 0.59, y: 0.28 } },
+    { img: B + "intro_bg1-1.jpg", hot: { x: 0.59, y: 0.28 } },
     // 1-2 자막
     {
-      img: B + "intro_bg1-2.png",
+      img: B + "intro_bg1-2.jpg",
       text: "1905년 을사늑약과 1910년 경술국치를 거치며, 나라를 잃은 한인들은 간도로 향했다.",
       vo: "intro_1-2.wav",
       next: true,
     },
     // 2-1 지도 터치 (수정요청안 p5: 배경 교체 → 신흥무관학교와 서전서숙 사이)
-    { img: B + "intro_bg2-1.png", hot: { x: 0.46, y: 0.43 } },
+    { img: B + "intro_bg2-1.jpg", hot: { x: 0.46, y: 0.43 } },
     // 2-2 자막 (서전서숙 / 신흥무관학교)
     {
-      img: B + "intro_bg2-2.png",
+      img: B + "intro_bg2-2.jpg",
       text: "한인들은 간도에 학교를 세웠고, 민족교육을 통해 독립운동의 힘을 키웠다.",
       vo: "intro_2-2.wav",
       next: true,
     },
     // 3-1 바위 터치
-    { img: B + "intro_bg3-1.png", hot: { x: 0.56, y: 0.53 } },
+    { img: B + "intro_bg3-1.jpg", hot: { x: 0.56, y: 0.53 } },
     // 3-2 자막
     {
-      img: B + "intro_bg3-2.png",
+      img: B + "intro_bg3-2.jpg",
       text: "3·1운동 이후, 간도의 독립군들은 힘을 모아 항일 무장투쟁을 더욱 활발히 펼쳐 나갔다.",
       vo: "intro_3-2.wav",
       next: true,
     },
     // 4-1 주민들 터치 (수정요청안 p6: 배경 교체 → 우측 시민들 쪽)
-    { img: B + "intro_bg4-1.png", hot: { x: 0.84, y: 0.52 } },
+    { img: B + "intro_bg4-1.jpg", hot: { x: 0.84, y: 0.52 } },
     // 4-2 자막
     {
-      img: B + "intro_bg4-2.png",
+      img: B + "intro_bg4-2.jpg",
       text: "그 무장투쟁의 뒤에는, 식량과 물자를 나누며 독립군을 도운 간도 한인들이 있었다.",
       vo: "intro_4-2.wav",
       next: true,
     },
     // 5-1 자막 → 목표①
     {
-      img: B + "intro_bg5.png",
+      img: B + "intro_bg5.jpg",
       text: "이에 일본은 봉오동 전투 이후 간도에 군대를 보냈고,\n독립군이 활동하던 청산리 일대에도 긴장감이 높아졌다.",
       vo: "intro_5-1.wav",
       next: true,
